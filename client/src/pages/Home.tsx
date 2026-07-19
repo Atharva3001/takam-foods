@@ -23,6 +23,7 @@ const ASSETS = {
 
 const products = [
   {
+    slug: "surali-vadi",
     marathi: "सुरळी वडी",
     english: "Surali Vadi",
     image: ASSETS.suraliVadi,
@@ -34,6 +35,7 @@ const products = [
     photoRotate: "rotate-2",
   },
   {
+    slug: "gulab-jamun",
     marathi: "गुलाबजाम",
     english: "Gulab Jamun",
     image: ASSETS.gulabJamun,
@@ -45,6 +47,7 @@ const products = [
     photoRotate: "-rotate-2",
   },
   {
+    slug: "aliv-ladu",
     marathi: "अळीव लाडू",
     english: "Aliv Ladu",
     image: ASSETS.alivLadu,
@@ -221,8 +224,8 @@ export default function Home() {
                   className={`sticker ${p.rotate} bg-white pop-in p-4 pb-5`}
                   style={{ animationDelay: `${i * 80}ms` }}
                 >
-                  {/* polaroid photo */}
-                  <div className={`relative ${p.photoRotate} mb-5 mx-1 mt-1`}>
+                  {/* polaroid photo (links to product page) */}
+                  <Link href={`/product/${p.slug}`} className={`block relative ${p.photoRotate} mb-5 mx-1 mt-1 hover:no-underline`}>
                     <div className="border-[3px] border-ink bg-white p-2 pb-3 shadow-[5px_5px_0_0_var(--ink)]">
                       <img
                         src={p.image}
@@ -239,19 +242,24 @@ export default function Home() {
                     >
                       {p.tag}
                     </span>
-                  </div>
+                  </Link>
 
                   <div className="px-2 space-y-3">
                     <div className="flex items-baseline justify-between gap-2">
-                      <h3 className="font-display font-extrabold text-2xl">{p.marathi}</h3>
+                      <Link href={`/product/${p.slug}`} className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">
+                        <h3 className="font-display font-extrabold text-2xl">{p.marathi}</h3>
+                      </Link>
                       <span className="text-sm font-bold text-muted-foreground">{p.english}</span>
                     </div>
                     <p className="font-semibold text-[15px] leading-relaxed">{p.desc}</p>
                     <p className="text-sm font-bold text-muted-foreground italic">{p.funny}</p>
                     <div className="flex items-center justify-between pt-2">
-                      <span className="border-[2.5px] border-ink rounded-full bg-mint px-3 py-1 font-display font-bold text-sm -rotate-2 select-none">
-                        ₹ भाव? Call वर! 📞
-                      </span>
+                      <Link
+                        href={`/product/${p.slug}`}
+                        className="sticker-btn bg-mint px-3.5 py-1.5 text-sm font-display font-bold -rotate-1 inline-flex items-center gap-1"
+                      >
+                        अजून बघा 👀
+                      </Link>
                       <a
                         href={`tel:${PHONE}`}
                         className="sticker-btn bg-tomato text-primary-foreground px-4 py-1.5 text-sm flex items-center gap-1.5"

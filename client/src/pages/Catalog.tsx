@@ -17,6 +17,7 @@ const ASSETS = {
 
 const catalog = [
   {
+    slug: "surali-vadi",
     marathi: "सुरळी वडी",
     english: "Surali Vadi",
     image: ASSETS.suraliVadi,
@@ -25,6 +26,7 @@ const catalog = [
     note: "⭐ आमचा Star item",
   },
   {
+    slug: "gulab-jamun",
     marathi: "गुलाबजाम",
     english: "Gulab Jamun",
     image: ASSETS.gulabJamun,
@@ -33,6 +35,7 @@ const catalog = [
     note: "🍯 Syrup loaded",
   },
   {
+    slug: "aliv-ladu",
     marathi: "अळीव लाडू",
     english: "Aliv Ladu",
     image: ASSETS.alivLadu,
@@ -119,14 +122,18 @@ export default function Catalog() {
                       <tr key={item.english} className={`border-b-2 border-ink/10 ${i % 2 === 1 ? "bg-cream/60" : ""}`}>
                         <td className="px-6 py-4 font-display font-extrabold text-xl text-muted-foreground">{i + 1}</td>
                         <td className="px-6 py-4">
-                          <img
-                            src={item.image}
-                            alt={item.english}
-                            className={`h-16 w-16 object-cover border-[2.5px] border-ink rounded-xl ${i % 2 === 0 ? "-rotate-2" : "rotate-2"} shadow-[3px_3px_0_0_var(--ink)]`}
-                          />
+                          <Link href={`/product/${item.slug}`}>
+                            <img
+                              src={item.image}
+                              alt={item.english}
+                              className={`h-16 w-16 object-cover border-[2.5px] border-ink rounded-xl ${i % 2 === 0 ? "-rotate-2" : "rotate-2"} shadow-[3px_3px_0_0_var(--ink)]`}
+                            />
+                          </Link>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="font-display font-extrabold text-xl">{item.marathi}</p>
+                          <Link href={`/product/${item.slug}`} className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">
+                            <p className="font-display font-extrabold text-xl">{item.marathi}</p>
+                          </Link>
                           <p className="text-sm font-bold text-muted-foreground">{item.english} · {item.note}</p>
                         </td>
                         <td className="px-6 py-4">
@@ -156,13 +163,17 @@ export default function Catalog() {
               <div className="md:hidden divide-y-2 divide-ink/10">
                 {catalog.map((item, i) => (
                   <div key={item.english} className={`flex items-center gap-4 p-4 ${i % 2 === 1 ? "bg-cream/60" : ""}`}>
-                    <img
-                      src={item.image}
-                      alt={item.english}
-                      className={`h-16 w-16 shrink-0 object-cover border-[2.5px] border-ink rounded-xl ${i % 2 === 0 ? "-rotate-2" : "rotate-2"} shadow-[3px_3px_0_0_var(--ink)]`}
-                    />
+                    <Link href={`/product/${item.slug}`} className="shrink-0">
+                      <img
+                        src={item.image}
+                        alt={item.english}
+                        className={`h-16 w-16 object-cover border-[2.5px] border-ink rounded-xl ${i % 2 === 0 ? "-rotate-2" : "rotate-2"} shadow-[3px_3px_0_0_var(--ink)]`}
+                      />
+                    </Link>
                     <div className="flex-1 min-w-0">
-                      <p className="font-display font-extrabold text-lg leading-tight">{item.marathi}</p>
+                      <Link href={`/product/${item.slug}`}>
+                        <p className="font-display font-extrabold text-lg leading-tight">{item.marathi}</p>
+                      </Link>
                       <p className="text-xs font-bold text-muted-foreground">{item.english} · {item.note}</p>
                       <span className="mt-1.5 inline-block border-2 border-ink rounded-full bg-mint px-2.5 py-0.5 font-display font-bold text-xs -rotate-1">
                         {item.price ? `₹${item.price} ${item.unit}` : "₹ भाव? Call वर! 📞"}
