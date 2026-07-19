@@ -7,6 +7,7 @@
  * - Minglish voice everywhere incl. nav + labels
  */
 import { Phone, MessageCircle, Sparkles, Heart, Leaf, ChefHat, Star } from "lucide-react";
+import { Link } from "wouter";
 
 const PHONE = "9371055473";
 
@@ -101,6 +102,7 @@ export default function Home() {
             <a href="#menu" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">खायला काय? 🍽️</a>
             <a href="#story" className="hover:underline decoration-[3px] decoration-mint underline-offset-4">आमची गोष्ट</a>
             <a href="#order" className="hover:underline decoration-[3px] decoration-peach underline-offset-4">भूक लागली?</a>
+            <Link href="/catalog" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">Catalog 📋</Link>
           </nav>
           <a
             href={`tel:${PHONE}`}
@@ -262,10 +264,13 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="flex justify-center mt-14">
+            <div className="flex flex-wrap justify-center items-center gap-5 mt-14">
               <p className="sticker rotate-1 bg-white px-5 py-2 font-display font-bold text-muted-foreground inline-block">
                 More items लवकरच येत आहेत... 👀 Follow the smell.
               </p>
+              <Link href="/catalog" className="sticker-btn bg-mint px-6 py-2.5 font-display font-bold -rotate-1 inline-flex items-center gap-2">
+                📋 पूर्ण Catalog बघा
+              </Link>
             </div>
           </div>
         </section>
