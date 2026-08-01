@@ -9,6 +9,7 @@ import { Phone, MessageCircle, ArrowLeft, PlayCircle, ChevronRight } from "lucid
 import { Link, useParams } from "wouter";
 import { getProduct, products, PHONE, SITE_ASSETS } from "@/lib/products";
 import { MobileNav } from "@/components/MobileNav";
+import { useCanonical } from "@/hooks/useCanonical";
 import NotFound from "@/pages/NotFound";
 
 function Tape({ className = "" }: { className?: string }) {
@@ -24,6 +25,8 @@ export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
   const product = getProduct(slug ?? "");
   const [activeImage, setActiveImage] = useState(0);
+
+  useCanonical(`/product/${slug}`);
 
   useEffect(() => {
     window.scrollTo(0, 0);

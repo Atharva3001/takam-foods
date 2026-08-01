@@ -6,6 +6,7 @@
 import { Phone, MessageCircle, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { MobileNav } from "@/components/MobileNav";
+import { useCanonical } from "@/hooks/useCanonical";
 
 const PHONE = "9371055473";
 
@@ -48,6 +49,7 @@ const catalog = [
 ];
 
 export default function Catalog() {
+  useCanonical("/catalog");
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
       {/* ---------- Header ---------- */}

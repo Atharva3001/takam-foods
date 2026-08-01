@@ -9,6 +9,7 @@
 import { Phone, MessageCircle, Sparkles, Heart, Leaf, ChefHat, Star } from "lucide-react";
 import { Link } from "wouter";
 import { MobileNav } from "@/components/MobileNav";
+import { useCanonical } from "@/hooks/useCanonical";
 
 const PHONE = "9371055473";
 
@@ -96,6 +97,7 @@ function Tape({ className = "" }: { className?: string }) {
 }
 
 export default function Home() {
+  useCanonical("/");
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
       {/* ---------- Header: loud brand chrome ---------- */}
