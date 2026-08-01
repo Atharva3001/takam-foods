@@ -5,6 +5,7 @@
  */
 import { Phone, MessageCircle, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
+import { MobileNav } from "@/components/MobileNav";
 
 const PHONE = "9371055473";
 
@@ -17,31 +18,32 @@ const ASSETS = {
 
 const catalog = [
   {
+    slug: "ukadiche-modak",
+    marathi: "उकडीचे मोदक",
+    english: "Ukadiche Modak",
+    image: "https://via.placeholder.com/400x300?text=Ukadiche+Modak",
+    note: "⭐ आमचा Star item",
+  },
+  {
     slug: "surali-vadi",
     marathi: "सुरळी वडी",
     english: "Surali Vadi",
     image: ASSETS.suraliVadi,
-    unit: "per plate",
-    price: null as string | null,
-    note: "⭐ आमचा Star item",
+    note: "🌟 Signature चव",
   },
   {
     slug: "gulab-jamun",
-    marathi: "गुलाबजाम",
+    marathi: "गुलऺबजाम",
     english: "Gulab Jamun",
     image: ASSETS.gulabJamun,
-    unit: "per box",
-    price: null,
-    note: "🍯 Syrup loaded",
+    note: "🍯 Syrup मध्ये डुबकी",
   },
   {
     slug: "aliv-ladu",
     marathi: "अळीव लाडू",
     english: "Aliv Ladu",
     image: ASSETS.alivLadu,
-    unit: "per dozen",
-    price: null,
-    note: "💪 Power snack",
+    note: "💪 Power चा गोळा",
   },
 ];
 
@@ -63,6 +65,7 @@ export default function Catalog() {
             <Link href="/" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">Home</Link>
             <span className="underline decoration-[3px] decoration-mint underline-offset-4">Catalog 📋</span>
           </nav>
+          <MobileNav phone={PHONE} />
           <a
             href={`tel:${PHONE}`}
             className="sticker-btn bg-tomato text-primary-foreground px-4 py-1.5 md:px-5 md:py-2 flex items-center gap-2 text-sm md:text-base -rotate-1"
@@ -113,7 +116,6 @@ export default function Catalog() {
                       <th className="text-left px-6 py-4 font-extrabold">#</th>
                       <th className="text-left px-6 py-4 font-extrabold">Item</th>
                       <th className="text-left px-6 py-4 font-extrabold">Product Name</th>
-                      <th className="text-left px-6 py-4 font-extrabold">Price / Qty</th>
                       <th className="text-right px-6 py-4 font-extrabold">Order</th>
                     </tr>
                   </thead>
@@ -136,15 +138,7 @@ export default function Catalog() {
                           </Link>
                           <p className="text-sm font-bold text-muted-foreground">{item.english} · {item.note}</p>
                         </td>
-                        <td className="px-6 py-4">
-                          {item.price ? (
-                            <span className="font-display font-extrabold text-lg">₹{item.price} <span className="text-sm font-bold text-muted-foreground">{item.unit}</span></span>
-                          ) : (
-                            <span className="inline-block border-[2.5px] border-ink rounded-full bg-mint px-3 py-1 font-display font-bold text-sm -rotate-1">
-                              ₹ भाव? Call वर! 📞
-                            </span>
-                          )}
-                        </td>
+
                         <td className="px-6 py-4 text-right">
                           <a
                             href={`tel:${PHONE}`}
@@ -175,9 +169,7 @@ export default function Catalog() {
                         <p className="font-display font-extrabold text-lg leading-tight">{item.marathi}</p>
                       </Link>
                       <p className="text-xs font-bold text-muted-foreground">{item.english} · {item.note}</p>
-                      <span className="mt-1.5 inline-block border-2 border-ink rounded-full bg-mint px-2.5 py-0.5 font-display font-bold text-xs -rotate-1">
-                        {item.price ? `₹${item.price} ${item.unit}` : "₹ भाव? Call वर! 📞"}
-                      </span>
+
                     </div>
                     <a
                       href={`tel:${PHONE}`}

@@ -33,11 +33,46 @@ export const SITE_ASSETS = {
 
 export const products: Product[] = [
   {
+    slug: "ukadiche-modak",
+    marathi: "उकडीचे मोदक",
+    english: "Ukadiche Modak",
+    tag: "⭐ आमचा Star",
+    tagBg: "bg-mascot",
+    shortDesc:
+      "Steamed rice-flour dumplings stuffed with jaggery & coconut. The monsoon favorite that never goes out of style.",
+    funny: '"Modak = love in dumpling form" 💚',
+    images: ["https://via.placeholder.com/400x300?text=Ukadiche+Modak"],
+    videos: [],
+    story: [
+      "उकडीचे मोदक (Ukadiche Modak) is the monsoon darling of every Marathi household — a steamed dumpling made from rice flour, stuffed with a sweet filling of jaggery, coconut, and cardamom. Tradition says it's offered to Lord Ganesha during Ganesh Chaturthi, but honestly, we make it year-round because it's that good.",
+      "At Takam, every modak is hand-shaped and steamed fresh to order. The rice flour is kneaded soft, the jaggery filling is made with real coconut and ghee, and each one is shaped with love. No molds, no shortcuts — just आजी's way.",
+    ],
+    benefits: [
+      { emoji: "🍚", title: "Rice flour goodness", desc: "Easy to digest, light on the stomach — perfect for all ages." },
+      { emoji: "🥥", title: "Real coconut & jaggery", desc: "Natural sweetness, no refined sugar — the traditional way." },
+      { emoji: "💪", title: "Energy boost", desc: "Jaggery brings iron and minerals, perfect for monsoon season." },
+      { emoji: "🏠", title: "Steamed, not fried", desc: "Healthy preparation — all the taste, none of the guilt." },
+    ],
+    howToEnjoy: [
+      "Warm, straight from the steamer — the best way 🔥",
+      "With a cup of hot chai during monsoon rains ☕",
+      "As a dessert after lunch — light and satisfying",
+    ],
+    facts: [
+      { label: "Texture", value: "Soft, fluffy, hand-shaped" },
+      { label: "Taste", value: "Sweet, coconutty, cardamom-kissed" },
+      { label: "Made from", value: "Rice flour, jaggery, coconut, ghee" },
+      { label: "Best within", value: "1–2 days (eat warm for best taste)" },
+    ],
+    unit: "per piece",
+    price: null,
+  },
+  {
     slug: "surali-vadi",
     marathi: "सुरळी वडी",
     english: "Surali Vadi",
-    tag: "⭐ आमचा Star",
-    tagBg: "bg-mascot",
+    tag: "🌟 Signature चव",
+    tagBg: "bg-peach",
     shortDesc:
       "Soft besan rolls, tadka on top, coriander confetti. Aaji-level softness, guaranteed.",
     funny: '"Roll model of all snacks" 😎',
@@ -72,7 +107,7 @@ export const products: Product[] = [
     marathi: "गुलाबजाम",
     english: "Gulab Jamun",
     tag: "🍯 Syrup मध्ये डुबकी",
-    tagBg: "bg-peach",
+    tagBg: "bg-mint",
     shortDesc:
       "Melt-in-mouth jamuns swimming happily in kesar syrup. Diet plans fear this.",
     funny: '"Gym kal se pakka" 🤙',
@@ -107,7 +142,7 @@ export const products: Product[] = [
     marathi: "अळीव लाडू",
     english: "Aliv Ladu",
     tag: "💪 Power चा गोळा",
-    tagBg: "bg-mint",
+    tagBg: "bg-peach",
     shortDesc:
       "Halim seeds + jaggery + dry fruits. The OG protein ball, invented before protein was cool.",
     funny: '"Superfood? आमच्याकडे आधीपासूनच आहे" ✨',

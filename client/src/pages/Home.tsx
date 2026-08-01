@@ -8,6 +8,7 @@
  */
 import { Phone, MessageCircle, Sparkles, Heart, Leaf, ChefHat, Star } from "lucide-react";
 import { Link } from "wouter";
+import { MobileNav } from "@/components/MobileNav";
 
 const PHONE = "9371055473";
 
@@ -23,12 +24,24 @@ const ASSETS = {
 
 const products = [
   {
+    slug: "ukadiche-modak",
+    marathi: "उकडीचे मोदक",
+    english: "Ukadiche Modak",
+    image: "https://via.placeholder.com/400x300?text=Ukadiche+Modak",
+    tag: "⭐ आमचा Star",
+    tagBg: "bg-mascot",
+    desc: "Steamed rice-flour dumplings stuffed with jaggery & coconut. The monsoon favorite that never goes out of style.",
+    funny: '"Modak = love in dumpling form" 💚',
+    rotate: "-rotate-1",
+    photoRotate: "rotate-3",
+  },
+  {
     slug: "surali-vadi",
     marathi: "सुरळी वडी",
     english: "Surali Vadi",
     image: ASSETS.suraliVadi,
-    tag: "⭐ आमचा Star",
-    tagBg: "bg-mascot",
+    tag: "🌟 Signature चव",
+    tagBg: "bg-peach",
     desc: "Soft besan rolls, tadka on top, coriander confetti. Aaji-level softness, guaranteed.",
     funny: '"Roll model of all snacks" 😎',
     rotate: "-rotate-2",
@@ -36,11 +49,11 @@ const products = [
   },
   {
     slug: "gulab-jamun",
-    marathi: "गुलाबजाम",
+    marathi: "गुलऺबजाम",
     english: "Gulab Jamun",
     image: ASSETS.gulabJamun,
     tag: "🍯 Syrup मध्ये डुबकी",
-    tagBg: "bg-peach",
+    tagBg: "bg-mint",
     desc: "Melt-in-mouth jamuns swimming happily in kesar syrup. Diet plans fear this.",
     funny: '"Gym kal se pakka" 🤙',
     rotate: "rotate-1 md:translate-y-6",
@@ -52,7 +65,7 @@ const products = [
     english: "Aliv Ladu",
     image: ASSETS.alivLadu,
     tag: "💪 Power चा गोळा",
-    tagBg: "bg-mint",
+    tagBg: "bg-peach",
     desc: "Halim seeds + jaggery + dry fruits. The OG protein ball, invented before protein was cool.",
     funny: '"Superfood? आमच्याकडे आधीपासूनच आहे" ✨',
     rotate: "-rotate-1",
@@ -107,6 +120,7 @@ export default function Home() {
             <a href="#order" className="hover:underline decoration-[3px] decoration-peach underline-offset-4">भूक लागली?</a>
             <Link href="/catalog" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">Catalog 📋</Link>
           </nav>
+          <MobileNav phone={PHONE} />
           <a
             href={`tel:${PHONE}`}
             className="sticker-btn bg-tomato text-primary-foreground px-4 py-1.5 md:px-5 md:py-2 flex items-center gap-2 text-sm md:text-base -rotate-1"
@@ -217,7 +231,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-10 md:gap-6 lg:gap-10">
+            <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-6 lg:gap-10">
               {products.map((p, i) => (
                 <div
                   key={p.english}
@@ -274,7 +288,7 @@ export default function Home() {
 
             <div className="flex flex-wrap justify-center items-center gap-5 mt-14">
               <p className="sticker rotate-1 bg-white px-5 py-2 font-display font-bold text-muted-foreground inline-block">
-                More items लवकरच येत आहेत... 👀 Follow the smell.
+                अजून काही येत आहेत... 👀
               </p>
               <Link href="/catalog" className="sticker-btn bg-mint px-6 py-2.5 font-display font-bold -rotate-1 inline-flex items-center gap-2">
                 📋 पूर्ण Catalog बघा

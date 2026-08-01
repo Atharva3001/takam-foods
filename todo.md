@@ -1,15 +1,13 @@
-# Product Detail Pages — TODO
+# Quick Updates — TODO
 
-- [x] Create shared product data file (client/src/lib/products.ts) with slug, names, images, benefits, serving, facts
-- [x] Create shared site chrome components if needed (reuse header/footer patterns)
-- [x] Build ProductPage component at /product/:slug with:
-  - [x] Image gallery (main image + thumbnails, video placeholder slot)
-  - [x] Product story & description
-  - [x] Benefits section (sticker cards)
-  - [x] "How to enjoy" serving suggestions
-  - [x] Order CTA with product name pre-filled in WhatsApp message
-- [x] Register route in App.tsx
-- [x] Link menu cards on Home to product pages
-- [x] Link catalog table rows to product pages
-- [x] Screenshot verification (desktop + mobile)
+- [ ] Build reusable MobileNav (hamburger) component in sticker theme
+- [ ] Add hamburger nav to Home, Catalog, ProductPage headers
+- [ ] Remove all price/qty placeholders from Home menu cards
+- [ ] Remove Price/Qty column from Catalog table (desktop + mobile list)
+- [ ] Remove price/unit chip from ProductPage
+- [ ] Add उकडीचे मोदक (Ukadiche Modak) as आमचा Star item
+  - [ ] Add to products data with placeholder image, story, benefits, facts
+  - [ ] Move Star tag from Surali Vadi to Modak
+  - [ ] Add to Home menu grid (4 items) and Catalog table
+- [ ] Screenshot verification (desktop + mobile, all pages)
 - [ ] Checkpoint and deliver

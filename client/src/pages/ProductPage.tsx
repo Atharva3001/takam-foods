@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Phone, MessageCircle, ArrowLeft, PlayCircle, ChevronRight } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { getProduct, products, PHONE, SITE_ASSETS } from "@/lib/products";
+import { MobileNav } from "@/components/MobileNav";
 import NotFound from "@/pages/NotFound";
 
 function Tape({ className = "" }: { className?: string }) {
@@ -48,6 +49,7 @@ export default function ProductPage() {
             <Link href="/" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">Home</Link>
             <Link href="/catalog" className="hover:underline decoration-[3px] decoration-mint underline-offset-4">Catalog 📋</Link>
           </nav>
+          <MobileNav phone={PHONE} />
           <a
             href={`tel:${PHONE}`}
             className="sticker-btn bg-tomato text-primary-foreground px-4 py-1.5 md:px-5 md:py-2 flex items-center gap-2 text-sm md:text-base -rotate-1"
@@ -146,11 +148,7 @@ export default function ProductPage() {
               <p className="font-semibold text-lg leading-relaxed">{product.shortDesc}</p>
               <p className="font-bold italic text-muted-foreground">{product.funny}</p>
 
-              <div className="flex items-center gap-3 flex-wrap">
-                <span className="border-[2.5px] border-ink rounded-full bg-mint px-4 py-1.5 font-display font-bold -rotate-1">
-                  {product.price ? `₹${product.price} ${product.unit}` : `₹ भाव? Call वर! 📞 (${product.unit})`}
-                </span>
-              </div>
+
 
               <div className="flex flex-wrap gap-4 pt-1">
                 <a
