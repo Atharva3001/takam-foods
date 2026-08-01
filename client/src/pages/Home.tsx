@@ -97,7 +97,7 @@ function Tape({ className = "" }: { className?: string }) {
 }
 
 export default function Home() {
-  useCanonical("/");
+  useCanonical("");
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
       {/* ---------- Header: loud brand chrome ---------- */}
