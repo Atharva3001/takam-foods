@@ -117,7 +117,6 @@ export default function Home() {
           <nav className="hidden md:flex items-center gap-6 font-display font-bold">
             <a href="#menu" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">खायला काय? 🍽️</a>
             <a href="#story" className="hover:underline decoration-[3px] decoration-mint underline-offset-4">आमची गोष्ट</a>
-            <a href="#order" className="hover:underline decoration-[3px] decoration-peach underline-offset-4">भूक लागली?</a>
             <Link href="/catalog" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">Catalog 📋</Link>
           </nav>
           <MobileNav phone={PHONE} />
@@ -413,7 +412,7 @@ export default function Home() {
             </div>
           </div>
           <p className="text-sm opacity-80 font-semibold text-center">
-            Made with ❤️ (and lots of ghee) in Maharashtra
+            Made with ❤️ in Maharashtra
           </p>
           <a
             href={`tel:${PHONE}`}

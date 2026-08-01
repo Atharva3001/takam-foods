@@ -41,7 +41,12 @@ export const products: Product[] = [
     shortDesc:
       "Steamed rice-flour dumplings stuffed with jaggery & coconut. The monsoon favorite that never goes out of style.",
     funny: '"Modak = love in dumpling form" 💚',
-    images: ["https://via.placeholder.com/400x300?text=Ukadiche+Modak"],
+    images: [
+      "/manus-storage/modak-2_be68325c.webp",
+      "/manus-storage/modak-3_04201bb4.webp",
+      "/manus-storage/modak-4_7386f529.webp",
+      "/manus-storage/modak-5_f952e679.webp",
+    ],
     videos: [],
     story: [
       "उकडीचे मोदक (Ukadiche Modak) is the monsoon darling of every Marathi household — a steamed dumpling made from rice flour, stuffed with a sweet filling of jaggery, coconut, and cardamom. Tradition says it's offered to Lord Ganesha during Ganesh Chaturthi, but honestly, we make it year-round because it's that good.",

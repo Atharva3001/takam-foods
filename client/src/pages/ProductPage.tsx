@@ -333,7 +333,7 @@ export default function ProductPage() {
             </div>
           </div>
           <p className="text-sm opacity-80 font-semibold text-center">
-            Made with ❤️ (and lots of ghee) in Maharashtra
+            Made with ❤️ in Maharashtra
           </p>
           <a
             href={`tel:${PHONE}`}
