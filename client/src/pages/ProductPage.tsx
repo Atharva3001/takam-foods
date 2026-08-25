@@ -31,6 +31,7 @@ export default function ProductPage() {
   const waText = encodeURIComponent(
     `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋`
   );
+  const isMascotAsset = product.images[activeImage]?.includes("takam_modak_") ?? false;
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
@@ -86,10 +87,10 @@ export default function ProductPage() {
                   <img
                     src={product.images[activeImage]}
                     alt={`${product.marathi} photo ${activeImage + 1}`}
-                    className="w-full h-80 md:h-[26rem] object-cover border-2 border-ink/15 saturate-[1.15]"
+                    className={`w-full h-80 md:h-[26rem] border-2 border-ink/15 ${isMascotAsset ? "object-contain bg-mint/20 p-5" : "object-cover saturate-[1.15]"}`}
                   />
                   <p className="text-center font-display font-bold text-xs mt-2 text-ink/60">
-                    📸 straight from आमची kitchen
+                    {isMascotAsset ? "✨ Modak चा official Takam avatar" : "📸 straight from आमची kitchen"}
                   </p>
                 </div>
                 <Tape className="-top-2.5 left-10 -rotate-6" />
@@ -112,7 +113,7 @@ export default function ProductPage() {
                     }`}
                     aria-label={`View photo ${i + 1}`}
                   >
-                    <img src={img} alt="" className="h-full w-full object-cover" />
+                    <img src={img} alt="" className={`h-full w-full ${img.includes("takam_modak_") ? "object-contain bg-mint/20 p-1" : "object-cover"}`} />
                   </button>
                 ))}
                 {product.videos.length === 0 && (
