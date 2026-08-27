@@ -3,7 +3,7 @@
  * Sticker Bomb Bazaar: playful paste-up layout, cream/mint/peach/mascot-yellow palette,
  * black ink outlines and hard shadows. Tomato remains reserved for order actions.
  */
-import { ArrowRight, CalendarDays, Check, MessageCircle, Phone, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarDays, MessageCircle, Phone, Sparkles } from "lucide-react";
 import { Link } from "wouter";
 import { MobileNav } from "@/components/MobileNav";
 import { PHONE, products, SITE_ASSETS } from "@/lib/products";
@@ -131,7 +131,7 @@ export default function GanapatiSpecial() {
                   return (
                     <article key={day.day} className={`sticker bg-white p-4 md:p-5 flex gap-4 md:gap-5 items-center ${index % 2 ? "rotate-[.35deg]" : "-rotate-[.35deg]"}`}>
                       <div className="shrink-0 h-14 w-14 md:h-16 md:w-16 rounded-full bg-mascot border-[3px] border-ink flex flex-col items-center justify-center shadow-[3px_3px_0_0_var(--ink)]"><span className="font-display font-extrabold text-2xl leading-none">{day.day}</span><span className="font-bold text-[9px]">DAY</span></div>
-                      <div className="min-w-0 flex-1"><div className="flex flex-wrap justify-between gap-x-4 gap-y-1"><h3 className="font-display font-extrabold text-xl md:text-2xl">{day.name}</h3><span className="font-bold text-xs md:text-sm text-muted-foreground">{day.mood}</span></div><div className="mt-3 flex flex-wrap gap-2">{dayProducts.map((product) => <Link key={product.slug} href={`/product/${product.slug}`} className="inline-flex items-center gap-1.5 bg-mint/50 border-2 border-ink rounded-full px-2.5 py-1 text-xs md:text-sm font-display font-bold hover:bg-mascot"><Check className="h-3.5 w-3.5" />{product.marathi}</Link>)}</div></div>
+                      <div className="min-w-0 flex-1"><div className="flex flex-wrap justify-between gap-x-4 gap-y-1"><h3 className="font-display font-extrabold text-xl md:text-2xl">{day.name}</h3><span className="font-bold text-xs md:text-sm text-muted-foreground">{day.mood}</span></div><div className="mt-3 flex flex-wrap gap-2">{dayProducts.map((product) => <Link key={product.slug} href={`/product/${product.slug}`} className="inline-flex items-center gap-1.5 bg-mint/50 border-2 border-ink rounded-full pl-1 pr-2.5 py-1 text-xs md:text-sm font-display font-bold hover:bg-mascot"><span className="h-7 w-7 shrink-0 overflow-hidden rounded-full border border-ink/20 bg-white flex items-center justify-center"><img src={product.images[0]} alt="" aria-hidden className={`h-full w-full ${product.images[0].includes("takam_modak_") ? "object-contain p-0.5" : "object-cover"}`} /></span>{product.marathi}</Link>)}</div></div>
                     </article>
                   );
                 })}
