@@ -4,12 +4,11 @@
  * story, benefit sticker cards, how-to-enjoy, quick facts, order CTAs.
  * Red-orange only on ordering actions.
  */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Phone, MessageCircle, ArrowLeft, PlayCircle, ChevronRight } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { getProduct, products, PHONE, SITE_ASSETS } from "@/lib/products";
 import { MobileNav } from "@/components/MobileNav";
-import { useCanonical } from "@/hooks/useCanonical";
 import NotFound from "@/pages/NotFound";
 
 function Tape({ className = "" }: { className?: string }) {
@@ -25,19 +24,26 @@ export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
   const product = getProduct(slug ?? "");
   const [activeImage, setActiveImage] = useState(0);
-
-  useCanonical(`/product/${slug}`);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [slug]);
+  const [quantity, setQuantity] = useState("11 Pieces");
+  const [customQuantity, setCustomQuantity] = useState("");
+  const [deliveryLocation, setDeliveryLocation] = useState("");
+  const [customLocation, setCustomLocation] = useState("");
 
   if (!product) return <NotFound />;
 
   const others = products.filter((p) => p.slug !== product.slug);
+  const isModak = product.slug.includes("modak");
+  const quantityOptions = ["11 Pieces", "21 Pieces", "250 gm", "500 gm", "Custom"];
+  const deliveryOptions = ["Singhgad Road", "Kothurd", "Deccan", "Nanded City", "Baner", "Pashan", "Baavdhan", "Other area"];
+  const orderQuantity = quantity === "Custom" ? `Custom: ${customQuantity.trim()}` : quantity;
+  const orderLocation = deliveryLocation === "Other area" ? `Other area: ${customLocation.trim()}` : deliveryLocation;
+  const customQuantityMissing = quantity === "Custom" && !customQuantity.trim();
+  const deliveryLocationMissing = !deliveryLocation || (deliveryLocation === "Other area" && !customLocation.trim());
+  const orderIncomplete = customQuantityMissing || deliveryLocationMissing;
   const waText = encodeURIComponent(
-    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋`
+    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋${isModak ? `\nQuantity: ${orderQuantity}\nDelivery location: ${orderLocation}` : ""}`
   );
+  const isMascotAsset = product.images[activeImage]?.includes("takam_modak_") ?? false;
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
@@ -93,10 +99,10 @@ export default function ProductPage() {
                   <img
                     src={product.images[activeImage]}
                     alt={`${product.marathi} photo ${activeImage + 1}`}
-                    className="w-full h-80 md:h-[26rem] object-cover border-2 border-ink/15 saturate-[1.15]"
+                    className={`w-full h-80 md:h-[26rem] border-2 border-ink/15 ${isMascotAsset ? "object-contain bg-mint/20 p-5" : "object-cover saturate-[1.15]"}`}
                   />
                   <p className="text-center font-display font-bold text-xs mt-2 text-ink/60">
-                    📸 straight from आमची kitchen
+                    {isMascotAsset ? "✨ Modak चा official Takam avatar" : "📸 straight from आमची kitchen"}
                   </p>
                 </div>
                 <Tape className="-top-2.5 left-10 -rotate-6" />
@@ -119,7 +125,7 @@ export default function ProductPage() {
                     }`}
                     aria-label={`View photo ${i + 1}`}
                   >
-                    <img src={img} alt="" className="h-full w-full object-cover" />
+                    <img src={img} alt="" className={`h-full w-full ${img.includes("takam_modak_") ? "object-contain bg-mint/20 p-1" : "object-cover"}`} />
                   </button>
                 ))}
                 {product.videos.length === 0 && (
@@ -155,6 +161,72 @@ export default function ProductPage() {
               <p className="font-semibold text-lg leading-relaxed">{product.shortDesc}</p>
               <p className="font-bold italic text-muted-foreground">{product.funny}</p>
 
+              {isModak && (
+                <div className="sticker -rotate-1 bg-peach/55 p-4 md:p-5 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-display font-extrabold text-lg">किती पाहिजेत? 👀</p>
+                    <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Select quantity</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                    {quantityOptions.map((option) => (
+                      <button
+                        type="button"
+                        key={option}
+                        onClick={() => setQuantity(option)}
+                        className={`border-[2.5px] border-ink px-3 py-2 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] transition-transform active:scale-95 ${quantity === option ? "bg-mascot -rotate-1" : "bg-white hover:bg-mint/60 rotate-[.4deg]"}`}
+                        aria-pressed={quantity === option}
+                      >
+                        {option === "Custom" ? "Custom ✍️" : option}
+                      </button>
+                    ))}
+                  </div>
+                  {quantity === "Custom" && (
+                    <label className="block space-y-1.5">
+                      <span className="font-display font-bold text-sm">तुमची quantity लिहा</span>
+                      <input
+                        value={customQuantity}
+                        onChange={(event) => setCustomQuantity(event.target.value)}
+                        placeholder="उदा. 35 pieces / 1 kg"
+                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                      />
+                    </label>
+                  )}
+                  <p className="font-bold text-xs text-muted-foreground">तुमची निवड: <span className="text-ink">{quantity === "Custom" && customQuantity.trim() ? customQuantity : quantity}</span></p>
+                </div>
+              )}
+
+              {isModak && (
+                <div className="sticker rotate-1 bg-mint/45 p-4 md:p-5 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-display font-extrabold text-lg">Delivery कुठे? 📍</p>
+                    <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Choose your area</span>
+                  </div>
+                  <label className="block space-y-1.5">
+                    <span className="font-display font-bold text-sm">तुमचा delivery area निवडा</span>
+                    <select
+                      value={deliveryLocation}
+                      onChange={(event) => setDeliveryLocation(event.target.value)}
+                      className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                    >
+                      <option value="" disabled>Select area</option>
+                      {deliveryOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+                    </select>
+                  </label>
+                  {deliveryLocation === "Other area" && (
+                    <label className="block space-y-1.5">
+                      <span className="font-display font-bold text-sm">तुमचा area लिहा</span>
+                      <input
+                        value={customLocation}
+                        onChange={(event) => setCustomLocation(event.target.value)}
+                        placeholder="उदा. Wakad, Pune"
+                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                      />
+                    </label>
+                  )}
+                  <p className="font-bold text-xs text-muted-foreground">Delivery location: <span className="text-ink">{deliveryLocation === "Other area" && customLocation.trim() ? customLocation : deliveryLocation || "निवडा"}</span></p>
+                </div>
+              )}
+
 
 
               <div className="flex flex-wrap gap-4 pt-1">
@@ -168,7 +240,11 @@ export default function ProductPage() {
                   href={`https://wa.me/91${PHONE}?text=${waText}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1"
+                  aria-disabled={orderIncomplete}
+                  onClick={(event) => {
+                    if (orderIncomplete) event.preventDefault();
+                  }}
+                  className={`sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "pointer-events-none opacity-50" : ""}`}
                 >
                   <MessageCircle className="h-5 w-5" /> WhatsApp करा
                 </a>
@@ -285,7 +361,11 @@ export default function ProductPage() {
                   href={`https://wa.me/91${PHONE}?text=${waText}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="sticker-btn bg-mint px-7 py-3 text-lg flex items-center gap-2 rotate-1"
+                  aria-disabled={orderIncomplete}
+                  onClick={(event) => {
+                    if (orderIncomplete) event.preventDefault();
+                  }}
+                  className={`sticker-btn bg-mint px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "pointer-events-none opacity-50" : ""}`}
                 >
                   <MessageCircle className="h-5 w-5" /> WhatsApp करा
                 </a>

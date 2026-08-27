@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
 import ProductPage from "./pages/ProductPage";
+import GanapatiSpecial from "./pages/GanapatiSpecial";
 
 
 function Router() {
@@ -14,6 +15,7 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/catalog"} component={Catalog} />
+      <Route path={"/ganapati-modak-special"} component={GanapatiSpecial} />
       <Route path={"/product/:slug"} component={ProductPage} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

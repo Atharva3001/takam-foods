@@ -6,50 +6,11 @@
 import { Phone, MessageCircle, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { MobileNav } from "@/components/MobileNav";
-import { useCanonical } from "@/hooks/useCanonical";
+import { products, PHONE, SITE_ASSETS } from "@/lib/products";
 
-const PHONE = "9371055473";
-
-const ASSETS = {
-  logoC: "/images/takam_logo_C_transparent.png",
-  suraliVadi: "/images/surali-vadi-1.jpeg",
-  gulabJamun: "/images/gulab-jamun-3.jpeg",
-  alivLadu: "/images/aalive-ladu-2.jpeg",
-};
-
-const catalog = [
-  {
-    slug: "ukadiche-modak",
-    marathi: "उकडीचे मोदक",
-    english: "Ukadiche Modak",
-    image: "/images/modak-new.jpeg",
-    note: "⭐ आमचा Star item",
-  },
-  {
-    slug: "surali-vadi",
-    marathi: "सुरळी वडी",
-    english: "Surali Vadi",
-    image: ASSETS.suraliVadi,
-    note: "🌟 Signature चव",
-  },
-  {
-    slug: "gulab-jamun",
-    marathi: "गुलऺबजाम",
-    english: "Gulab Jamun",
-    image: ASSETS.gulabJamun,
-    note: "🍯 Syrup मध्ये डुबकी",
-  },
-  {
-    slug: "aliv-ladu",
-    marathi: "अळीव लाडू",
-    english: "Aliv Ladu",
-    image: ASSETS.alivLadu,
-    note: "💪 Power चा गोळा",
-  },
-];
+const catalog = products;
 
 export default function Catalog() {
-  useCanonical("/catalog");
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
       {/* ---------- Header ---------- */}
@@ -57,7 +18,7 @@ export default function Catalog() {
         <div className="container flex items-center justify-between py-2">
           <Link href="/" className="flex items-center gap-2.5">
             <img
-              src={ASSETS.logoC}
+              src={SITE_ASSETS.logoC}
               alt="टाकम badge"
               className="h-14 w-14 md:h-16 md:w-16 -rotate-6 drop-shadow-[3px_3px_0_rgba(30,27,22,0.35)]"
             />
@@ -101,7 +62,7 @@ export default function Catalog() {
               — एका जागी!
             </h1>
             <p className="text-muted-foreground font-semibold text-lg mt-3 max-w-xl mx-auto">
-              All Takam items with price & quantity. भाव विचारायला call किंवा WhatsApp करा!
+              All Takam favourites, seasonal Modaks, आणि भरपूर घरगुती चव — एका जागी!
             </p>
           </div>
         </section>
@@ -128,9 +89,9 @@ export default function Catalog() {
                         <td className="px-6 py-4">
                           <Link href={`/product/${item.slug}`}>
                             <img
-                              src={item.image}
+                              src={item.images[0]}
                               alt={item.english}
-                              className={`h-16 w-16 object-cover border-[2.5px] border-ink rounded-xl ${i % 2 === 0 ? "-rotate-2" : "rotate-2"} shadow-[3px_3px_0_0_var(--ink)]`}
+                              className={`h-16 w-16 object-contain bg-peach/20 border-[2.5px] border-ink rounded-xl ${i % 2 === 0 ? "-rotate-2" : "rotate-2"} shadow-[3px_3px_0_0_var(--ink)]`}
                             />
                           </Link>
                         </td>
@@ -138,7 +99,7 @@ export default function Catalog() {
                           <Link href={`/product/${item.slug}`} className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">
                             <p className="font-display font-extrabold text-xl">{item.marathi}</p>
                           </Link>
-                          <p className="text-sm font-bold text-muted-foreground">{item.english} · {item.note}</p>
+                          <p className="text-sm font-bold text-muted-foreground">{item.english} · {item.tag}</p>
                         </td>
 
                         <td className="px-6 py-4 text-right">
@@ -161,16 +122,16 @@ export default function Catalog() {
                   <div key={item.english} className={`flex items-center gap-4 p-4 ${i % 2 === 1 ? "bg-cream/60" : ""}`}>
                     <Link href={`/product/${item.slug}`} className="shrink-0">
                       <img
-                        src={item.image}
+                        src={item.images[0]}
                         alt={item.english}
-                        className={`h-16 w-16 object-cover border-[2.5px] border-ink rounded-xl ${i % 2 === 0 ? "-rotate-2" : "rotate-2"} shadow-[3px_3px_0_0_var(--ink)]`}
+                        className={`h-16 w-16 object-contain bg-peach/20 border-[2.5px] border-ink rounded-xl ${i % 2 === 0 ? "-rotate-2" : "rotate-2"} shadow-[3px_3px_0_0_var(--ink)]`}
                       />
                     </Link>
                     <div className="flex-1 min-w-0">
                       <Link href={`/product/${item.slug}`}>
                         <p className="font-display font-extrabold text-lg leading-tight">{item.marathi}</p>
                       </Link>
-                      <p className="text-xs font-bold text-muted-foreground">{item.english} · {item.note}</p>
+                      <p className="text-xs font-bold text-muted-foreground">{item.english} · {item.tag}</p>
 
                     </div>
                     <a
@@ -187,7 +148,7 @@ export default function Catalog() {
 
             <p className="text-center mt-8">
               <span className="sticker rotate-1 bg-white px-5 py-2 font-display font-bold text-muted-foreground inline-block">
-                More items लवकरच येत आहेत... 👀
+                Ganapati Modak collection आता live आहे! 🙏
               </span>
             </p>
 
@@ -225,7 +186,7 @@ export default function Catalog() {
       <footer className="border-t-[3px] border-ink bg-ink text-cream relative overflow-hidden">
         <div className="container py-10 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
           <div className="flex items-center gap-4">
-            <img src={ASSETS.logoC} alt="टाकम badge" className="h-16 w-16 md:h-20 md:w-20 -rotate-6" />
+            <img src={SITE_ASSETS.logoC} alt="टाकम badge" className="h-16 w-16 md:h-20 md:w-20 -rotate-6" />
             <div>
               <p className="font-display font-extrabold text-2xl md:text-3xl">टाकम</p>
               <p className="text-sm opacity-80 font-semibold">घरगुती । चविष्ट । मस्त</p>

@@ -9,18 +9,17 @@
 import { Phone, MessageCircle, Sparkles, Heart, Leaf, ChefHat, Star } from "lucide-react";
 import { Link } from "wouter";
 import { MobileNav } from "@/components/MobileNav";
-import { useCanonical } from "@/hooks/useCanonical";
 
 const PHONE = "9371055473";
 
 const ASSETS = {
-  logoA: "/images/takam_logo_A_transparent.png",
-  logoC: "/images/takam_logo_C_transparent.png",
-  suraliVadi: "/images/surali-vadi-1.jpeg",
-  gulabJamun: "/images/gulab-jamun-3.jpeg",
-  alivLadu: "/images/aalive-ladu-2.jpeg",
-  heroBg: "/images/takam_hero_bg_cf60cea1.webp",
-  kitchen: "/images/takam_kitchen_illustration_3bcf49bb.webp",
+  logoA: "/manus-storage/takam_logo_A_transparent_98b6c4bc.png",
+  logoC: "/manus-storage/takam_logo_C_transparent_3b00df00.png",
+  suraliVadi: "/manus-storage/surali-vadi-1_b095aed2.jpeg",
+  gulabJamun: "/manus-storage/gulab-jamun-3_da46dfeb.jpeg",
+  alivLadu: "/manus-storage/aalive-ladu-2_20c7ce00.jpeg",
+  heroBg: "/manus-storage/takam_hero_bg_cf60cea1.png",
+  kitchen: "/manus-storage/takam_kitchen_illustration_3bcf49bb.png",
 };
 
 const products = [
@@ -28,7 +27,7 @@ const products = [
     slug: "ukadiche-modak",
     marathi: "उकडीचे मोदक",
     english: "Ukadiche Modak",
-    image: "/images/modak-new.jpeg",
+    image: "/manus-storage/modak-2_be68325c.webp",
     tag: "⭐ आमचा Star",
     tagBg: "bg-mascot",
     desc: "Steamed rice-flour dumplings stuffed with jaggery & coconut. The monsoon favorite that never goes out of style.",
@@ -50,7 +49,7 @@ const products = [
   },
   {
     slug: "gulab-jamun",
-    marathi: "गुलऺबजाम",
+    marathi: "गुलाबजाम",
     english: "Gulab Jamun",
     image: ASSETS.gulabJamun,
     tag: "🍯 Syrup मध्ये डुबकी",
@@ -72,6 +71,16 @@ const products = [
     rotate: "-rotate-1",
     photoRotate: "rotate-3",
   },
+];
+
+const ganapatiModaks = [
+  { slug: "dink-modak", marathi: "डिंक मोदक", english: "Dink Modak", image: "/manus-storage/takam_modak_dink_v2_13ba888a.png", vibe: "💪 ताकद वाला", rotate: "-rotate-2" },
+  { slug: "nachni-modak", marathi: "नाचणी मोदक", english: "Nachni Modak", image: "/manus-storage/takam_modak_nachni_v2_b3dfb2cf.png", vibe: "🏋️ Health buddy", rotate: "rotate-2" },
+  { slug: "dryfruit-modak", marathi: "ड्रायफ्रुट मोदक", english: "Dryfruit Modak", image: "/manus-storage/takam_modak_dryfruit_v2_7d721c9a.png", vibe: "👑 Premium pick", rotate: "-rotate-1" },
+  { slug: "beet-modak", marathi: "बीट मोदक", english: "Beet Modak", image: "/manus-storage/takam_modak_beet_v2_ff754a73.png", vibe: "💗 Pink icon", rotate: "rotate-1" },
+  { slug: "poshtik-modak", marathi: "पोष्टीक मोदक", english: "Poshtik Modak", image: "/manus-storage/takam_modak_poshtik_v2_85f85044.png", vibe: "🦸 All-rounder", rotate: "-rotate-2" },
+  { slug: "tilkund-modak", marathi: "तीळकुंद मोदक", english: "Tilkund Modak", image: "/manus-storage/takam_modak_tilkund_v2_01244435.png", vibe: "🔥 Tiny, mighty", rotate: "rotate-2" },
+  { slug: "gulkand-modak", marathi: "गुलकंद मोदक", english: "Gulkand Modak", image: "/manus-storage/takam_modak_gulkand_v2_d0993975.png", vibe: "🌹 Sweetheart", rotate: "-rotate-1" },
 ];
 
 function Marquee({ items, className = "" }: { items: string[]; className?: string }) {
@@ -97,7 +106,6 @@ function Tape({ className = "" }: { className?: string }) {
 }
 
 export default function Home() {
-  useCanonical("");
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
       {/* ---------- Header: loud brand chrome ---------- */}
@@ -119,6 +127,7 @@ export default function Home() {
           <nav className="hidden md:flex items-center gap-6 font-display font-bold">
             <a href="#menu" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">खायला काय? 🍽️</a>
             <a href="#story" className="hover:underline decoration-[3px] decoration-mint underline-offset-4">आमची गोष्ट</a>
+            <Link href="/ganapati-modak-special" className="hover:underline decoration-[3px] decoration-peach underline-offset-4">गणपती Special 🙏</Link>
             <Link href="/catalog" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">Catalog 📋</Link>
           </nav>
           <MobileNav phone={PHONE} />
@@ -298,9 +307,70 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ---------- Ganapati Modak collection ---------- */}
+        <section className="py-16 md:py-24 bg-mint/25 relative overflow-hidden">
+          <div className="absolute top-9 left-[6%] sticker -rotate-6 bg-mascot px-3 py-1 font-display font-bold text-sm hidden lg:block">
+            बाप्पा special 🙏
+          </div>
+          <div className="absolute top-14 right-[7%] sticker rotate-6 bg-peach px-3 py-1 font-display font-bold text-sm hidden lg:block">
+            7 flavours. Full feels. ✨
+          </div>
+          <div className="container">
+            <div className="max-w-3xl mx-auto text-center mb-10 md:mb-14">
+              <div className="inline-block sticker -rotate-2 bg-white px-4 py-1.5 font-display font-bold text-sm mb-4">
+                🙏 Ganapati Modak Collection
+              </div>
+              <h2 className="font-display font-extrabold leading-tight" style={{ fontSize: "clamp(2rem, 4.7vw, 3.5rem)" }}>
+                मोदक बोलतोय... <span className="relative inline-block rotate-1"><span className="relative z-10">ऐकणार का?</span><span className="absolute bottom-1 left-0 h-3.5 w-full bg-mascot -z-0" /></span>
+              </h2>
+              <p className="mt-3 font-semibold text-lg text-muted-foreground">
+                सात flavours, सात personalities — Ganapati season साठी full Takam energy.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-7 max-w-6xl mx-auto">
+              {ganapatiModaks.map((modak, i) => (
+                <Link
+                  key={modak.slug}
+                  href={`/product/${modak.slug}`}
+                  className={`sticker ${modak.rotate} bg-white p-3 md:p-4 hover:no-underline group`}
+                  style={{ animationDelay: `${i * 65}ms` }}
+                >
+                  <div className="relative h-36 sm:h-44 md:h-48 flex items-center justify-center rounded-lg bg-peach/25 border-2 border-ink/10 overflow-hidden">
+                    <img src={modak.image} alt={`${modak.marathi} mascot`} className="h-[115%] w-full object-contain transition-transform duration-200 group-hover:scale-110" />
+                    <span className="absolute bottom-1.5 right-1.5 border-2 border-ink rounded-full bg-mascot px-2 py-0.5 font-display font-bold text-[10px] md:text-xs -rotate-3">
+                      {modak.vibe}
+                    </span>
+                  </div>
+                  <div className="pt-3 px-1">
+                    <p className="font-display font-extrabold text-base md:text-lg leading-tight">{modak.marathi}</p>
+                    <p className="font-bold text-xs text-muted-foreground">{modak.english}</p>
+                  </div>
+                </Link>
+              ))}
+              <Link href="/product/ukadiche-modak" className="sticker rotate-2 bg-mascot p-3 md:p-4 flex flex-col justify-between hover:no-underline">
+                <div className="text-4xl md:text-5xl">✨</div>
+                <div>
+                  <p className="font-display font-extrabold text-base md:text-lg leading-tight">उकडीचे मोदक</p>
+                  <p className="font-bold text-xs">The OG Star</p>
+                </div>
+              </Link>
+            </div>
+
+            <div className="text-center mt-11 flex flex-wrap justify-center gap-4">
+              <Link href="/ganapati-modak-special" className="sticker-btn bg-mascot px-6 py-2.5 font-display font-bold inline-flex items-center gap-2 -rotate-1">
+                🗓️ ११ दिवसांचं schedule बघा
+              </Link>
+              <Link href="/catalog" className="sticker-btn bg-white px-6 py-2.5 font-display font-bold inline-flex items-center gap-2 rotate-1">
+                🙏 पूर्ण Modak Catalog बघा
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* ---------- Marquee divider ---------- */}
         <Marquee
-          items={["सुरळी वडी", "गुलाबजाम", "अळीव लाडू", "Fresh Batch Daily", `Order: ${PHONE}`]}
+          items={["उकडीचे मोदक", "डिंक मोदक", "नाचणी मोदक", "ड्रायफ्रुट मोदक", "बीट मोदक", "गुलकंद मोदक", "Ganapati Special"]}
           className="bg-mint rotate-1 scale-x-105 relative z-10"
         />
 
