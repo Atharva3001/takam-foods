@@ -127,6 +127,7 @@ export default function Home() {
           <nav className="hidden md:flex items-center gap-6 font-display font-bold">
             <a href="#menu" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">खायला काय? 🍽️</a>
             <a href="#story" className="hover:underline decoration-[3px] decoration-mint underline-offset-4">आमची गोष्ट</a>
+            <Link href="/ganapati-modak-special" className="hover:underline decoration-[3px] decoration-peach underline-offset-4">गणपती Special 🙏</Link>
             <Link href="/catalog" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">Catalog 📋</Link>
           </nav>
           <MobileNav phone={PHONE} />
@@ -356,8 +357,11 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="text-center mt-11">
-              <Link href="/catalog" className="sticker-btn bg-white px-6 py-2.5 font-display font-bold inline-flex items-center gap-2 -rotate-1">
+            <div className="text-center mt-11 flex flex-wrap justify-center gap-4">
+              <Link href="/ganapati-modak-special" className="sticker-btn bg-mascot px-6 py-2.5 font-display font-bold inline-flex items-center gap-2 -rotate-1">
+                🗓️ ११ दिवसांचं schedule बघा
+              </Link>
+              <Link href="/catalog" className="sticker-btn bg-white px-6 py-2.5 font-display font-bold inline-flex items-center gap-2 rotate-1">
                 🙏 पूर्ण Modak Catalog बघा
               </Link>
             </div>
