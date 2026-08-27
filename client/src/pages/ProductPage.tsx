@@ -24,12 +24,18 @@ export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
   const product = getProduct(slug ?? "");
   const [activeImage, setActiveImage] = useState(0);
+  const [quantity, setQuantity] = useState("11 Pieces");
+  const [customQuantity, setCustomQuantity] = useState("");
 
   if (!product) return <NotFound />;
 
   const others = products.filter((p) => p.slug !== product.slug);
+  const isModak = product.slug.includes("modak");
+  const quantityOptions = ["11 Pieces", "21 Pieces", "250 gm", "500 gm", "Custom"];
+  const orderQuantity = quantity === "Custom" ? `Custom: ${customQuantity.trim()}` : quantity;
+  const customQuantityMissing = quantity === "Custom" && !customQuantity.trim();
   const waText = encodeURIComponent(
-    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋`
+    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋${isModak ? `\nQuantity: ${orderQuantity}` : ""}`
   );
   const isMascotAsset = product.images[activeImage]?.includes("takam_modak_") ?? false;
 
@@ -149,6 +155,40 @@ export default function ProductPage() {
               <p className="font-semibold text-lg leading-relaxed">{product.shortDesc}</p>
               <p className="font-bold italic text-muted-foreground">{product.funny}</p>
 
+              {isModak && (
+                <div className="sticker -rotate-1 bg-peach/55 p-4 md:p-5 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-display font-extrabold text-lg">किती पाहिजेत? 👀</p>
+                    <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Select quantity</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                    {quantityOptions.map((option) => (
+                      <button
+                        type="button"
+                        key={option}
+                        onClick={() => setQuantity(option)}
+                        className={`border-[2.5px] border-ink px-3 py-2 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] transition-transform active:scale-95 ${quantity === option ? "bg-mascot -rotate-1" : "bg-white hover:bg-mint/60 rotate-[.4deg]"}`}
+                        aria-pressed={quantity === option}
+                      >
+                        {option === "Custom" ? "Custom ✍️" : option}
+                      </button>
+                    ))}
+                  </div>
+                  {quantity === "Custom" && (
+                    <label className="block space-y-1.5">
+                      <span className="font-display font-bold text-sm">तुमची quantity लिहा</span>
+                      <input
+                        value={customQuantity}
+                        onChange={(event) => setCustomQuantity(event.target.value)}
+                        placeholder="उदा. 35 pieces / 1 kg"
+                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                      />
+                    </label>
+                  )}
+                  <p className="font-bold text-xs text-muted-foreground">तुमची निवड: <span className="text-ink">{quantity === "Custom" && customQuantity.trim() ? customQuantity : quantity}</span></p>
+                </div>
+              )}
+
 
 
               <div className="flex flex-wrap gap-4 pt-1">
@@ -162,7 +202,11 @@ export default function ProductPage() {
                   href={`https://wa.me/91${PHONE}?text=${waText}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1"
+                  aria-disabled={customQuantityMissing}
+                  onClick={(event) => {
+                    if (customQuantityMissing) event.preventDefault();
+                  }}
+                  className={`sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${customQuantityMissing ? "pointer-events-none opacity-50" : ""}`}
                 >
                   <MessageCircle className="h-5 w-5" /> WhatsApp करा
                 </a>
@@ -279,7 +323,11 @@ export default function ProductPage() {
                   href={`https://wa.me/91${PHONE}?text=${waText}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="sticker-btn bg-mint px-7 py-3 text-lg flex items-center gap-2 rotate-1"
+                  aria-disabled={customQuantityMissing}
+                  onClick={(event) => {
+                    if (customQuantityMissing) event.preventDefault();
+                  }}
+                  className={`sticker-btn bg-mint px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${customQuantityMissing ? "pointer-events-none opacity-50" : ""}`}
                 >
                   <MessageCircle className="h-5 w-5" /> WhatsApp करा
                 </a>
