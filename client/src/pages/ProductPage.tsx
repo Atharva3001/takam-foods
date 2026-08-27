@@ -26,16 +26,22 @@ export default function ProductPage() {
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState("11 Pieces");
   const [customQuantity, setCustomQuantity] = useState("");
+  const [deliveryLocation, setDeliveryLocation] = useState("");
+  const [customLocation, setCustomLocation] = useState("");
 
   if (!product) return <NotFound />;
 
   const others = products.filter((p) => p.slug !== product.slug);
   const isModak = product.slug.includes("modak");
   const quantityOptions = ["11 Pieces", "21 Pieces", "250 gm", "500 gm", "Custom"];
+  const deliveryOptions = ["Singhgad Road", "Kothurd", "Deccan", "Nanded City", "Baner", "Pashan", "Baavdhan", "Other area"];
   const orderQuantity = quantity === "Custom" ? `Custom: ${customQuantity.trim()}` : quantity;
+  const orderLocation = deliveryLocation === "Other area" ? `Other area: ${customLocation.trim()}` : deliveryLocation;
   const customQuantityMissing = quantity === "Custom" && !customQuantity.trim();
+  const deliveryLocationMissing = !deliveryLocation || (deliveryLocation === "Other area" && !customLocation.trim());
+  const orderIncomplete = customQuantityMissing || deliveryLocationMissing;
   const waText = encodeURIComponent(
-    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋${isModak ? `\nQuantity: ${orderQuantity}` : ""}`
+    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋${isModak ? `\nQuantity: ${orderQuantity}\nDelivery location: ${orderLocation}` : ""}`
   );
   const isMascotAsset = product.images[activeImage]?.includes("takam_modak_") ?? false;
 
@@ -189,6 +195,38 @@ export default function ProductPage() {
                 </div>
               )}
 
+              {isModak && (
+                <div className="sticker rotate-1 bg-mint/45 p-4 md:p-5 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-display font-extrabold text-lg">Delivery कुठे? 📍</p>
+                    <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Choose your area</span>
+                  </div>
+                  <label className="block space-y-1.5">
+                    <span className="font-display font-bold text-sm">तुमचा delivery area निवडा</span>
+                    <select
+                      value={deliveryLocation}
+                      onChange={(event) => setDeliveryLocation(event.target.value)}
+                      className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                    >
+                      <option value="" disabled>Select area</option>
+                      {deliveryOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+                    </select>
+                  </label>
+                  {deliveryLocation === "Other area" && (
+                    <label className="block space-y-1.5">
+                      <span className="font-display font-bold text-sm">तुमचा area लिहा</span>
+                      <input
+                        value={customLocation}
+                        onChange={(event) => setCustomLocation(event.target.value)}
+                        placeholder="उदा. Wakad, Pune"
+                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                      />
+                    </label>
+                  )}
+                  <p className="font-bold text-xs text-muted-foreground">Delivery location: <span className="text-ink">{deliveryLocation === "Other area" && customLocation.trim() ? customLocation : deliveryLocation || "निवडा"}</span></p>
+                </div>
+              )}
+
 
 
               <div className="flex flex-wrap gap-4 pt-1">
@@ -202,11 +240,11 @@ export default function ProductPage() {
                   href={`https://wa.me/91${PHONE}?text=${waText}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-disabled={customQuantityMissing}
+                  aria-disabled={orderIncomplete}
                   onClick={(event) => {
-                    if (customQuantityMissing) event.preventDefault();
+                    if (orderIncomplete) event.preventDefault();
                   }}
-                  className={`sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${customQuantityMissing ? "pointer-events-none opacity-50" : ""}`}
+                  className={`sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "pointer-events-none opacity-50" : ""}`}
                 >
                   <MessageCircle className="h-5 w-5" /> WhatsApp करा
                 </a>
@@ -323,11 +361,11 @@ export default function ProductPage() {
                   href={`https://wa.me/91${PHONE}?text=${waText}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-disabled={customQuantityMissing}
+                  aria-disabled={orderIncomplete}
                   onClick={(event) => {
-                    if (customQuantityMissing) event.preventDefault();
+                    if (orderIncomplete) event.preventDefault();
                   }}
-                  className={`sticker-btn bg-mint px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${customQuantityMissing ? "pointer-events-none opacity-50" : ""}`}
+                  className={`sticker-btn bg-mint px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "pointer-events-none opacity-50" : ""}`}
                 >
                   <MessageCircle className="h-5 w-5" /> WhatsApp करा
                 </a>
