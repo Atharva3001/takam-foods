@@ -13,24 +13,24 @@ import { MobileNav } from "@/components/MobileNav";
 const PHONE = "9371055473";
 
 const ASSETS = {
-  logoA: "/manus-storage/takam_logo_a_d53308c5.webp",
-  logoC: "/manus-storage/takam_logo_c_75133a46.webp",
-  suraliVadi: "/manus-storage/surali-vadi-1_b095aed2.jpeg",
-  gulabJamun: "/manus-storage/gulab-jamun-3_da46dfeb.jpeg",
-  alivLadu: "/manus-storage/aalive-ladu-2_20c7ce00.jpeg",
-  heroBg: "/manus-storage/takam_hero_bg_55171798.webp",
-  kitchen: "/manus-storage/takam_kitchen_illustration_c04a46a3.webp",
+  logoA: "/images/takam_logo_A_transparent.webp",
+  logoC: "/images/takam_logo_C_transparent.webp",
+  suraliVadi: "/images/surali-vadi-1.jpeg",
+  gulabJamun: "/images/gulab-jamun-3.jpeg",
+  alivLadu: "/images/aalive-ladu-2.jpeg",
+  heroBg: "/images/takam_hero_bg.webp",
+  kitchen: "/images/takam_kitchen_illustration.webp",
 };
 
 const ganapatiModaks = [
-  { slug: "ukadiche-modak", marathi: "उकडीचे मोदक", english: "Ukadiche Modak", image: "/manus-storage/takam_ukadiche_modak_hero_mascot_26023c52.png", vibe: "⭐ The OG Star", rotate: "rotate-2" },
-  { slug: "dink-modak", marathi: "डिंक मोदक", english: "Dink Modak", image: "/manus-storage/takam_modak_dink_5b8d96ea.webp", vibe: "💪 ताकद वाला", rotate: "-rotate-2" },
-  { slug: "nachni-modak", marathi: "नाचणी मोदक", english: "Nachni Modak", image: "/manus-storage/takam_modak_nachni_f0b38819.webp", vibe: "🏋️ Health buddy", rotate: "rotate-2" },
-  { slug: "dryfruit-modak", marathi: "ड्रायफ्रुट मोदक", english: "Dryfruit Modak", image: "/manus-storage/takam_modak_dryfruit_88dce11c.webp", vibe: "👑 Premium pick", rotate: "-rotate-1" },
-  { slug: "beet-modak", marathi: "बीट मोदक", english: "Beet Modak", image: "/manus-storage/takam_modak_beet_d99fce86.webp", vibe: "💗 Pink icon", rotate: "rotate-1" },
-  { slug: "poshtik-modak", marathi: "पोष्टीक मोदक", english: "Poshtik Modak", image: "/manus-storage/takam_modak_poshtik_c7f565d4.webp", vibe: "🦸 All-rounder", rotate: "-rotate-2" },
-  { slug: "tilkund-modak", marathi: "तीळकुंद मोदक", image: "/manus-storage/takam_modak_tilkund_81cb6dfb.webp", english: "Tilkund Modak", vibe: "🔥 Tiny, mighty", rotate: "rotate-2" },
-  { slug: "gulkand-modak", marathi: "गुलकंद मोदक", english: "Gulkand Modak", image: "/manus-storage/takam_modak_gulkand_4e3decc8.webp", vibe: "🌹 Sweetheart", rotate: "-rotate-1" },
+  { slug: "ukadiche-modak", marathi: "उकडीचे मोदक", english: "Ukadiche Modak", image: "/images/takam_ukadiche_modak_hero_mascot.webp", vibe: "⭐ The OG Star", rotate: "rotate-2" },
+  { slug: "dink-modak", marathi: "डिंक मोदक", english: "Dink Modak", image: "/images/takam_modak_dink_v2.webp", vibe: "💪 ताकद वाला", rotate: "-rotate-2" },
+  { slug: "nachni-modak", marathi: "नाचणी मोदक", english: "Nachni Modak", image: "/images/takam_modak_nachni_v2.webp", vibe: "🏋️ Health buddy", rotate: "rotate-2" },
+  { slug: "dryfruit-modak", marathi: "ड्रायफ्रुट मोदक", english: "Dryfruit Modak", image: "/images/takam_modak_dryfruit_v2.webp", vibe: "👑 Premium pick", rotate: "-rotate-1" },
+  { slug: "beet-modak", marathi: "बीट मोदक", english: "Beet Modak", image: "/images/takam_modak_beet_v2.webp", vibe: "💗 Pink icon", rotate: "rotate-1" },
+  { slug: "poshtik-modak", marathi: "पोष्टीक मोदक", english: "Poshtik Modak", image: "/images/takam_modak_poshtik_v2.webp", vibe: "🦸 All-rounder", rotate: "-rotate-2" },
+  { slug: "tilkund-modak", marathi: "तीळकुंद मोदक", image: "/images/takam_modak_tilkund_v2.webp", english: "Tilkund Modak", vibe: "🔥 Tiny, mighty", rotate: "rotate-2" },
+  { slug: "gulkand-modak", marathi: "गुलकंद मोदक", english: "Gulkand Modak", image: "/images/takam_modak_gulkand_v2.webp", vibe: "🌹 Sweetheart", rotate: "-rotate-1" },
 ];
 
 function Marquee({ items, className = "" }: { items: string[]; className?: string }) {

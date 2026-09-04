@@ -25,10 +25,10 @@ export interface Product {
 export const PHONE = "9371055473";
 
 export const SITE_ASSETS = {
-  logoA: "/manus-storage/takam_logo_a_d53308c5.webp",
-  logoC: "/manus-storage/takam_logo_c_75133a46.webp",
-  heroBg: "/manus-storage/takam_hero_bg_55171798.webp",
-  kitchen: "/manus-storage/takam_kitchen_illustration_c04a46a3.webp",
+  logoA: "/images/takam_logo_A_transparent.webp",
+  logoC: "/images/takam_logo_C_transparent.webp",
+  heroBg: "/images/takam_hero_bg.webp",
+  kitchen: "/images/takam_kitchen_illustration.webp",
 };
 
 export const products: Product[] = [
@@ -42,11 +42,11 @@ export const products: Product[] = [
       "Steamed rice-flour dumplings stuffed with jaggery & coconut. The monsoon favorite that never goes out of style.",
     funny: '"Modak = love in dumpling form" 💚',
     images: [
-      "/manus-storage/takam_ukadiche_modak_hero_mascot_26023c52.png",
-      "/manus-storage/modak-2_be68325c.webp",
-      "/manus-storage/modak-3_04201bb4.webp",
-      "/manus-storage/modak-4_7386f529.webp",
-      "/manus-storage/modak-5_f952e679.webp",
+      "/images/takam_ukadiche_modak_hero_mascot.webp",
+      "/images/modak-2.webp",
+      "/images/modak-3.webp",
+      "/images/modak-4.webp",
+      "/images/modak-5.webp",
     ],
     videos: [],
     story: [
@@ -81,7 +81,7 @@ export const products: Product[] = [
     tagBg: "bg-mascot",
     shortDesc: "Old-school festive energy, now in a Modak mood. Dink brings the warm, strong character.",
     funny: '"मी गोड आहे, पण weak नाही!" 💪',
-    images: ["/manus-storage/takam_modak_dink_5b8d96ea.webp"],
+    images: ["/images/takam_modak_dink_v2.webp"],
     videos: [],
     story: [
       "डिंक मोदक is the power-packed elder of the Takam Ganapati collection - traditional in spirit, loud in personality.",
@@ -111,7 +111,7 @@ export const products: Product[] = [
     tagBg: "bg-mint",
     shortDesc: "Earthy ragi energy in festive Modak form. The gym buddy of the Ganapati squad.",
     funny: '"Protein shake नाही, मीच पुरे!" 🏋️',
-    images: ["/manus-storage/takam_modak_nachni_f0b38819.webp"],
+    images: ["/images/takam_modak_nachni_v2.webp"],
     videos: [],
     story: [
       "नाचणी मोदक gives a familiar grain a fun festive avatar - earthy, grounded, and confidently different.",
@@ -141,7 +141,7 @@ export const products: Product[] = [
     tagBg: "bg-peach",
     shortDesc: "Festive dry-fruit richness with big VIP energy. The polished one in the Modak gang.",
     funny: '"Premium आहे बाबा, पण attitude नाही." 👑',
-    images: ["/manus-storage/takam_modak_dryfruit_88dce11c.webp"],
+    images: ["/images/takam_modak_dryfruit_v2.webp"],
     videos: [],
     story: [
       "ड्रायफ्रुट मोदक is the celebration-ready VIP of the lineup - festive, generous, and meant for a special plate.",
@@ -171,7 +171,7 @@ export const products: Product[] = [
     tagBg: "bg-peach",
     shortDesc: "The naturally bold pink personality of the collection. Sweet, stylish, and impossible to ignore.",
     funny: '"Pink आहे म्हणून underestimate करू नको." 💗',
-    images: ["/manus-storage/takam_modak_beet_d99fce86.webp"],
+    images: ["/images/takam_modak_beet_v2.webp"],
     videos: [],
     story: [
       "बीट मोदक brings the colour pop to Takam's Ganapati collection - a playful twist with serious festival presence.",
@@ -201,7 +201,7 @@ export const products: Product[] = [
     tagBg: "bg-mint",
     shortDesc: "The feel-good all-rounder of the festive Modak box - cheerful, hearty, and ready to save snack time.",
     funny: '"Nutrition माझं middle name आहे." 🦸',
-    images: ["/manus-storage/takam_modak_poshtik_c7f565d4.webp"],
+    images: ["/images/takam_modak_poshtik_v2.webp"],
     videos: [],
     story: [
       "पोष्टीक मोदक is the caring superhero of this festive lineup - the flavour that turns a snack moment into a feel-good moment.",
@@ -231,7 +231,7 @@ export const products: Product[] = [
     tagBg: "bg-mascot",
     shortDesc: "Sesame-led festive energy with a tiny-but-mighty personality. Small size, big entrance.",
     funny: '"Size छोटा; ताकद मोठी." 🔥',
-    images: ["/manus-storage/takam_modak_tilkund_81cb6dfb.webp"],
+    images: ["/images/takam_modak_tilkund_v2.webp"],
     videos: [],
     story: [
       "तीळकुंद मोदक is the pocket rocket of the collection - subtle sesame character with a spirited festival attitude.",
@@ -262,10 +262,10 @@ export const products: Product[] = [
     shortDesc: "Rose-preserve charm in Modak form. Soft, dreamy, and absolutely festival-date material.",
     funny: '"मी नाही dessert; मी प्रेमपत्र आहे." 🌹',
     images: [
-      "/manus-storage/takam_modak_gulkand_4e3decc8.webp",
-      "/manus-storage/gulkand_modak_gallery_plate_enhanced_9d48b286.png",
-      "/manus-storage/gulkand_modak_gallery_closeup_enhanced_cce8589f.png",
-      "/manus-storage/gulkand_modak_gallery_alt_plate_enhanced_376867ba.png",
+      "/images/takam_modak_gulkand_v2.webp",
+      "/images/takam_gulkand_gallery_plate.webp",
+      "/images/takam_gulkand_gallery_closeup.webp",
+      "/images/takam_gulkand_gallery_alt_plate.webp",
     ],
     videos: [],
     story: [
@@ -297,7 +297,7 @@ export const products: Product[] = [
     shortDesc:
       "Soft besan rolls, tadka on top, coriander confetti. Aaji-level softness, guaranteed.",
     funny: '"Roll model of all snacks" 😎',
-    images: ["/manus-storage/surali-vadi-1_b095aed2.jpeg"],
+    images: ["/images/surali-vadi-1.jpeg"],
     videos: [],
     story: [
       "सुरळी वडी (also called Khandvi's Marathi cousin) is the ultimate test of a home cook's skill - the besan batter must be cooked to the exact right consistency, spread paper-thin, and rolled into delicate spirals before it sets. One minute too long and it cracks; one minute too short and it won't roll.",
@@ -332,7 +332,7 @@ export const products: Product[] = [
     shortDesc:
       "Melt-in-mouth jamuns swimming happily in kesar syrup. Diet plans fear this.",
     funny: '"Gym kal se pakka" 🤙',
-    images: ["/manus-storage/gulab-jamun-3_da46dfeb.jpeg"],
+    images: ["/images/gulab-jamun-3.jpeg"],
     videos: [],
     story: [
       "Some desserts are trends. Gulab Jamun is an emotion. Soft khoya dumplings, fried low and slow to a deep golden brown, then left to soak in cardamom-kissed sugar syrup until every bite oozes happiness.",
@@ -367,7 +367,7 @@ export const products: Product[] = [
     shortDesc:
       "Halim seeds + jaggery + dry fruits. The OG protein ball, invented before protein was cool.",
     funny: '"Superfood? आमच्याकडे आधीपासूनच आहे" ✨',
-    images: ["/manus-storage/aalive-ladu-2_20c7ce00.jpeg"],
+    images: ["/images/aalive-ladu-2.jpeg"],
     videos: [],
     story: [
       "Long before 'superfood' was a marketing word, Marathi households were making अळीव लाडू - garden cress seed laddus - for new mothers, growing kids, and anyone who needed strength. It's ancestral nutrition science, disguised as a sweet.",
