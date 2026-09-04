@@ -40,6 +40,7 @@ export default function ProductPage() {
   const [customQuantity, setCustomQuantity] = useState("");
   const [deliveryLocation, setDeliveryLocation] = useState("");
   const [customLocation, setCustomLocation] = useState("");
+  const [showQuantityHint, setShowQuantityHint] = useState(false);
 
   if (!product) return <NotFound />;
 
@@ -199,7 +200,7 @@ export default function ProductPage() {
               )}
 
               {isModak && (
-                <div className="sticker -rotate-1 bg-peach/55 p-4 md:p-5 space-y-3">
+                <div id="quantity-selection" className="sticker -rotate-1 bg-peach/55 p-4 md:p-5 space-y-3 scroll-mt-28">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="font-display font-extrabold text-lg">किती पाहिजेत? 👀</p>
                     <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Select quantity</span>
@@ -235,15 +236,28 @@ export default function ProductPage() {
 
 
 
-              <div className="flex flex-wrap gap-4 pt-1">
+              <div className="flex flex-col items-start gap-2 pt-1">
                 <button
                   type="button"
-                  disabled={orderIncomplete}
-                  onClick={() => setIsOrderDialogOpen(true)}
+                  aria-disabled={orderIncomplete}
+                  onClick={() => {
+                    if (orderIncomplete) {
+                      setShowQuantityHint(true);
+                      document.getElementById("quantity-selection")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                      window.setTimeout(() => setShowQuantityHint(false), 2600);
+                      return;
+                    }
+                    setIsOrderDialogOpen(true);
+                  }}
                   className={`sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "cursor-not-allowed opacity-50" : ""}`}
                 >
                   <MessageCircle className="h-5 w-5" /> Send Enquiry on WhatsApp
                 </button>
+                {orderIncomplete && (
+                  <p role="status" aria-live="polite" className={`font-display font-bold text-sm text-tomato ${showQuantityHint ? "animate-bounce" : ""}`}>
+                    {showQuantityHint ? "First select a quantity above 👆" : "Select a quantity above to continue"}
+                  </p>
+                )}
               </div>
 
               <Dialog open={isOrderDialogOpen} onOpenChange={setIsOrderDialogOpen}>
