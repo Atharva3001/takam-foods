@@ -99,6 +99,8 @@ export default function ProductPage() {
                   <img
                     src={product.images[activeImage]}
                     alt={`${product.marathi} photo ${activeImage + 1}`}
+                    decoding="async"
+                    fetchPriority="high"
                     className={`w-full h-80 md:h-[26rem] border-2 border-ink/15 ${isMascotAsset ? "object-contain bg-mint/20 p-5" : "object-cover saturate-[1.15]"}`}
                   />
                   <p className="text-center font-display font-bold text-xs mt-2 text-ink/60">
@@ -125,7 +127,7 @@ export default function ProductPage() {
                     }`}
                     aria-label={`View photo ${i + 1}`}
                   >
-                    <img src={img} alt="" className={`h-full w-full ${img.includes("takam_modak_") ? "object-contain bg-mint/20 p-1" : "object-cover"}`} />
+                    <img src={img} alt="" loading="lazy" decoding="async" className={`h-full w-full ${img.includes("takam_modak_") ? "object-contain bg-mint/20 p-1" : "object-cover"}`} />
                   </button>
                 ))}
                 {product.videos.length === 0 && (

@@ -25,10 +25,10 @@ export interface Product {
 export const PHONE = "9371055473";
 
 export const SITE_ASSETS = {
-  logoA: "/images/takam_logo_A_transparent.png",
-  logoC: "/images/takam_logo_C_transparent.png",
-  heroBg: "/images/takam_hero_bg.png",
-  kitchen: "/images/takam_kitchen_illustration.png",
+  logoA: "/images/takam_logo_A_transparent.webp",
+  logoC: "/images/takam_logo_C_transparent.webp",
+  heroBg: "/images/takam_hero_bg.webp",
+  kitchen: "/images/takam_kitchen_illustration.webp",
 };
 
 export const products: Product[] = [
@@ -80,7 +80,7 @@ export const products: Product[] = [
     tagBg: "bg-mascot",
     shortDesc: "Old-school festive energy, now in a Modak mood. Dink brings the warm, strong character.",
     funny: '"मी गोड आहे, पण weak नाही!" 💪',
-    images: ["/images/takam_modak_dink_v2.png"],
+    images: ["/images/takam_modak_dink_v2.webp"],
     videos: [],
     story: [
       "डिंक मोदक is the power-packed elder of the Takam Ganapati collection — traditional in spirit, loud in personality.",
@@ -110,7 +110,7 @@ export const products: Product[] = [
     tagBg: "bg-mint",
     shortDesc: "Earthy ragi energy in festive Modak form. The gym buddy of the Ganapati squad.",
     funny: '"Protein shake नाही, मीच पुरे!" 🏋️',
-    images: ["/images/takam_modak_nachni_v2.png"],
+    images: ["/images/takam_modak_nachni_v2.webp"],
     videos: [],
     story: [
       "नाचणी मोदक gives a familiar grain a fun festive avatar — earthy, grounded, and confidently different.",
@@ -140,7 +140,7 @@ export const products: Product[] = [
     tagBg: "bg-peach",
     shortDesc: "Festive dry-fruit richness with big VIP energy. The polished one in the Modak gang.",
     funny: '"Premium आहे बाबा, पण attitude नाही." 👑',
-    images: ["/images/takam_modak_dryfruit_v2.png"],
+    images: ["/images/takam_modak_dryfruit_v2.webp"],
     videos: [],
     story: [
       "ड्रायफ्रुट मोदक is the celebration-ready VIP of the lineup — festive, generous, and meant for a special plate.",
@@ -170,7 +170,7 @@ export const products: Product[] = [
     tagBg: "bg-peach",
     shortDesc: "The naturally bold pink personality of the collection. Sweet, stylish, and impossible to ignore.",
     funny: '"Pink आहे म्हणून underestimate करू नको." 💗',
-    images: ["/images/takam_modak_beet_v2.png"],
+    images: ["/images/takam_modak_beet_v2.webp"],
     videos: [],
     story: [
       "बीट मोदक brings the colour pop to Takam's Ganapati collection — a playful twist with serious festival presence.",
@@ -200,7 +200,7 @@ export const products: Product[] = [
     tagBg: "bg-mint",
     shortDesc: "The feel-good all-rounder of the festive Modak box — cheerful, hearty, and ready to save snack time.",
     funny: '"Nutrition माझं middle name आहे." 🦸',
-    images: ["/images/takam_modak_poshtik_v2.png"],
+    images: ["/images/takam_modak_poshtik_v2.webp"],
     videos: [],
     story: [
       "पोष्टीक मोदक is the caring superhero of this festive lineup — the flavour that turns a snack moment into a feel-good moment.",
@@ -230,7 +230,7 @@ export const products: Product[] = [
     tagBg: "bg-mascot",
     shortDesc: "Sesame-led festive energy with a tiny-but-mighty personality. Small size, big entrance.",
     funny: '"Size छोटा; ताकद मोठी." 🔥',
-    images: ["/images/takam_modak_tilkund_v2.png"],
+    images: ["/images/takam_modak_tilkund_v2.webp"],
     videos: [],
     story: [
       "तीळकुंद मोदक is the pocket rocket of the collection — subtle sesame character with a spirited festival attitude.",
@@ -260,7 +260,7 @@ export const products: Product[] = [
     tagBg: "bg-peach",
     shortDesc: "Rose-preserve charm in Modak form. Soft, dreamy, and absolutely festival-date material.",
     funny: '"मी नाही dessert; मी प्रेमपत्र आहे." 🌹',
-    images: ["/images/takam_modak_gulkand_v2.png"],
+    images: ["/images/takam_modak_gulkand_v2.webp"],
     videos: [],
     story: [
       "गुलकंद मोदक is the poet of the Takam Ganapati collection — rose-forward, charming, and a little dramatic in the best way.",

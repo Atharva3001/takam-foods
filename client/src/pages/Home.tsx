@@ -13,13 +13,13 @@ import { MobileNav } from "@/components/MobileNav";
 const PHONE = "9371055473";
 
 const ASSETS = {
-  logoA: "/images/takam_logo_A_transparent.png",
-  logoC: "/images/takam_logo_C_transparent.png",
+  logoA: "/images/takam_logo_A_transparent.webp",
+  logoC: "/images/takam_logo_C_transparent.webp",
   suraliVadi: "/images/surali-vadi-1.jpeg",
   gulabJamun: "/images/gulab-jamun-3.jpeg",
   alivLadu: "/images/aalive-ladu-2.jpeg",
-  heroBg: "/images/takam_hero_bg.png",
-  kitchen: "/images/takam_kitchen_illustration.png",
+  heroBg: "/images/takam_hero_bg.webp",
+  kitchen: "/images/takam_kitchen_illustration.webp",
 };
 
 const products = [
@@ -74,13 +74,13 @@ const products = [
 ];
 
 const ganapatiModaks = [
-  { slug: "dink-modak", marathi: "डिंक मोदक", english: "Dink Modak", image: "/images/takam_modak_dink_v2.png", vibe: "💪 ताकद वाला", rotate: "-rotate-2" },
-  { slug: "nachni-modak", marathi: "नाचणी मोदक", english: "Nachni Modak", image: "/images/takam_modak_nachni_v2.png", vibe: "🏋️ Health buddy", rotate: "rotate-2" },
-  { slug: "dryfruit-modak", marathi: "ड्रायफ्रुट मोदक", english: "Dryfruit Modak", image: "/images/takam_modak_dryfruit_v2.png", vibe: "👑 Premium pick", rotate: "-rotate-1" },
-  { slug: "beet-modak", marathi: "बीट मोदक", english: "Beet Modak", image: "/images/takam_modak_beet_v2.png", vibe: "💗 Pink icon", rotate: "rotate-1" },
-  { slug: "poshtik-modak", marathi: "पोष्टीक मोदक", english: "Poshtik Modak", image: "/images/takam_modak_poshtik_v2.png", vibe: "🦸 All-rounder", rotate: "-rotate-2" },
-  { slug: "tilkund-modak", marathi: "तीळकुंद मोदक", english: "Tilkund Modak", image: "/images/takam_modak_tilkund_v2.png", vibe: "🔥 Tiny, mighty", rotate: "rotate-2" },
-  { slug: "gulkand-modak", marathi: "गुलकंद मोदक", english: "Gulkand Modak", image: "/images/takam_modak_gulkand_v2.png", vibe: "🌹 Sweetheart", rotate: "-rotate-1" },
+  { slug: "dink-modak", marathi: "डिंक मोदक", english: "Dink Modak", image: "/images/takam_modak_dink_v2.webp", vibe: "💪 ताकद वाला", rotate: "-rotate-2" },
+  { slug: "nachni-modak", marathi: "नाचणी मोदक", english: "Nachni Modak", image: "/images/takam_modak_nachni_v2.webp", vibe: "🏋️ Health buddy", rotate: "rotate-2" },
+  { slug: "dryfruit-modak", marathi: "ड्रायफ्रुट मोदक", english: "Dryfruit Modak", image: "/images/takam_modak_dryfruit_v2.webp", vibe: "👑 Premium pick", rotate: "-rotate-1" },
+  { slug: "beet-modak", marathi: "बीट मोदक", english: "Beet Modak", image: "/images/takam_modak_beet_v2.webp", vibe: "💗 Pink icon", rotate: "rotate-1" },
+  { slug: "poshtik-modak", marathi: "पोष्टीक मोदक", english: "Poshtik Modak", image: "/images/takam_modak_poshtik_v2.webp", vibe: "🦸 All-rounder", rotate: "-rotate-2" },
+  { slug: "tilkund-modak", marathi: "तीळकुंद मोदक", english: "Tilkund Modak", image: "/images/takam_modak_tilkund_v2.webp", vibe: "🔥 Tiny, mighty", rotate: "rotate-2" },
+  { slug: "gulkand-modak", marathi: "गुलकंद मोदक", english: "Gulkand Modak", image: "/images/takam_modak_gulkand_v2.webp", vibe: "🌹 Sweetheart", rotate: "-rotate-1" },
 ];
 
 function Marquee({ items, className = "" }: { items: string[]; className?: string }) {
@@ -115,6 +115,8 @@ export default function Home() {
             <img
               src={ASSETS.logoC}
               alt="टाकम badge"
+              decoding="async"
+              fetchPriority="high"
               className="h-14 w-14 md:h-16 md:w-16 -rotate-6 drop-shadow-[3px_3px_0_rgba(30,27,22,0.35)]"
             />
             <span className="font-display font-extrabold text-3xl md:text-4xl tracking-tight">
@@ -202,6 +204,8 @@ export default function Home() {
               <img
                 src={ASSETS.logoA}
                 alt="टाकम mascot — Surali Vadi with sunglasses"
+                decoding="async"
+                fetchPriority="high"
                 className="w-72 md:w-[26rem] mascot-bob drop-shadow-xl"
               />
             </div>
@@ -254,6 +258,8 @@ export default function Home() {
                       <img
                         src={p.image}
                         alt={`${p.marathi} (${p.english})`}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-48 lg:h-52 object-cover border-2 border-ink/15 saturate-[1.15]"
                       />
                       <p className="text-center font-display font-bold text-xs mt-1.5 text-ink/60">
@@ -337,7 +343,7 @@ export default function Home() {
                   style={{ animationDelay: `${i * 65}ms` }}
                 >
                   <div className="relative h-36 sm:h-44 md:h-48 flex items-center justify-center rounded-lg bg-peach/25 border-2 border-ink/10 overflow-hidden">
-                    <img src={modak.image} alt={`${modak.marathi} mascot`} className="h-[115%] w-full object-contain transition-transform duration-200 group-hover:scale-110" />
+                    <img src={modak.image} alt={`${modak.marathi} mascot`} loading="lazy" decoding="async" className="h-[115%] w-full object-contain transition-transform duration-200 group-hover:scale-110" />
                     <span className="absolute bottom-1.5 right-1.5 border-2 border-ink rounded-full bg-mascot px-2 py-0.5 font-display font-bold text-[10px] md:text-xs -rotate-3">
                       {modak.vibe}
                     </span>
@@ -386,6 +392,8 @@ export default function Home() {
                   <img
                     src={ASSETS.kitchen}
                     alt="Takam home kitchen illustration"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full object-cover border-2 border-ink/15"
                   />
                 </div>
