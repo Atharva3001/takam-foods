@@ -1,12 +1,12 @@
 /*
- * TAKAM — Sticker Bomb Bazaar theme (v2 after style review)
+ * TAKAM - Sticker Bomb Bazaar theme (v2 after style review)
  * - Sticker-board chaos: overlaps, tilts, floating badges in EVERY section
  * - Product photos = polaroid stickers (tape, tilt, doodle badges)
  * - Red-orange #E85D3D ONLY on ordering CTAs; yellow/mint/peach for emphasis
  * - Loud brand chrome (big header wordmark, footer stamp)
  * - Minglish voice everywhere incl. nav + labels
  */
-import { Phone, MessageCircle, Sparkles, Heart, Leaf, ChefHat, Star } from "lucide-react";
+import { MessageCircle, Sparkles, Heart, Leaf, ChefHat, Star } from "lucide-react";
 import { Link } from "wouter";
 import { MobileNav } from "@/components/MobileNav";
 
@@ -22,64 +22,13 @@ const ASSETS = {
   kitchen: "/images/takam_kitchen_illustration.webp",
 };
 
-const products = [
-  {
-    slug: "ukadiche-modak",
-    marathi: "उकडीचे मोदक",
-    english: "Ukadiche Modak",
-    image: "/images/modak-2.webp",
-    tag: "⭐ आमचा Star",
-    tagBg: "bg-mascot",
-    desc: "Steamed rice-flour dumplings stuffed with jaggery & coconut. The monsoon favorite that never goes out of style.",
-    funny: '"Modak = love in dumpling form" 💚',
-    rotate: "-rotate-1",
-    photoRotate: "rotate-3",
-  },
-  {
-    slug: "surali-vadi",
-    marathi: "सुरळी वडी",
-    english: "Surali Vadi",
-    image: ASSETS.suraliVadi,
-    tag: "🌟 Signature चव",
-    tagBg: "bg-peach",
-    desc: "Soft besan rolls, tadka on top, coriander confetti. Aaji-level softness, guaranteed.",
-    funny: '"Roll model of all snacks" 😎',
-    rotate: "-rotate-2",
-    photoRotate: "rotate-2",
-  },
-  {
-    slug: "gulab-jamun",
-    marathi: "गुलाबजाम",
-    english: "Gulab Jamun",
-    image: ASSETS.gulabJamun,
-    tag: "🍯 Syrup मध्ये डुबकी",
-    tagBg: "bg-mint",
-    desc: "Melt-in-mouth jamuns swimming happily in kesar syrup. Diet plans fear this.",
-    funny: '"Gym kal se pakka" 🤙',
-    rotate: "rotate-1 md:translate-y-6",
-    photoRotate: "-rotate-2",
-  },
-  {
-    slug: "aliv-ladu",
-    marathi: "अळीव लाडू",
-    english: "Aliv Ladu",
-    image: ASSETS.alivLadu,
-    tag: "💪 Power चा गोळा",
-    tagBg: "bg-peach",
-    desc: "Halim seeds + jaggery + dry fruits. The OG protein ball, invented before protein was cool.",
-    funny: '"Superfood? आमच्याकडे आधीपासूनच आहे" ✨',
-    rotate: "-rotate-1",
-    photoRotate: "rotate-3",
-  },
-];
-
 const ganapatiModaks = [
   { slug: "dink-modak", marathi: "डिंक मोदक", english: "Dink Modak", image: "/images/takam_modak_dink_v2.webp", vibe: "💪 ताकद वाला", rotate: "-rotate-2" },
   { slug: "nachni-modak", marathi: "नाचणी मोदक", english: "Nachni Modak", image: "/images/takam_modak_nachni_v2.webp", vibe: "🏋️ Health buddy", rotate: "rotate-2" },
   { slug: "dryfruit-modak", marathi: "ड्रायफ्रुट मोदक", english: "Dryfruit Modak", image: "/images/takam_modak_dryfruit_v2.webp", vibe: "👑 Premium pick", rotate: "-rotate-1" },
   { slug: "beet-modak", marathi: "बीट मोदक", english: "Beet Modak", image: "/images/takam_modak_beet_v2.webp", vibe: "💗 Pink icon", rotate: "rotate-1" },
   { slug: "poshtik-modak", marathi: "पोष्टीक मोदक", english: "Poshtik Modak", image: "/images/takam_modak_poshtik_v2.webp", vibe: "🦸 All-rounder", rotate: "-rotate-2" },
-  { slug: "tilkund-modak", marathi: "तीळकुंद मोदक", english: "Tilkund Modak", image: "/images/takam_modak_tilkund_v2.webp", vibe: "🔥 Tiny, mighty", rotate: "rotate-2" },
+  { slug: "tilkund-modak", marathi: "तीळकुंद मोदक", image: "/images/takam_modak_tilkund_v2.webp", english: "Tilkund Modak", vibe: "🔥 Tiny, mighty", rotate: "rotate-2" },
   { slug: "gulkand-modak", marathi: "गुलकंद मोदक", english: "Gulkand Modak", image: "/images/takam_modak_gulkand_v2.webp", vibe: "🌹 Sweetheart", rotate: "-rotate-1" },
 ];
 
@@ -127,20 +76,10 @@ export default function Home() {
             </span>
           </a>
           <nav className="hidden md:flex items-center gap-6 font-display font-bold">
-            <a href="#menu" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">खायला काय? 🍽️</a>
             <a href="#story" className="hover:underline decoration-[3px] decoration-mint underline-offset-4">आमची गोष्ट</a>
             <Link href="/ganapati-modak-special" className="hover:underline decoration-[3px] decoration-peach underline-offset-4">गणपती Special 🙏</Link>
-            <Link href="/catalog" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">Catalog 📋</Link>
           </nav>
-          <MobileNav phone={PHONE} />
-          <a
-            href={`tel:${PHONE}`}
-            className="sticker-btn bg-tomato text-primary-foreground px-4 py-1.5 md:px-5 md:py-2 flex items-center gap-2 text-sm md:text-base -rotate-1"
-          >
-            <Phone className="h-4 w-4" />
-            <span className="hidden sm:inline">Call करा!</span>
-            <span className="sm:hidden">Call</span>
-          </a>
+          <MobileNav />
         </div>
       </header>
 
@@ -172,20 +111,14 @@ export default function Home() {
                 </span>
               </h1>
               <p className="text-lg md:text-xl font-semibold text-muted-foreground max-w-md pop-in" style={{ animationDelay: "120ms" }}>
-                Authentic Marathi snacks, made at home with real ingredients and zero shortcuts. Swiggy कशाला? टाकम ला call करा! 😋
+                Authentic Marathi snacks, made at home with real ingredients and zero shortcuts. Swiggy कशाला? टाकमला WhatsApp करा! 😋
               </p>
               <div className="flex flex-wrap gap-4 pop-in" style={{ animationDelay: "180ms" }}>
                 <a
-                  href={`tel:${PHONE}`}
-                  className="sticker-btn bg-tomato text-primary-foreground px-7 py-3 text-lg flex items-center gap-2 -rotate-1"
-                >
-                  <Phone className="h-5 w-5" /> लगेच Order करा
-                </a>
-                <a
-                  href="#menu"
+                  href="#modaks"
                   className="sticker-btn bg-mascot px-7 py-3 text-lg flex items-center gap-2 rotate-1"
                 >
-                  Menu बघा 👀
+                  मोदक बघा 👀
                 </a>
               </div>
             </div>
@@ -203,7 +136,7 @@ export default function Home() {
               </div>
               <img
                 src={ASSETS.logoA}
-                alt="टाकम mascot — Surali Vadi with sunglasses"
+                alt="टाकम mascot - Surali Vadi with sunglasses"
                 decoding="async"
                 fetchPriority="high"
                 className="w-72 md:w-[26rem] mascot-bob drop-shadow-xl"
@@ -218,103 +151,8 @@ export default function Home() {
           className="bg-mascot -rotate-1 scale-x-105 relative z-10"
         />
 
-        {/* ---------- Menu: sticker board ---------- */}
-        <section id="menu" className="py-16 md:py-24 relative">
-          {/* floating doodle badges */}
-          <div className="absolute top-10 left-[6%] sticker rotate-6 bg-peach px-3 py-1 font-display font-bold text-sm hidden lg:block">
-            फक्त fresh batch 🌿
-          </div>
-          <div className="absolute top-24 right-[5%] sticker -rotate-6 bg-mint px-3 py-1 font-display font-bold text-sm hidden lg:block">
-            चव = जबरदस्त
-          </div>
-
-          <div className="container">
-            <div className="text-center mb-14 md:mb-20 relative">
-              <div className="inline-block sticker rotate-2 bg-peach px-4 py-1.5 font-display font-bold text-sm mb-4">
-                🍽️ आजचा Menu
-              </div>
-              <h2 className="font-display font-extrabold -rotate-1" style={{ fontSize: "clamp(2rem, 4.5vw, 3.4rem)" }}>
-                काय काय आहे?{" "}
-                <span className="relative inline-block rotate-1">
-                  <span className="relative z-10">हे आहे!</span>
-                  <span className="absolute bottom-1 left-0 w-full h-3.5 bg-mint -z-0 rotate-1" />
-                </span>
-              </h2>
-              <p className="text-muted-foreground font-semibold text-lg mt-3 max-w-xl mx-auto">
-                Small batch, big taste. Har item full घरगुती — no factory, no nonsense.
-              </p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-6 lg:gap-10">
-              {products.map((p, i) => (
-                <div
-                  key={p.english}
-                  className={`sticker ${p.rotate} bg-white pop-in p-4 pb-5`}
-                  style={{ animationDelay: `${i * 80}ms` }}
-                >
-                  {/* polaroid photo (links to product page) */}
-                  <Link href={`/product/${p.slug}`} className={`block relative ${p.photoRotate} mb-5 mx-1 mt-1 hover:no-underline`}>
-                    <div className="border-[3px] border-ink bg-white p-2 pb-3 shadow-[5px_5px_0_0_var(--ink)]">
-                      <img
-                        src={p.image}
-                        alt={`${p.marathi} (${p.english})`}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-48 lg:h-52 object-cover border-2 border-ink/15 saturate-[1.15]"
-                      />
-                      <p className="text-center font-display font-bold text-xs mt-1.5 text-ink/60">
-                        📸 straight from आमची kitchen
-                      </p>
-                    </div>
-                    <Tape className="-top-2.5 left-1/2 -translate-x-1/2 -rotate-3" />
-                    <span
-                      className={`absolute -bottom-3 -right-2 ${p.tagBg} border-[2.5px] border-ink rounded-full px-3 py-0.5 font-display font-bold text-sm rotate-3 shadow-[2px_2px_0_0_var(--ink)]`}
-                    >
-                      {p.tag}
-                    </span>
-                  </Link>
-
-                  <div className="px-2 space-y-3">
-                    <div className="flex items-baseline justify-between gap-2">
-                      <Link href={`/product/${p.slug}`} className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">
-                        <h3 className="font-display font-extrabold text-2xl">{p.marathi}</h3>
-                      </Link>
-                      <span className="text-sm font-bold text-muted-foreground">{p.english}</span>
-                    </div>
-                    <p className="font-semibold text-[15px] leading-relaxed">{p.desc}</p>
-                    <p className="text-sm font-bold text-muted-foreground italic">{p.funny}</p>
-                    <div className="flex items-center justify-between pt-2">
-                      <Link
-                        href={`/product/${p.slug}`}
-                        className="sticker-btn bg-mint px-3.5 py-1.5 text-sm font-display font-bold -rotate-1 inline-flex items-center gap-1"
-                      >
-                        अजून बघा 👀
-                      </Link>
-                      <a
-                        href={`tel:${PHONE}`}
-                        className="sticker-btn bg-tomato text-primary-foreground px-4 py-1.5 text-sm flex items-center gap-1.5"
-                      >
-                        <Phone className="h-3.5 w-3.5" /> मागवा
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex flex-wrap justify-center items-center gap-5 mt-14">
-              <p className="sticker rotate-1 bg-white px-5 py-2 font-display font-bold text-muted-foreground inline-block">
-                अजून काही येत आहेत... 👀
-              </p>
-              <Link href="/catalog" className="sticker-btn bg-mint px-6 py-2.5 font-display font-bold -rotate-1 inline-flex items-center gap-2">
-                📋 पूर्ण Catalog बघा
-              </Link>
-            </div>
-          </div>
-        </section>
-
         {/* ---------- Ganapati Modak collection ---------- */}
-        <section className="py-16 md:py-24 bg-mint/25 relative overflow-hidden">
+        <section id="modaks" className="py-16 md:py-24 bg-mint/25 relative overflow-hidden">
           <div className="absolute top-9 left-[6%] sticker -rotate-6 bg-mascot px-3 py-1 font-display font-bold text-sm hidden lg:block">
             बाप्पा special 🙏
           </div>
@@ -330,7 +168,7 @@ export default function Home() {
                 मोदक बोलतोय... <span className="relative inline-block rotate-1"><span className="relative z-10">ऐकणार का?</span><span className="absolute bottom-1 left-0 h-3.5 w-full bg-mascot -z-0" /></span>
               </h2>
               <p className="mt-3 font-semibold text-lg text-muted-foreground">
-                सात flavours, सात personalities — Ganapati season साठी full Takam energy.
+                सात flavours, सात personalities - Ganapati season साठी full Takam energy.
               </p>
             </div>
 
@@ -367,9 +205,9 @@ export default function Home() {
               <Link href="/ganapati-modak-special" className="sticker-btn bg-mascot px-6 py-2.5 font-display font-bold inline-flex items-center gap-2 -rotate-1">
                 🗓️ ११ दिवसांचं schedule बघा
               </Link>
-              <Link href="/catalog" className="sticker-btn bg-white px-6 py-2.5 font-display font-bold inline-flex items-center gap-2 rotate-1">
-                🙏 पूर्ण Modak Catalog बघा
-              </Link>
+              <a href="#order" className="sticker-btn bg-white px-6 py-2.5 font-display font-bold inline-flex items-center gap-2 rotate-1">
+                🙏 Modak order करा
+              </a>
             </div>
           </div>
         </section>
@@ -416,10 +254,10 @@ export default function Home() {
                 </span>
               </h2>
               <p className="font-semibold text-lg leading-relaxed">
-                Takam started in a real home kitchen in Maharashtra — not a factory, not a cloud kitchen, just a stove, a family recipe book, and a lot of love (and ghee).
+                Takam started in a real home kitchen in Maharashtra - not a factory, not a cloud kitchen, just a stove, a family recipe book, and a lot of love (and ghee).
               </p>
               <p className="font-semibold text-lg leading-relaxed">
-                Every batch is handmade in small quantities, using the same recipes our आजी used. No preservatives, no artificial colors — फक्त authentic Marathi chavi.
+                Every batch is handmade in small quantities, using the same recipes our आजी used. No preservatives, no artificial colors - फक्त authentic Marathi chavi.
               </p>
               <div className="grid grid-cols-3 gap-3 pt-2">
                 {[
@@ -454,15 +292,9 @@ export default function Home() {
                 भूक लागली? <br className="md:hidden" /> मग वाट कसली बघताय!
               </h2>
               <p className="font-semibold text-lg max-w-md mx-auto">
-                Call or WhatsApp us to order. Fresh batches made on demand — जितकं fresh, तितकं भारी.
+                WhatsApp us to order. Fresh batches made on demand - जितकं fresh, तितकं भारी.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <a
-                  href={`tel:${PHONE}`}
-                  className="sticker-btn bg-tomato text-primary-foreground px-7 py-3 text-lg flex items-center gap-2 -rotate-1"
-                >
-                  <Phone className="h-5 w-5" /> {PHONE}
-                </a>
                 <a
                   href={`https://wa.me/91${PHONE}?text=${encodeURIComponent("नमस्कार टाकम! मला order करायचं आहे 😋")}`}
                   target="_blank"
@@ -494,12 +326,7 @@ export default function Home() {
           <p className="text-sm opacity-80 font-semibold text-center">
             Made with ❤️ in Maharashtra
           </p>
-          <a
-            href={`tel:${PHONE}`}
-            className="sticker-btn bg-mascot text-ink px-5 py-2 font-display font-bold text-lg -rotate-1"
-          >
-            📞 {PHONE}
-          </a>
+
         </div>
         {/* big ghost wordmark */}
         <p

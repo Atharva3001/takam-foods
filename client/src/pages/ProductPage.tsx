@@ -1,15 +1,24 @@
 /*
- * TAKAM — Sticker Bomb Bazaar theme
+ * TAKAM - Sticker Bomb Bazaar theme
  * Product detail page (/product/:slug): polaroid gallery + video placeholder,
  * story, benefit sticker cards, how-to-enjoy, quick facts, order CTAs.
  * Red-orange only on ordering actions.
  */
-import { useState } from "react";
-import { Phone, MessageCircle, ArrowLeft, PlayCircle, ChevronRight } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import { MessageCircle, ArrowLeft, PlayCircle, ChevronRight } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { getProduct, products, PHONE, SITE_ASSETS } from "@/lib/products";
 import { MobileNav } from "@/components/MobileNav";
 import NotFound from "@/pages/NotFound";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 function Tape({ className = "" }: { className?: string }) {
   return (
@@ -24,7 +33,10 @@ export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
   const product = getProduct(slug ?? "");
   const [activeImage, setActiveImage] = useState(0);
-  const [quantity, setQuantity] = useState("11 Pieces");
+  const [name, setName] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
+  const [quantity, setQuantity] = useState("");
   const [customQuantity, setCustomQuantity] = useState("");
   const [deliveryLocation, setDeliveryLocation] = useState("");
   const [customLocation, setCustomLocation] = useState("");
@@ -33,17 +45,38 @@ export default function ProductPage() {
 
   const others = products.filter((p) => p.slug !== product.slug);
   const isModak = product.slug.includes("modak");
-  const quantityOptions = ["11 Pieces", "21 Pieces", "250 gm", "500 gm", "Custom"];
+  const quantityOptions = [
+    ...(product.slug === "ukadiche-modak" ? [{ label: "7 Pieces", price: "₹210" }] : []),
+    { label: "11 Pieces", price: "₹320" },
+    { label: "21 Pieces", price: "₹580" },
+    { label: "250 gm", price: "₹320" },
+    { label: "500 gm", price: "₹590" },
+    { label: "1 kg", price: "₹1,100" },
+    { label: "Custom", price: "Price on confirmation" },
+  ];
   const deliveryOptions = ["Singhgad Road", "Kothurd", "Deccan", "Nanded City", "Baner", "Pashan", "Baavdhan", "Other area"];
+  const selectedQuantity = quantityOptions.find((option) => option.label === quantity);
   const orderQuantity = quantity === "Custom" ? `Custom: ${customQuantity.trim()}` : quantity;
+  const orderPrice = selectedQuantity?.price ?? "To confirm";
   const orderLocation = deliveryLocation === "Other area" ? `Other area: ${customLocation.trim()}` : deliveryLocation;
   const customQuantityMissing = quantity === "Custom" && !customQuantity.trim();
+  const quantityMissing = !quantity || customQuantityMissing;
   const deliveryLocationMissing = !deliveryLocation || (deliveryLocation === "Other area" && !customLocation.trim());
-  const orderIncomplete = customQuantityMissing || deliveryLocationMissing;
+  const normalizedMobileNumber = mobileNumber.replace(/\D/g, "");
+  const nameMissing = isModak && !name.trim();
+  const mobileNumberMissing = isModak && !/^[6-9]\d{9}$/.test(normalizedMobileNumber);
+  const orderIncomplete = quantityMissing;
   const waText = encodeURIComponent(
-    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋${isModak ? `\nQuantity: ${orderQuantity}\nDelivery location: ${orderLocation}` : ""}`
+    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋${isModak ? `\nName: ${name.trim()}\nMobile Number: ${normalizedMobileNumber}\nQuantity: ${orderQuantity}\nIndicative price: ${orderPrice}\nDelivery location: ${orderLocation}` : ""}`
   );
-  const isMascotAsset = product.images[activeImage]?.includes("takam_modak_") ?? false;
+  const handleOrderSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (nameMissing || mobileNumberMissing || deliveryLocationMissing) return;
+    window.open(`https://wa.me/91${PHONE}?text=${waText}`, "_blank", "noopener,noreferrer");
+    setIsOrderDialogOpen(false);
+  };
+  const isMascotSrc = (src: string) => src.includes("takam_modak_") || src.includes("ukadiche_modak_hero_mascot");
+  const isMascotAsset = isMascotSrc(product.images[activeImage] ?? "");
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
@@ -60,17 +93,9 @@ export default function ProductPage() {
           </Link>
           <nav className="hidden md:flex items-center gap-6 font-display font-bold">
             <Link href="/" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">Home</Link>
-            <Link href="/catalog" className="hover:underline decoration-[3px] decoration-mint underline-offset-4">Catalog 📋</Link>
+            <Link href="/ganapati-modak-special" className="hover:underline decoration-[3px] decoration-mint underline-offset-4">गणपती Special 🙏</Link>
           </nav>
-          <MobileNav phone={PHONE} />
-          <a
-            href={`tel:${PHONE}`}
-            className="sticker-btn bg-tomato text-primary-foreground px-4 py-1.5 md:px-5 md:py-2 flex items-center gap-2 text-sm md:text-base -rotate-1"
-          >
-            <Phone className="h-4 w-4" />
-            <span className="hidden sm:inline">Call करा!</span>
-            <span className="sm:hidden">Call</span>
-          </a>
+          <MobileNav />
         </div>
       </header>
 
@@ -80,7 +105,7 @@ export default function ProductPage() {
           <p className="font-display font-bold text-sm text-muted-foreground flex items-center gap-1 flex-wrap">
             <Link href="/" className="hover:underline">Home</Link>
             <ChevronRight className="h-3.5 w-3.5" />
-            <Link href="/catalog" className="hover:underline">Catalog</Link>
+            <Link href="/ganapati-modak-special" className="hover:underline">गणपती Special</Link>
             <ChevronRight className="h-3.5 w-3.5" />
             <span className="text-ink">{product.marathi}</span>
           </p>
@@ -127,7 +152,7 @@ export default function ProductPage() {
                     }`}
                     aria-label={`View photo ${i + 1}`}
                   >
-                    <img src={img} alt="" loading="lazy" decoding="async" className={`h-full w-full ${img.includes("takam_modak_") ? "object-contain bg-mint/20 p-1" : "object-cover"}`} />
+                    <img src={img} alt="" loading="lazy" decoding="async" className={`h-full w-full ${isMascotSrc(img) ? "object-contain bg-mint/20 p-1" : "object-cover"}`} />
                   </button>
                 ))}
                 {product.videos.length === 0 && (
@@ -164,6 +189,16 @@ export default function ProductPage() {
               <p className="font-bold italic text-muted-foreground">{product.funny}</p>
 
               {isModak && (
+                <div className="sticker bg-mascot/80 p-4 -rotate-1 border-2 border-ink">
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Made to Order</span>
+                    <span className="bg-peach border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Limited Quantity</span>
+                  </div>
+                  <p className="font-semibold text-sm leading-snug">Every Ganapati batch is made fresh to order. Quantities are limited, so confirm your enquiry early.</p>
+                </div>
+              )}
+
+              {isModak && (
                 <div className="sticker -rotate-1 bg-peach/55 p-4 md:p-5 space-y-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="font-display font-extrabold text-lg">किती पाहिजेत? 👀</p>
@@ -173,12 +208,13 @@ export default function ProductPage() {
                     {quantityOptions.map((option) => (
                       <button
                         type="button"
-                        key={option}
-                        onClick={() => setQuantity(option)}
-                        className={`border-[2.5px] border-ink px-3 py-2 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] transition-transform active:scale-95 ${quantity === option ? "bg-mascot -rotate-1" : "bg-white hover:bg-mint/60 rotate-[.4deg]"}`}
-                        aria-pressed={quantity === option}
+                        key={option.label}
+                        onClick={() => setQuantity(option.label)}
+                        className={`border-[2.5px] border-ink px-3 py-2 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] transition-transform active:scale-95 ${quantity === option.label ? "bg-mascot -rotate-1" : "bg-white hover:bg-mint/60 rotate-[.4deg]"}`}
+                        aria-pressed={quantity === option.label}
                       >
-                        {option === "Custom" ? "Custom ✍️" : option}
+                        <span className="block">{option.label === "Custom" ? "Custom ✍️" : option.label}</span>
+                        <span className="block text-xs font-bold text-muted-foreground">{option.price}</span>
                       </button>
                     ))}
                   </div>
@@ -193,64 +229,90 @@ export default function ProductPage() {
                       />
                     </label>
                   )}
-                  <p className="font-bold text-xs text-muted-foreground">तुमची निवड: <span className="text-ink">{quantity === "Custom" && customQuantity.trim() ? customQuantity : quantity}</span></p>
-                </div>
-              )}
-
-              {isModak && (
-                <div className="sticker rotate-1 bg-mint/45 p-4 md:p-5 space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="font-display font-extrabold text-lg">Delivery कुठे? 📍</p>
-                    <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Choose your area</span>
-                  </div>
-                  <label className="block space-y-1.5">
-                    <span className="font-display font-bold text-sm">तुमचा delivery area निवडा</span>
-                    <select
-                      value={deliveryLocation}
-                      onChange={(event) => setDeliveryLocation(event.target.value)}
-                      className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
-                    >
-                      <option value="" disabled>Select area</option>
-                      {deliveryOptions.map((option) => <option key={option} value={option}>{option}</option>)}
-                    </select>
-                  </label>
-                  {deliveryLocation === "Other area" && (
-                    <label className="block space-y-1.5">
-                      <span className="font-display font-bold text-sm">तुमचा area लिहा</span>
-                      <input
-                        value={customLocation}
-                        onChange={(event) => setCustomLocation(event.target.value)}
-                        placeholder="उदा. Wakad, Pune"
-                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
-                      />
-                    </label>
-                  )}
-                  <p className="font-bold text-xs text-muted-foreground">Delivery location: <span className="text-ink">{deliveryLocation === "Other area" && customLocation.trim() ? customLocation : deliveryLocation || "निवडा"}</span></p>
+                  <p className="font-bold text-xs text-muted-foreground">Indicative prices for now · तुमची निवड: <span className="text-ink">{quantity === "Custom" && customQuantity.trim() ? customQuantity : quantity || "Select one"}</span>{quantity && <span className="text-ink"> · {orderPrice}</span>}</p>
                 </div>
               )}
 
 
 
               <div className="flex flex-wrap gap-4 pt-1">
-                <a
-                  href={`tel:${PHONE}`}
-                  className="sticker-btn bg-tomato text-primary-foreground px-7 py-3 text-lg flex items-center gap-2 -rotate-1"
+                <button
+                  type="button"
+                  disabled={orderIncomplete}
+                  onClick={() => setIsOrderDialogOpen(true)}
+                  className={`sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "cursor-not-allowed opacity-50" : ""}`}
                 >
-                  <Phone className="h-5 w-5" /> लगेच मागवा
-                </a>
-                <a
-                  href={`https://wa.me/91${PHONE}?text=${waText}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-disabled={orderIncomplete}
-                  onClick={(event) => {
-                    if (orderIncomplete) event.preventDefault();
-                  }}
-                  className={`sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "pointer-events-none opacity-50" : ""}`}
-                >
-                  <MessageCircle className="h-5 w-5" /> WhatsApp करा
-                </a>
+                  <MessageCircle className="h-5 w-5" /> Send Enquiry on WhatsApp
+                </button>
               </div>
+
+              <Dialog open={isOrderDialogOpen} onOpenChange={setIsOrderDialogOpen}>
+                <DialogContent className="border-[3px] border-ink bg-cream shadow-[8px_8px_0_0_var(--ink)] p-5 sm:p-7">
+                  <DialogHeader className="text-left">
+                    <DialogTitle className="font-display text-2xl font-extrabold">Order details ✍️</DialogTitle>
+                    <DialogDescription className="font-semibold text-ink/70">Just these details, then WhatsApp करा. Your selection: {orderQuantity} · {orderPrice} indicative.</DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleOrderSubmit} className="space-y-4">
+                    <label className="block space-y-1.5">
+                      <span className="font-display font-bold text-sm">Name</span>
+                      <input
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                        placeholder="Enter your name"
+                        autoComplete="name"
+                        required
+                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                      />
+                    </label>
+                    <label className="block space-y-1.5">
+                      <span className="font-display font-bold text-sm">Mobile Number</span>
+                      <input
+                        value={mobileNumber}
+                        onChange={(event) => setMobileNumber(event.target.value.replace(/[^0-9+\\s-]/g, ""))}
+                        placeholder="10-digit mobile number"
+                        inputMode="tel"
+                        autoComplete="tel"
+                        maxLength={14}
+                        required
+                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                      />
+                      {mobileNumber.length > 0 && mobileNumberMissing && <span className="block text-xs font-bold text-tomato">Please enter a valid 10-digit mobile number.</span>}
+                    </label>
+                    <label className="block space-y-1.5">
+                      <span className="font-display font-bold text-sm">Delivery Area</span>
+                      <select
+                        value={deliveryLocation}
+                        onChange={(event) => setDeliveryLocation(event.target.value)}
+                        required
+                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                      >
+                        <option value="" disabled>Select area</option>
+                        {deliveryOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+                      </select>
+                    </label>
+                    {deliveryLocation === "Other area" && (
+                      <label className="block space-y-1.5">
+                        <span className="font-display font-bold text-sm">Your Area</span>
+                        <input
+                          value={customLocation}
+                          onChange={(event) => setCustomLocation(event.target.value)}
+                          placeholder="e.g. Wakad, Pune"
+                          required
+                          className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                        />
+                      </label>
+                    )}
+                    <DialogFooter className="pt-2 sm:flex-row sm:justify-end">
+                      <DialogClose asChild>
+                        <button type="button" className="border-[2.5px] border-ink bg-white px-4 py-2.5 font-display font-bold shadow-[2px_2px_0_0_var(--ink)]">Not yet</button>
+                      </DialogClose>
+                      <button type="submit" className="sticker-btn bg-tomato text-primary-foreground px-5 py-2.5 flex items-center justify-center gap-2">
+                        <MessageCircle className="h-4 w-4" /> Continue to WhatsApp
+                      </button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
 
               {/* Quick facts */}
               <div className="sticker rotate-1 bg-white p-5 mt-4">
@@ -301,7 +363,7 @@ export default function ProductPage() {
                 💚 का खावं?
               </div>
               <h2 className="font-display font-extrabold -rotate-1" style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)" }}>
-                Benefits —{" "}
+                Benefits -{" "}
                 <span className="relative inline-block rotate-1">
                   <span className="relative z-10">एकदम solid!</span>
                   <span className="absolute bottom-1 left-0 w-full h-3 bg-mascot -z-0 rotate-1" />
@@ -354,12 +416,6 @@ export default function ProductPage() {
               </h2>
               <div className="flex flex-wrap justify-center gap-4">
                 <a
-                  href={`tel:${PHONE}`}
-                  className="sticker-btn bg-tomato text-primary-foreground px-7 py-3 text-lg flex items-center gap-2 -rotate-1"
-                >
-                  <Phone className="h-5 w-5" /> {PHONE}
-                </a>
-                <a
                   href={`https://wa.me/91${PHONE}?text=${waText}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -369,7 +425,7 @@ export default function ProductPage() {
                   }}
                   className={`sticker-btn bg-mint px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "pointer-events-none opacity-50" : ""}`}
                 >
-                  <MessageCircle className="h-5 w-5" /> WhatsApp करा
+                  <MessageCircle className="h-5 w-5" /> Send Enquiry on WhatsApp
                 </a>
               </div>
             </div>
@@ -403,8 +459,8 @@ export default function ProductPage() {
               ))}
             </div>
             <div className="text-center mt-10">
-              <Link href="/catalog" className="font-display font-bold hover:underline decoration-[3px] decoration-mascot underline-offset-4 inline-flex items-center gap-1.5">
-                <ArrowLeft className="h-4 w-4" /> पूर्ण Catalog बघा
+              <Link href="/ganapati-modak-special" className="font-display font-bold hover:underline decoration-[3px] decoration-mascot underline-offset-4 inline-flex items-center gap-1.5">
+                <ArrowLeft className="h-4 w-4" /> सगळे Ganapati Modak बघा
               </Link>
             </div>
           </div>
@@ -424,12 +480,7 @@ export default function ProductPage() {
           <p className="text-sm opacity-80 font-semibold text-center">
             Made with ❤️ in Maharashtra
           </p>
-          <a
-            href={`tel:${PHONE}`}
-            className="sticker-btn bg-mascot text-ink px-5 py-2 font-display font-bold text-lg -rotate-1"
-          >
-            📞 {PHONE}
-          </a>
+
         </div>
         <p
           className="absolute -bottom-7 right-4 font-display font-extrabold text-cream/10 select-none pointer-events-none leading-none"
