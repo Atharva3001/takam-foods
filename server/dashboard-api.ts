@@ -100,6 +100,14 @@ export function registerDashboardApi(app: Express) {
     const capacityViolation = findCapacityViolation(requested, committed, products); if (capacityViolation) return res.status(409).json({ error: `${capacityViolation.productName} is full for ${body.productionDate}`, ...capacityViolation });
     const now = new Date().toISOString(); const order: Order = { id: nanoid(12), orderNumber: body.orderNumber || `TF-${Date.now().toString().slice(-6)}`, orderDate: body.orderDate || now.slice(0, 10), productionDate: body.productionDate, customerName: body.customerName.trim(), customerPhone: body.customerPhone || "", deliveryAddress: body.deliveryAddress || "", items: body.items.map((item) => ({ productId: item.productId, quantity: Number(item.quantity) })), amount: Number(body.amount || 0), paymentStatus: body.paymentStatus || "Pending", status: body.status || "New", deliveryPerson: body.deliveryPerson || "", trackingNumber: body.trackingNumber || "", actualDeliveryDate: body.actualDeliveryDate || "", notes: body.notes || "", createdAt: now, updatedAt: now }; state.orders.push(order); await writeDashboard(state); res.status(201).json(order);
   });
+  app.delete("/api/dashboard/orders/:id", async (req, res) => {
+    const state = await readDashboard();
+    const index = state.orders.findIndex((item) => item.id === req.params.id);
+    if (index === -1) return sendError(res, "Order not found", 404);
+    const [deletedOrder] = state.orders.splice(index, 1);
+    await writeDashboard(state);
+    res.json({ ok: true, order: deletedOrder });
+  });
   app.patch("/api/dashboard/orders/:id", async (req, res) => { const state = await readDashboard(); const order = state.orders.find((item) => item.id === req.params.id); if (!order) return sendError(res, "Order not found", 404); Object.assign(order, req.body, { updatedAt: new Date().toISOString() }); await writeDashboard(state); res.json(order); });
   app.get("/api/dashboard/production", async (req, res) => {
     const date = String(req.query.date || new Date().toISOString().slice(0, 10)); const state = await readDashboard(); const { schedule, products } = ensureScheduledProducts(state, date); if (!schedule) return res.json({ date, schedule: null, products: [], timeline: [] });

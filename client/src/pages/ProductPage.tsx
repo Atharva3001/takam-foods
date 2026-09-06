@@ -58,7 +58,6 @@ const MODAK_PRICES: Record<string, Record<string, string>> = {
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
   const product = getProduct(slug ?? "");
-  const [activeImage, setActiveImage] = useState(0);
   const [name, setName] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [selectedDay, setSelectedDay] = useState("");
@@ -194,8 +193,8 @@ export default function ProductPage() {
     }
   };
 
-  const isMascotSrc = (src: string) => src.includes("takam_modak_") || src.includes("ukadiche_modak_hero_mascot");
-  const isMascotAsset = isMascotSrc(product.images[activeImage] ?? "");
+  const primaryImage = product.images[0] ?? "";
+  const isMascotAsset = primaryImage.includes("takam_modak_") || primaryImage.includes("ukadiche_modak_hero_mascot");
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
@@ -214,7 +213,7 @@ export default function ProductPage() {
           <div className="absolute top-6 right-[6%] sticker rotate-6 bg-peach px-3 py-1 font-display font-bold text-sm hidden lg:block">एकदम fresh! ✨</div>
           <div className="container grid md:grid-cols-2 gap-10 lg:gap-14 items-start">
             <div className="space-y-5">
-              <div className="relative -rotate-1"><div className="border-[3px] border-ink bg-white p-2.5 pb-4 shadow-[6px_6px_0_0_var(--ink)]"><img src={product.images[activeImage]} alt={`${product.marathi} photo ${activeImage + 1}`} decoding="async" fetchPriority="high" className={`w-full h-80 md:h-[26rem] border-2 border-ink/15 ${isMascotAsset ? "object-contain bg-mint/20 p-5" : "object-cover saturate-[1.15]"}`} /><p className="text-center font-display font-bold text-xs mt-2 text-ink/60">{isMascotAsset ? "✨ Modak चा official Takam avatar" : "📸 straight from आमची kitchen"}</p></div><Tape className="-top-2.5 left-10 -rotate-6" /><Tape className="-top-2.5 right-10 rotate-6" /></div>
+              <div className="relative -rotate-1"><div className="border-[3px] border-ink bg-white p-2.5 pb-4 shadow-[6px_6px_0_0_var(--ink)]"><img src={primaryImage} alt={`${product.marathi} official graphic`} decoding="async" fetchPriority="high" className="w-full h-80 md:h-[26rem] border-2 border-ink/15 object-contain bg-mint/20 p-5" /><p className="text-center font-display font-bold text-xs mt-2 text-ink/60">{isMascotAsset ? "✨ Modak चा official Takam avatar" : "📸 straight from आमची kitchen"}</p></div><Tape className="-top-2.5 left-10 -rotate-6" /><Tape className="-top-2.5 right-10 rotate-6" /></div>
               <div className="flex gap-3 flex-wrap pt-2">{product.images.map((img, i) => <button key={img} onClick={() => setActiveImage(i)} className={`border-[2.5px] border-ink rounded-xl overflow-hidden h-18 w-18 md:h-20 md:w-20 shadow-[3px_3px_0_0_var(--ink)] ${i === activeImage ? "ring-4 ring-mascot" : "opacity-70 hover:opacity-100"}`} aria-label={`View photo ${i + 1}`}><img src={img} alt="" loading="lazy" decoding="async" className={`h-full w-full ${isMascotSrc(img) ? "object-contain bg-mint/20 p-1" : "object-cover"}`} /></button>)}{product.videos.length === 0 && <div className="border-[2.5px] border-dashed border-ink/40 rounded-xl h-18 w-18 md:h-20 md:w-20 flex flex-col items-center justify-center text-center px-1 bg-white/60"><PlayCircle className="h-5 w-5 text-ink/40" /><span className="font-display font-bold text-[9px] text-ink/40">Video लवकरच 🎬</span></div>}</div>
             </div>
 

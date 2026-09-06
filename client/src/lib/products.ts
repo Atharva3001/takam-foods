@@ -103,7 +103,7 @@ export const products: Product[] = [
     tagBg: "bg-peach",
     shortDesc: "Rich khava goodness in a festive Modak avatar - creamy, comforting, and Bappa-ready.",
     funny: '"Creamy आहे, boring नाही!" 🥛',
-    images: ["/manus-storage/takam_modak_khava_opaque_cream_af814046.png"],
+    images: ["/images/takam_modak_khava.webp"],
     videos: [],
     story: [
       "खवा मोदक brings the rich, creamy comfort of homemade khava into the Ganapati Modak gang. It is festive, indulgent, and made for the person who says - एक अजून घेऊ का?",
