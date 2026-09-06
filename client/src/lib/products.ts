@@ -31,6 +31,28 @@ export const SITE_ASSETS = {
   kitchen: "/images/takam_kitchen_illustration.webp",
 };
 
+export interface GanapatiScheduleDay {
+  day: string;
+  date: string;
+  name: string;
+  slugs: string[];
+  mood: string;
+}
+
+export const GANAPATI_SCHEDULE: GanapatiScheduleDay[] = [
+  { day: "१", date: "14 Sep", name: "Opening aarti combo", slugs: ["ukadiche-modak", "dink-modak", "khava-modak", "gulkand-modak"], mood: "🙏 Bappa entry with the creamy gang" },
+  { day: "२", date: "15 Sep", name: "Pink welcome day", slugs: ["ukadiche-modak", "poshtik-modak", "khava-modak", "beet-modak"], mood: "💗 feel-good, creamy, colour pop" },
+  { day: "३", date: "16 Sep", name: "Festive VIP day", slugs: ["ukadiche-modak", "dryfruit-modak", "nachni-modak", "gulkand-modak"], mood: "👑 richness, earthy energy and rose" },
+  { day: "४", date: "17 Sep", name: "Power and comfort day", slugs: ["ukadiche-modak", "tilkund-modak", "dink-modak", "khava-modak"], mood: "🔥 tiny, mighty and creamy" },
+  { day: "५", date: "18 Sep", name: "Earthy colour day", slugs: ["ukadiche-modak", "nachni-modak", "poshtik-modak", "beet-modak"], mood: "🏋️ grounded, hearty and bright" },
+  { day: "६", date: "19 Sep", name: "Premium sweetheart day", slugs: ["ukadiche-modak", "dryfruit-modak", "tilkund-modak", "gulkand-modak"], mood: "🌹 festive VIP meets tiny rebel" },
+  { day: "७", date: "20 Sep", name: "Strength coach day", slugs: ["ukadiche-modak", "dink-modak", "nachni-modak", "khava-modak"], mood: "💪 power, earthy vibes and comfort" },
+  { day: "८", date: "21 Sep", name: "Feel-good VIP day", slugs: ["ukadiche-modak", "poshtik-modak", "dryfruit-modak", "beet-modak"], mood: "🦸 balanced, premium and pink" },
+  { day: "९", date: "22 Sep", name: "Tiny sweetheart day", slugs: ["ukadiche-modak", "nachni-modak", "tilkund-modak", "gulkand-modak"], mood: "✨ earthy, mighty and dreamy" },
+  { day: "१०", date: "23 Sep", name: "Power comfort combo", slugs: ["ukadiche-modak", "dink-modak", "poshtik-modak", "khava-modak"], mood: "🎊 Bappa farewell warm-up" },
+  { day: "११", date: "24 Sep", name: "Bappa farewell mixed box", slugs: ["ukadiche-modak", "dryfruit-modak", "nachni-modak", "gulkand-modak"], mood: "🙏 final day, full Takam gang energy" },
+];
+
 export const products: Product[] = [
   {
     slug: "ukadiche-modak",
@@ -71,6 +93,40 @@ export const products: Product[] = [
       { label: "Best within", value: "1–2 days (eat warm for best taste)" },
     ],
     unit: "per piece",
+    price: null,
+  },
+  {
+    slug: "khava-modak",
+    marathi: "खवा मोदक",
+    english: "Khava Modak",
+    tag: "🥛 Creamy classic",
+    tagBg: "bg-peach",
+    shortDesc: "Rich khava goodness in a festive Modak avatar - creamy, comforting, and Bappa-ready.",
+    funny: '"Creamy आहे, boring नाही!" 🥛',
+    images: ["/manus-storage/takam_modak_khava_opaque_cream_af814046.png"],
+    videos: [],
+    story: [
+      "खवा मोदक brings the rich, creamy comfort of homemade khava into the Ganapati Modak gang. It is festive, indulgent, and made for the person who says - एक अजून घेऊ का?",
+      "At Takam, every Khava Modak is made to order in small batches so the texture stays soft, rich, and celebration-ready.",
+    ],
+    benefits: [
+      { emoji: "🥛", title: "Creamy khava vibe", desc: "A rich, comforting Modak for classic sweet lovers." },
+      { emoji: "🎊", title: "Festive favourite", desc: "A celebration-ready addition to the Ganapati Modak spread." },
+      { emoji: "✋", title: "Made in small batches", desc: "Freshly prepared to order with Takam's homemade touch." },
+      { emoji: "💛", title: "Comfort-food energy", desc: "The creamy classic of the new Modak lineup." },
+    ],
+    howToEnjoy: [
+      "Serve as part of your Ganapati naivedya platter 🙏",
+      "Pair with warm chai for a creamy festive break ☕",
+      "Share it with the family - or keep one extra for yourself",
+    ],
+    facts: [
+      { label: "Flavour vibe", value: "Creamy, rich, festive" },
+      { label: "Campaign role", value: "The creamy classic" },
+      { label: "Collection", value: "Ganapati Modak specials" },
+      { label: "Details", value: "Ingredients on request" },
+    ],
+    unit: "per box",
     price: null,
   },
   {
@@ -286,111 +342,6 @@ export const products: Product[] = [
       { label: "Details", value: "Ingredients on request" },
     ],
     unit: "",
-    price: null,
-  },
-  {
-    slug: "surali-vadi",
-    marathi: "सुरळी वडी",
-    english: "Surali Vadi",
-    tag: "🌟 Signature चव",
-    tagBg: "bg-peach",
-    shortDesc:
-      "Soft besan rolls, tadka on top, coriander confetti. Aaji-level softness, guaranteed.",
-    funny: '"Roll model of all snacks" 😎',
-    images: ["/images/surali-vadi-1.jpeg"],
-    videos: [],
-    story: [
-      "सुरळी वडी (also called Khandvi's Marathi cousin) is the ultimate test of a home cook's skill - the besan batter must be cooked to the exact right consistency, spread paper-thin, and rolled into delicate spirals before it sets. One minute too long and it cracks; one minute too short and it won't roll.",
-      "At Takam, every roll is made by hand the traditional way - slow-cooked besan and buttermilk batter, spread on the counter, rolled tight, and finished with a sizzling tadka of mustard seeds, sesame, fresh coriander, and coconut. No shortcuts, no mixes.",
-    ],
-    benefits: [
-      { emoji: "🌱", title: "Protein-rich besan", desc: "Made from gram flour (besan), a good source of plant protein and fiber." },
-      { emoji: "🥛", title: "Light on the stomach", desc: "Steam-cooked, not fried - a guilt-free snack for any time of day." },
-      { emoji: "🌿", title: "Fresh tadka toppings", desc: "Coriander, coconut, sesame, and mustard tadka added fresh before delivery." },
-      { emoji: "🏠", title: "Zero preservatives", desc: "Made fresh in small batches on order. What we eat at home is what you get." },
-    ],
-    howToEnjoy: [
-      "As an evening snack with hot chai ☕",
-      "As a starter at family gatherings - it disappears fast!",
-      "In the tiffin box - stays soft for hours",
-    ],
-    facts: [
-      { label: "Texture", value: "Soft, melt-in-mouth spirals" },
-      { label: "Taste", value: "Savory, tangy, fresh tadka" },
-      { label: "Made from", value: "Besan, buttermilk, fresh tadka" },
-      { label: "Best within", value: "1–2 days (it never lasts that long 😄)" },
-    ],
-    unit: "per plate",
-    price: null,
-  },
-  {
-    slug: "gulab-jamun",
-    marathi: "गुलाबजाम",
-    english: "Gulab Jamun",
-    tag: "🍯 Syrup मध्ये डुबकी",
-    tagBg: "bg-mint",
-    shortDesc:
-      "Melt-in-mouth jamuns swimming happily in kesar syrup. Diet plans fear this.",
-    funny: '"Gym kal se pakka" 🤙',
-    images: ["/images/gulab-jamun-3.jpeg"],
-    videos: [],
-    story: [
-      "Some desserts are trends. Gulab Jamun is an emotion. Soft khoya dumplings, fried low and slow to a deep golden brown, then left to soak in cardamom-kissed sugar syrup until every bite oozes happiness.",
-      "Takam's gulab jamuns are made the homemade way - real khoya, hand-rolled, no ready-made mix. That's why they're impossibly soft inside with that signature dark caramelized outside.",
-    ],
-    benefits: [
-      { emoji: "🥛", title: "Real khoya", desc: "Made with genuine khoya (milk solids) - not powder mixes. You can taste the difference." },
-      { emoji: "✋", title: "Hand-rolled", desc: "Each jamun rolled by hand for the perfect crack-free, soft texture." },
-      { emoji: "🌸", title: "Aromatic syrup", desc: "Cardamom-infused syrup, balanced sweetness - never cloying." },
-      { emoji: "🎉", title: "Celebration-ready", desc: "Perfect for pujas, parties, birthdays, or a random Tuesday. No occasion needed." },
-    ],
-    howToEnjoy: [
-      "Slightly warm with a scoop of vanilla ice cream 🍨",
-      "As the grand finale of a Sunday family lunch",
-      "Straight from the box at midnight (we won't tell) 🤫",
-    ],
-    facts: [
-      { label: "Texture", value: "Impossibly soft, syrup-soaked" },
-      { label: "Taste", value: "Sweet, cardamom, caramelized" },
-      { label: "Made from", value: "Khoya, flour, sugar, cardamom" },
-      { label: "Best within", value: "3–4 days refrigerated" },
-    ],
-    unit: "per box",
-    price: null,
-  },
-  {
-    slug: "aliv-ladu",
-    marathi: "अळीव लाडू",
-    english: "Aliv Ladu",
-    tag: "💪 Power चा गोळा",
-    tagBg: "bg-peach",
-    shortDesc:
-      "Halim seeds + jaggery + dry fruits. The OG protein ball, invented before protein was cool.",
-    funny: '"Superfood? आमच्याकडे आधीपासूनच आहे" ✨',
-    images: ["/images/aalive-ladu-2.jpeg"],
-    videos: [],
-    story: [
-      "Long before 'superfood' was a marketing word, Marathi households were making अळीव लाडू - garden cress seed laddus - for new mothers, growing kids, and anyone who needed strength. It's ancestral nutrition science, disguised as a sweet.",
-      "Takam's Aliv Ladu follows the classic recipe: halim (aliv) seeds soaked in coconut water or milk, cooked with jaggery, fresh coconut, and finished with dry fruits. Dense, chewy, and packed with goodness.",
-    ],
-    benefits: [
-      { emoji: "🩸", title: "Iron powerhouse", desc: "Aliv (garden cress) seeds are among the richest plant sources of iron - traditionally given to boost hemoglobin." },
-      { emoji: "💪", title: "Protein & fiber", desc: "Natural protein from seeds and dry fruits keeps you full and energized." },
-      { emoji: "🍯", title: "Jaggery, not sugar", desc: "Sweetened with jaggery, which brings minerals along with sweetness." },
-      { emoji: "🤱", title: "Traditional wellness", desc: "A time-honored recipe for new mothers, growing kids, and winter immunity." },
-    ],
-    howToEnjoy: [
-      "One ladu with warm milk in the morning 🥛",
-      "As a post-workout snack - the OG protein ball 💪",
-      "For kids' tiffin - nutrition they'll actually eat happily",
-    ],
-    facts: [
-      { label: "Texture", value: "Dense, chewy, nutty" },
-      { label: "Taste", value: "Earthy jaggery sweetness" },
-      { label: "Made from", value: "Aliv seeds, jaggery, coconut, dry fruits" },
-      { label: "Best within", value: "7–10 days in airtight box" },
-    ],
-    unit: "per dozen",
     price: null,
   },
 ];

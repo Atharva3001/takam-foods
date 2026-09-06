@@ -7,7 +7,7 @@
 import { useState, type FormEvent } from "react";
 import { MessageCircle, ArrowLeft, PlayCircle, ChevronRight } from "lucide-react";
 import { Link, useParams } from "wouter";
-import { getProduct, products, PHONE, SITE_ASSETS } from "@/lib/products";
+import { GANAPATI_SCHEDULE, getProduct, products, PHONE, SITE_ASSETS } from "@/lib/products";
 import { MobileNav } from "@/components/MobileNav";
 import NotFound from "@/pages/NotFound";
 import {
@@ -29,6 +29,18 @@ function Tape({ className = "" }: { className?: string }) {
   );
 }
 
+const MODAK_PRICES: Record<string, Record<string, string>> = {
+  "ukadiche-modak": { "5 Pieces": "₹275", "7 Pieces": "₹385", "11 Pieces": "₹605", "21 Pieces": "₹1,155" },
+  "dink-modak": { "11 Pieces": "₹198", "21 Pieces": "₹378", "250 gm": "₹558", "500 gm": "₹1,071", "1 kg": "₹2,142" },
+  "poshtik-modak": { "11 Pieces": "₹99", "21 Pieces": "₹189", "250 gm": "₹279", "500 gm": "₹567", "1 kg": "₹1,134" },
+  "dryfruit-modak": { "11 Pieces": "₹154", "21 Pieces": "₹294", "250 gm": "₹434", "500 gm": "₹819", "1 kg": "₹1,638" },
+  "tilkund-modak": { "11 Pieces": "₹77", "21 Pieces": "₹147", "250 gm": "₹217", "500 gm": "₹441", "1 kg": "₹882" },
+  "nachni-modak": { "11 Pieces": "₹220", "21 Pieces": "₹420", "250 gm": "₹620", "500 gm": "₹1,197", "1 kg": "₹2,394" },
+  "gulkand-modak": { "11 Pieces": "₹77", "21 Pieces": "₹147", "250 gm": "₹217", "500 gm": "₹441", "1 kg": "₹882" },
+  "beet-modak": { "11 Pieces": "₹77", "21 Pieces": "₹147", "250 gm": "₹217", "500 gm": "₹378", "1 kg": "₹756" },
+  "khava-modak": { "11 Pieces": "₹242", "21 Pieces": "₹462", "250 gm": "₹651", "500 gm": "₹1,260", "1 kg": "₹2,520" },
+};
+
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
   const product = getProduct(slug ?? "");
@@ -41,34 +53,45 @@ export default function ProductPage() {
   const [deliveryLocation, setDeliveryLocation] = useState("");
   const [customLocation, setCustomLocation] = useState("");
   const [showQuantityHint, setShowQuantityHint] = useState(false);
+  const [selectedDay, setSelectedDay] = useState("");
 
   if (!product) return <NotFound />;
 
   const others = products.filter((p) => p.slug !== product.slug);
   const isModak = product.slug.includes("modak");
-  const quantityOptions = [
-    ...(product.slug === "ukadiche-modak" ? [{ label: "7 Pieces", price: "₹210" }] : []),
-    { label: "11 Pieces", price: "₹320" },
-    { label: "21 Pieces", price: "₹580" },
-    { label: "250 gm", price: "₹320" },
-    { label: "500 gm", price: "₹590" },
-    { label: "1 kg", price: "₹1,100" },
-    { label: "Custom", price: "Price on confirmation" },
-  ];
+  const quantityOptions = product.slug === "ukadiche-modak"
+    ? [
+        { label: "5 Pieces", price: MODAK_PRICES[product.slug]["5 Pieces"] },
+        { label: "7 Pieces", price: MODAK_PRICES[product.slug]["7 Pieces"] },
+        { label: "11 Pieces", price: MODAK_PRICES[product.slug]["11 Pieces"] },
+        { label: "21 Pieces", price: MODAK_PRICES[product.slug]["21 Pieces"] },
+        { label: "Custom", price: "Price on confirmation" },
+      ]
+    : [
+        { label: "11 Pieces", price: MODAK_PRICES[product.slug]["11 Pieces"] },
+        { label: "21 Pieces", price: MODAK_PRICES[product.slug]["21 Pieces"] },
+        { label: "250 gm", price: MODAK_PRICES[product.slug]["250 gm"], note: "Approx. 32 pieces" },
+        { label: "500 gm", price: MODAK_PRICES[product.slug]["500 gm"], note: "Approx. 60 pieces" },
+        { label: "1 kg", price: MODAK_PRICES[product.slug]["1 kg"], note: "Approx. 120 pieces" },
+        { label: "Custom", price: "Price on confirmation" },
+      ];
   const deliveryOptions = ["Singhgad Road", "Kothurd", "Deccan", "Nanded City", "Baner", "Pashan", "Baavdhan", "Other area"];
+  const availableDays = isModak ? GANAPATI_SCHEDULE.filter((day) => day.slugs.includes(product.slug)) : [];
+  const selectedFestivalDay = availableDays.find((day) => day.date === selectedDay);
   const selectedQuantity = quantityOptions.find((option) => option.label === quantity);
   const orderQuantity = quantity === "Custom" ? `Custom: ${customQuantity.trim()}` : quantity;
   const orderPrice = selectedQuantity?.price ?? "To confirm";
   const orderLocation = deliveryLocation === "Other area" ? `Other area: ${customLocation.trim()}` : deliveryLocation;
   const customQuantityMissing = quantity === "Custom" && !customQuantity.trim();
   const quantityMissing = !quantity || customQuantityMissing;
+  const festivalDayMissing = isModak && !selectedFestivalDay;
   const deliveryLocationMissing = !deliveryLocation || (deliveryLocation === "Other area" && !customLocation.trim());
   const normalizedMobileNumber = mobileNumber.replace(/\D/g, "");
   const nameMissing = isModak && !name.trim();
   const mobileNumberMissing = isModak && !/^[6-9]\d{9}$/.test(normalizedMobileNumber);
-  const orderIncomplete = quantityMissing;
+  const orderIncomplete = quantityMissing || festivalDayMissing;
   const waText = encodeURIComponent(
-    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋${isModak ? `\nName: ${name.trim()}\nMobile Number: ${normalizedMobileNumber}\nQuantity: ${orderQuantity}\nIndicative price: ${orderPrice}\nDelivery location: ${orderLocation}` : ""}`
+    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋${isModak ? `\nName: ${name.trim()}\nMobile Number: ${normalizedMobileNumber}\nFestival day: ${selectedFestivalDay ? `${selectedFestivalDay.date} (Festival Day ${GANAPATI_SCHEDULE.indexOf(selectedFestivalDay) + 1})` : "Not selected"}\nQuantity: ${orderQuantity}\nIndicative price: ${orderPrice}\nDelivery location: ${orderLocation}` : ""}`
   );
   const handleOrderSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -202,6 +225,26 @@ export default function ProductPage() {
               {isModak && (
                 <div id="quantity-selection" className="sticker -rotate-1 bg-peach/55 p-4 md:p-5 space-y-3 scroll-mt-28">
                   <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-display font-extrabold text-lg">कधी पाहिजेत? 📅</p>
+                    <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Select festival day</span>
+                  </div>
+                  <p className="font-semibold text-xs text-muted-foreground">This Modak is available only on the dates shown below.</p>
+                  <label className="block space-y-1.5">
+                    <span className="sr-only">Choose available festival day</span>
+                    <select
+                      value={selectedDay}
+                      onChange={(event) => setSelectedDay(event.target.value)}
+                      className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                    >
+                      <option value="">Choose an available date</option>
+                      {availableDays.map((day) => (
+                        <option key={day.date} value={day.date}>
+                          {day.date} - Festival Day {GANAPATI_SCHEDULE.indexOf(day) + 1}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
                     <p className="font-display font-extrabold text-lg">किती पाहिजेत? 👀</p>
                     <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Select quantity</span>
                   </div>
@@ -211,11 +254,13 @@ export default function ProductPage() {
                         type="button"
                         key={option.label}
                         onClick={() => setQuantity(option.label)}
-                        className={`border-[2.5px] border-ink px-3 py-2 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] transition-transform active:scale-95 ${quantity === option.label ? "bg-mascot -rotate-1" : "bg-white hover:bg-mint/60 rotate-[.4deg]"}`}
+                        className={`border-[2.5px] border-ink px-2.5 py-2.5 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] transition-transform active:scale-95 ${quantity === option.label ? "bg-mascot -rotate-1" : "bg-white hover:bg-mint/60 rotate-[.4deg]"}`}
                         aria-pressed={quantity === option.label}
                       >
-                        <span className="block">{option.label === "Custom" ? "Custom ✍️" : option.label}</span>
-                        <span className="block text-xs font-bold text-muted-foreground">{option.price}</span>
+                        <span className="block text-sm sm:text-base leading-tight">{option.label === "Custom" ? "Custom ✍️" : option.label}</span>
+                        {option.label === "21 Pieces" && <span className="mt-1 inline-block rounded-full border-2 border-ink bg-tomato px-2 py-0.5 text-[10px] font-display font-extrabold uppercase leading-none text-white shadow-[1px_1px_0_0_var(--ink)]">Best Deal</span>}
+                        {option.note && <span className="mt-1 block text-[10px] sm:text-[11px] font-bold leading-tight text-tomato">{option.note}</span>}
+                        <span className="mt-1.5 inline-block rounded-full border-2 border-ink bg-mint px-2 py-0.5 text-base sm:text-lg font-display font-extrabold leading-none text-ink shadow-[1px_1px_0_0_var(--ink)]">{option.price}</span>
                       </button>
                     ))}
                   </div>
@@ -237,6 +282,9 @@ export default function ProductPage() {
 
 
               <div className="flex flex-col items-start gap-2 pt-1">
+                <p className="sticker inline-flex items-center bg-mascot px-4 py-2 font-display font-extrabold text-sm -rotate-2">
+                  🚚 Standard Delivery: Evening, 6 PM onwards
+                </p>
                 <button
                   type="button"
                   aria-disabled={orderIncomplete}
@@ -255,7 +303,10 @@ export default function ProductPage() {
                 </button>
                 {orderIncomplete && (
                   <p role="status" aria-live="polite" className={`font-display font-bold text-sm text-tomato ${showQuantityHint ? "animate-bounce" : ""}`}>
-                    {showQuantityHint ? "First select a quantity above 👆" : "Select a quantity above to continue"}
+                    {showQuantityHint
+                      ? (festivalDayMissing ? "First select a festival day above 👆" : "First select a quantity above 👆")
+                      : (festivalDayMissing ? "Select an available festival day above to continue" : "Select a quantity above to continue")}
+
                   </p>
                 )}
               </div>
@@ -264,7 +315,7 @@ export default function ProductPage() {
                 <DialogContent className="border-[3px] border-ink bg-cream shadow-[8px_8px_0_0_var(--ink)] p-5 sm:p-7">
                   <DialogHeader className="text-left">
                     <DialogTitle className="font-display text-2xl font-extrabold">Order details ✍️</DialogTitle>
-                    <DialogDescription className="font-semibold text-ink/70">Just these details, then WhatsApp करा. Your selection: {orderQuantity} · {orderPrice} indicative.</DialogDescription>
+                    <DialogDescription className="font-semibold text-ink/70">Just these details, then WhatsApp करा. Your selection: {selectedFestivalDay ? `${selectedFestivalDay.date} · ` : ""}{orderQuantity} · {orderPrice} indicative.</DialogDescription>
                   </DialogHeader>
                   <form onSubmit={handleOrderSubmit} className="space-y-4">
                     <label className="block space-y-1.5">

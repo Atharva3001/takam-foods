@@ -68,3 +68,4 @@ Interactions feel like playing with stickers — hover lifts a card and straight
 - Product photography must be treated as part of the sticker world: warm, tactile, bordered/cutout (polaroid-style), and supported by doodles or badges rather than plain catalog framing.
 - Every major section should include at least one unmistakable sticker-board gesture: rotation, overlap, die-cut edge, hard shadow, marquee strip, floating badge, or doodle motif.
 - Minglish voice extends to UI chrome: nav labels, badges, and buttons speak Takam, not generic website.
+- Below-the-fold Modak stickers remain full visual collectibles once they enter the viewport, while browser-native lazy loading protects the hero’s initial load. Screenshot captures that do not scroll are not treated as visual blanks requiring eager-loading regressions.
