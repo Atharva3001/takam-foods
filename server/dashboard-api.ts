@@ -29,7 +29,32 @@ function ensureScheduledProducts(state: Awaited<ReturnType<typeof readDashboard>
   const products = schedule.products.map((spec) => { let product = state.products.find((item) => normaliseProductName(item.name) === normaliseProductName(spec.name)); if (!product) { product = { id: nanoid(10), name: spec.name, unit: spec.unit, standardCapacity: spec.standardCapacity, stretchCapacity: spec.maxCapacity, active: true }; state.products.push(product); } else { product.unit = spec.unit; product.standardCapacity = spec.standardCapacity; product.stretchCapacity = spec.maxCapacity; } return product; });
   return { schedule, products };
 }
-function parseEnquiryQuantity(quantity: string, product: Product) { const value = Number((quantity.match(/[0-9]+(?:\.[0-9]+)?/) || [""])[0]); if (!Number.isFinite(value) || value <= 0) return NaN; if (product.unit === "kg" && quantity.toLowerCase().includes("gm")) return value / 1000; return value; }
+
+function parseEnquiryQuantity(quantity: string, product: Product) {
+  const value = Number((quantity.match(/[0-9]+(?:\.[0-9]+)?/) || [""])[0]);
+
+  if (!Number.isFinite(value) || value <= 0) return NaN;
+
+  const normalizedQuantity = quantity.toLowerCase();
+
+  // Ukadicha is always tracked in pieces.
+  if (product.unit === "pieces") {
+    return value;
+  }
+
+  // All other Modaks are tracked in kg.
+  if (normalizedQuantity.includes("gm")) {
+    return value / 1000;
+  }
+
+  if (normalizedQuantity.includes("piece")) {
+    // 1 piece = 8g = 0.008kg
+    return value * 0.008;
+  }
+
+  // Already expressed in kg.
+  return value;
+}
 
 export function registerDashboardApi(app: Express) {
   app.get("/api/dashboard", async (_req, res) => { res.json(await readDashboard()); });
