@@ -69,7 +69,12 @@ export default function ProductPage() {
       ];
   const deliveryOptions = ["Singhgad Road", "Kothurd", "Deccan", "Nanded City", "Baner", "Pashan", "Baavdhan", "Other area"];
   const availableDays = isModak ? GANAPATI_SCHEDULE.filter((day) => day.slugs.includes(product.slug)) : [];
-  const selectedFestivalDay = availableDays.find((day) => day.date === selectedDay);
+  const selectedFestivalDay = availableDays.find((day) => {
+  const [dayNumber, monthName] = day.date.split(" ");
+  const monthNumber = monthName === "Sep" ? "09" : "01";
+  const isoDate = `2026-${monthNumber}-${dayNumber.padStart(2, "0")}`;
+  return isoDate === selectedDay;
+});
   const selectedQuantity = quantityOptions.find((option) => option.label === quantity);
   const orderQuantity = quantity === "Custom" ? `Custom: ${customQuantity.trim()}` : quantity;
   const orderPrice = selectedQuantity?.price ?? "To confirm";
@@ -175,7 +180,10 @@ export default function ProductPage() {
                     >
                       <option value="">Choose an available date</option>
                       {availableDays.map((day) => (
-                        <option key={day.date} value={day.date}>
+                        <option
+                           key={day.date}
+                             value={`2026-09-${day.date.split(" ")[0].padStart(2, "0")}`}
+                        >
                           {day.date} - Festival Day {GANAPATI_SCHEDULE.indexOf(day) + 1}
                         </option>
                       ))}
