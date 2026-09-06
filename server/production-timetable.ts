@@ -33,6 +33,11 @@ export const productionTimetable: ProductionSchedule[] = days.map(([date, names]
   products: names.map((name) => ({ name, ...productSpec(name) })),
 }));
 
+export const productionDateRange = {
+  min: "2026-09-13",
+  max: "2026-09-24",
+};
+
 export function getProductionSchedule(date: string) {
   return productionTimetable.find((day) => day.date === date) || null;
 }
