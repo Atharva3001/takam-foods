@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import ProductPage from "./pages/ProductPage";
 import GanapatiSpecial from "./pages/GanapatiSpecial";
 import OrderDashboard from "./pages/OrderDashboard";
+import ProductionTimetable from "./pages/ProductionTimetable";
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -23,6 +24,7 @@ function Router() {
       <Route path={"/ganapati-modak-special"} component={GanapatiSpecial} />
       <Route path={"/product/:slug"} component={ProductPage} />
       <Route path={"/dashboard"} component={OrderDashboard} />
+      <Route path={"/dashboard/production"} component={ProductionTimetable} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
