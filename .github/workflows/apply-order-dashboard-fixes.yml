@@ -1,0 +1,118 @@
+name: Apply order dashboard fixes
+
+on:
+  push:
+    branches:
+      - feature/order-capacity-dashboard
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: "!contains(github.event.head_commit.message, 'feat: add order delete and single modak images')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/order-capacity-dashboard
+          fetch-depth: 0
+
+      - name: Apply fixes
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          # Server: add a real DELETE endpoint. Capacity is derived from remaining orders,
+          # so deleting an order automatically releases its committed quantity.
+          p = Path('server/dashboard-api.ts')
+          s = p.read_text()
+          marker = '  app.patch("/api/dashboard/orders/:id", async (req, res) => {'
+          delete_route = '''  app.delete("/api/dashboard/orders/:id", async (req, res) => {
+            const state = await readDashboard();
+            const index = state.orders.findIndex((item) => item.id === req.params.id);
+            if (index === -1) return sendError(res, "Order not found", 404);
+            const [deletedOrder] = state.orders.splice(index, 1);
+            await writeDashboard(state);
+            res.json({ ok: true, order: deletedOrder });
+          });
+'''
+          if 'app.delete("/api/dashboard/orders/:id"' not in s:
+              if marker not in s: raise SystemExit('order patch route marker not found')
+              s = s.replace(marker, delete_route + marker, 1)
+          p.write_text(s)
+
+          # Dashboard: delete action with confirmation and refresh.
+          p = Path('client/src/pages/OrderDashboard.tsx')
+          s = p.read_text()
+          s = s.replace('import { ArrowLeft, CheckCircle2, CircleAlert, LogOut, PackagePlus, Plus, RefreshCw, Settings2 } from "lucide-react";', 'import { ArrowLeft, CheckCircle2, CircleAlert, LogOut, PackagePlus, Plus, RefreshCw, Settings2, Trash2 } from "lucide-react";')
+          marker = '  async function signOut() {'
+          delete_fn = '''  async function deleteOrder(order: Order) {
+    const confirmed = window.confirm(`Delete ${order.orderNumber} for ${order.customerName}?\\n\\nThis will also release its Modak quantity from the production capacity.`);
+    if (!confirmed) return;
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/dashboard/orders/${order.id}`, { method: "DELETE" });
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        window.alert(body.error || "Could not delete the order.");
+        return;
+      }
+      await load();
+    } finally {
+      setSaving(false);
+    }
+  }
+
+'''
+          if 'async function deleteOrder(order: Order)' not in s:
+              if marker not in s: raise SystemExit('signOut marker not found')
+              s = s.replace(marker, delete_fn + marker, 1)
+          s = s.replace('<th className="p-3">Payment</th></tr></thead>', '<th className="p-3">Payment</th><th className="p-3">Action</th></tr></thead>')
+          old = '<td className="p-3"><select value={o.paymentStatus} onChange={(e) => patchOrder(o.id, { paymentStatus: e.target.value as Order["paymentStatus"] })} className="rounded-lg border-2 border-ink bg-white px-2 py-1 font-bold">{paymentStatuses.map(s => <option key={s}>{s}</option>)}</select></td></tr>)}</tbody>'
+          new = '<td className="p-3"><select value={o.paymentStatus} onChange={(e) => patchOrder(o.id, { paymentStatus: e.target.value as Order["paymentStatus"] })} className="rounded-lg border-2 border-ink bg-white px-2 py-1 font-bold">{paymentStatuses.map(s => <option key={s}>{s}</option>)}</select></td><td className="p-3"><button type="button" onClick={() => deleteOrder(o)} disabled={saving} className="sticker-btn bg-peach px-3 py-2 text-xs" title="Delete order"><Trash2 size={15} /> Delete</button></td></tr>)}</tbody>'
+          if old not in s:
+              raise SystemExit('orders row marker not found')
+          s = s.replace(old, new, 1)
+          s = s.replace('<td colSpan={7} className="p-10 text-center font-bold text-muted-foreground">No orders found.</td>', '<td colSpan={8} className="p-10 text-center font-bold text-muted-foreground">No orders found.</td>')
+          p.write_text(s)
+
+          # Product page: one image only. Keep the first graphic image and remove gallery controls.
+          p = Path('client/src/pages/ProductPage.tsx')
+          s = p.read_text()
+          s = s.replace('  const [activeImage, setActiveImage] = useState(0);\n', '')
+          old = '''  const isMascotSrc = (src: string) => src.includes("takam_modak_") || src.includes("ukadiche_modak_hero_mascot");
+  const isMascotAsset = isMascotSrc(product.images[activeImage] ?? "");
+'''
+          new = '''  const primaryImage = product.images[0] ?? "";
+  const isMascotAsset = primaryImage.includes("takam_modak_") || primaryImage.includes("ukadiche_modak_hero_mascot");
+'''
+          if old not in s: raise SystemExit('image helper marker not found')
+          s = s.replace(old, new, 1)
+          s = s.replace('''<img src={product.images[activeImage]} alt={`${product.marathi} photo ${activeImage + 1}`} decoding="async" fetchPriority="high" className={`w-full h-80 md:h-[26rem] border-2 border-ink/15 ${isMascotAsset ? "object-contain bg-mint/20 p-5" : "object-cover saturate-[1.15]"}`} />''', '''<img src={primaryImage} alt={`${product.marathi} official graphic`} decoding="async" fetchPriority="high" className="w-full h-80 md:h-[26rem] border-2 border-ink/15 object-contain bg-mint/20 p-5" />''', 1)
+          gallery_start = '              <div className="flex gap-3 flex-wrap pt-2">'
+          gallery_end = '              </div>\n            </div>'
+          start = s.find(gallery_start)
+          if start == -1: raise SystemExit('gallery start not found')
+          end = s.find(gallery_end, start)
+          if end == -1: raise SystemExit('gallery end not found')
+          s = s[:start] + s[end + len('              </div>\n'):]
+          p.write_text(s)
+
+          # Remove the broken storage reference for Khava and use a repository-served asset.
+          p = Path('client/src/lib/products.ts')
+          s = p.read_text()
+          s = s.replace('images: ["/manus-storage/takam_modak_khava_opaque_cream_af814046.png"],', 'images: ["/images/takam_modak_khava.webp"],', 1)
+          p.write_text(s)
+          PY
+
+      - name: Commit fixes
+        shell: bash
+        run: |
+          rm -f .github/workflows/apply-order-dashboard-fixes.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add server/dashboard-api.ts client/src/pages/OrderDashboard.tsx client/src/pages/ProductPage.tsx client/src/lib/products.ts .github/workflows/apply-order-dashboard-fixes.yml
+          git commit -m "feat: add order delete and single modak images"
+          git push origin HEAD:feature/order-capacity-dashboard
