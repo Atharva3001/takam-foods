@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import { ArrowLeft, CheckCircle2, CircleAlert, PackagePlus, Plus, RefreshCw, Settings2 } from "lucide-react";
 import type { Order, Product } from "../../../server/dashboard-store";
+import khavaModakImage from "../assets/khavaModakImage";
 
 type Capacity = Product & { committed: number; remaining: number; stretchRemaining: number };
 type DashboardData = { products: Product[]; orders: Order[] };
@@ -26,6 +27,7 @@ function imageForProduct(name: string) {
     "Poshtik Modak": "/images/takam_modak_poshtik_v2.webp",
     "Tilkund Modak": "/images/takam_modak_tilkund_v2.webp",
     "Gulkand Modak": "/images/takam_modak_gulkand_v2.webp",
+    "Khava Modak": khavaModakImage,
   };
   return images[name];
 }
