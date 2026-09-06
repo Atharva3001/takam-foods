@@ -18,6 +18,8 @@ export type Enquiry = {
   deliveryAddress: string;
   status: EnquiryStatus;
   source: "WhatsApp";
+  convertedOrderId?: string;
+  convertedOrderNumber?: string;
 };
 
 type EnquiryState = { enquiries: Enquiry[] };
@@ -29,11 +31,7 @@ const filePath = path.join(dataDir, "enquiries.json");
 
 async function ensureStore() {
   await mkdir(dataDir, { recursive: true });
-  try {
-    await readFile(filePath, "utf8");
-  } catch {
-    await writeFile(filePath, JSON.stringify({ enquiries: [] }, null, 2), "utf8");
-  }
+  try { await readFile(filePath, "utf8"); } catch { await writeFile(filePath, JSON.stringify({ enquiries: [] }, null, 2), "utf8"); }
 }
 
 export async function readEnquiries(): Promise<EnquiryState> {
@@ -42,9 +40,7 @@ export async function readEnquiries(): Promise<EnquiryState> {
     const raw = await readFile(filePath, "utf8");
     const parsed = JSON.parse(raw) as Partial<EnquiryState>;
     return { enquiries: Array.isArray(parsed.enquiries) ? parsed.enquiries : [] };
-  } catch {
-    return { enquiries: [] };
-  }
+  } catch { return { enquiries: [] }; }
 }
 
 export async function writeEnquiries(state: EnquiryState) {
