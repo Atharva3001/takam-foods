@@ -1,10 +1,16 @@
+import "dotenv/config";
 import type { NextFunction, Request, Response } from "express";
 import crypto from "crypto";
 
-const username = process.env.DASHBOARD_USERNAME || "";
-const password = process.env.DASHBOARD_PASSWORD || "";
 const sessionCookie = "takam_dashboard_session";
 const sessions = new Set<string>();
+
+function getCredentials() {
+  return {
+    username: process.env.DASHBOARD_USERNAME || "",
+    password: process.env.DASHBOARD_PASSWORD || "",
+  };
+}
 
 function parseCookies(req: Request) {
   const header = req.headers.cookie || "";
@@ -12,6 +18,7 @@ function parseCookies(req: Request) {
 }
 
 export function dashboardAuthConfigured() {
+  const { username, password } = getCredentials();
   return Boolean(username && password);
 }
 
@@ -23,7 +30,8 @@ export function requireDashboardAuth(req: Request, res: Response, next: NextFunc
 
 export function registerDashboardAuth(app: import("express").Express) {
   app.post("/api/auth/login", (req, res) => {
-    if (!dashboardAuthConfigured()) return res.status(503).json({ error: "Dashboard authentication is not configured" });
+    const { username, password } = getCredentials();
+    if (!username || !password) return res.status(503).json({ error: "Dashboard authentication is not configured" });
     const suppliedUsername = String(req.body?.username || "");
     const suppliedPassword = String(req.body?.password || "");
     if (suppliedUsername !== username || suppliedPassword !== password) return res.status(401).json({ error: "Invalid username or password" });
