@@ -26,7 +26,9 @@ type EnquiryState = { enquiries: Enquiry[] };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const dataDir = path.resolve(__dirname, "../data");
+const dataDir = process.env.DATA_DIR
+  ? path.resolve(process.env.DATA_DIR)
+  : path.resolve(__dirname, "../data");
 const filePath = path.join(dataDir, "enquiries.json");
 
 async function ensureStore() {
