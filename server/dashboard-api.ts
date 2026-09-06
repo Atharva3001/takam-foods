@@ -9,8 +9,48 @@ const enquiryStatuses = new Set<EnquiryStatus>(["Enquiry Received", "Confirmed",
 const enquiryMinDate = "2026-09-13";
 const enquiryMaxDate = "2026-09-24";
 
+type CapacityViolation = {
+  productId: string;
+  productName: string;
+  committed: number;
+  requested: number;
+  maxCapacity: number;
+  standardCapacity: number;
+};
+
 function sendError(res: Response, message: string, status = 400) {
   res.status(status).json({ error: message });
+}
+
+function findCapacityViolation(
+  requested: Map<string, number>,
+  committed: Map<string, number>,
+  products: Product[],
+): CapacityViolation | undefined {
+  let violation: CapacityViolation | undefined;
+
+  requested.forEach((quantity, productId) => {
+    if (violation) return;
+
+    const product = products.find((item) => item.id === productId);
+    if (!product) return;
+
+    const committedQuantity = committed.get(productId) || 0;
+    const total = committedQuantity + quantity;
+
+    if (total > product.stretchCapacity) {
+      violation = {
+        productId,
+        productName: product.name,
+        committed: committedQuantity,
+        requested: quantity,
+        maxCapacity: product.stretchCapacity,
+        standardCapacity: product.standardCapacity,
+      };
+    }
+  });
+
+  return violation;
 }
 
 function ensureScheduledProducts(state: Awaited<ReturnType<typeof readDashboard>>, date: string) {
@@ -133,25 +173,11 @@ export function registerDashboardApi(app: Express) {
       for (const item of order.items) committed.set(item.productId, (committed.get(item.productId) || 0) + item.quantity);
     }
 
-    let capacityError: { productId: string; productName: string; committed: number; requested: number; maxCapacity: number; standardCapacity: number } | null = null;
-    requested.forEach((quantity, productId) => {
-      const product = products.find((p) => p.id === productId)!;
-      const total = (committed.get(productId) || 0) + quantity;
-      if (total > product.stretchCapacity && !capacityError) {
-        capacityError = {
-          productId,
-          productName: product.name,
-          committed: committed.get(productId) || 0,
-          requested: quantity,
-          maxCapacity: product.stretchCapacity,
-          standardCapacity: product.standardCapacity,
-        };
-      }
-    });
-    if (capacityError) {
+    const capacityViolation = findCapacityViolation(requested, committed, products);
+    if (capacityViolation) {
       return res.status(409).json({
-        error: `${capacityError.productName} is full for ${body.productionDate}`,
-        ...capacityError,
+        error: `${capacityViolation.productName} is full for ${body.productionDate}`,
+        ...capacityViolation,
       });
     }
 
