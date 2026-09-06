@@ -2,8 +2,12 @@ import type { Express, Response } from "express";
 import { nanoid } from "nanoid";
 import { readDashboard, writeDashboard, type Order, type Product } from "./dashboard-store";
 import { getProductionSchedule, productionTimetable } from "./production-timetable";
+import { readEnquiries, writeEnquiries, type Enquiry, type EnquiryStatus } from "./enquiry-store";
 
 const capacityReleasingStatuses = new Set(["Cancelled", "Delivery Failed / Returned"]);
+const enquiryStatuses = new Set<EnquiryStatus>(["Enquiry Received", "Confirmed", "Rejected", "Cancelled"]);
+const enquiryMinDate = "2026-09-13";
+const enquiryMaxDate = "2026-09-24";
 
 function sendError(res: Response, message: string, status = 400) {
   res.status(status).json({ error: message });
@@ -16,17 +20,9 @@ function ensureScheduledProducts(state: Awaited<ReturnType<typeof readDashboard>
   const products = schedule.products.map((spec) => {
     let product = state.products.find((item) => item.name.trim().toLowerCase() === spec.name.trim().toLowerCase());
     if (!product) {
-      product = {
-        id: nanoid(10),
-        name: spec.name,
-        unit: spec.unit,
-        standardCapacity: spec.standardCapacity,
-        stretchCapacity: spec.maxCapacity,
-        active: true,
-      };
+      product = { id: nanoid(10), name: spec.name, unit: spec.unit, standardCapacity: spec.standardCapacity, stretchCapacity: spec.maxCapacity, active: true };
       state.products.push(product);
     } else {
-      // The timetable is the source of truth for scheduled production capacity.
       product.unit = spec.unit;
       product.standardCapacity = spec.standardCapacity;
       product.stretchCapacity = spec.maxCapacity;
@@ -47,6 +43,52 @@ export function registerDashboardApi(app: Express) {
     if (!Array.isArray(body.products) || !Array.isArray(body.orders)) return sendError(res, "Invalid dashboard payload");
     await writeDashboard({ products: body.products, orders: body.orders });
     res.json({ ok: true });
+  });
+
+  app.get("/api/dashboard/enquiries", async (_req, res) => {
+    const state = await readEnquiries();
+    state.enquiries.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    res.json(state.enquiries);
+  });
+
+  app.post("/api/dashboard/enquiries", async (req, res) => {
+    const body = req.body as Partial<Enquiry>;
+    const selectedDay = String(body.selectedDay || "");
+    if (!body.productName || !body.productSlug || !selectedDay || !body.quantity || !body.name || !body.mobileNumber || !body.deliveryAddress) {
+      return sendError(res, "Product, selected day, quantity, name, mobile number and delivery address are required");
+    }
+    if (selectedDay < enquiryMinDate || selectedDay > enquiryMaxDate) return sendError(res, "Selected day must be between 13 Sep 2026 and 24 Sep 2026", 409);
+
+    const state = await readEnquiries();
+    const now = new Date().toISOString();
+    const enquiry: Enquiry = {
+      id: nanoid(12),
+      enquiryNumber: `ENQ-${Date.now().toString().slice(-6)}`,
+      createdAt: now,
+      updatedAt: now,
+      productName: body.productName.trim(),
+      productSlug: body.productSlug.trim(),
+      selectedDay,
+      quantity: body.quantity.trim(),
+      name: body.name.trim(),
+      mobileNumber: body.mobileNumber.trim(),
+      deliveryAddress: body.deliveryAddress.trim(),
+      status: "Enquiry Received",
+      source: "WhatsApp",
+    };
+    state.enquiries.push(enquiry);
+    await writeEnquiries(state);
+    res.status(201).json(enquiry);
+  });
+
+  app.patch("/api/dashboard/enquiries/:id", async (req, res) => {
+    const state = await readEnquiries();
+    const enquiry = state.enquiries.find((item) => item.id === req.params.id);
+    if (!enquiry) return sendError(res, "Enquiry not found", 404);
+    if (req.body.status && !enquiryStatuses.has(req.body.status)) return sendError(res, "Invalid enquiry status");
+    Object.assign(enquiry, req.body, { updatedAt: new Date().toISOString() });
+    await writeEnquiries(state);
+    res.json(enquiry);
   });
 
   app.post("/api/dashboard/products", async (req, res) => {
@@ -93,19 +135,13 @@ export function registerDashboardApi(app: Express) {
     for (const [productId, quantity] of requested) {
       const product = products.find((p) => p.id === productId)!;
       const total = (committed.get(productId) || 0) + quantity;
-      if (total > product.stretchCapacity) {
-        return res.status(409).json({ error: `${product.name} is full for ${body.productionDate}`, productId, productName: product.name, committed: committed.get(productId) || 0, requested: quantity, maxCapacity: product.stretchCapacity, standardCapacity: product.standardCapacity });
-      }
+      if (total > product.stretchCapacity) return res.status(409).json({ error: `${product.name} is full for ${body.productionDate}`, productId, productName: product.name, committed: committed.get(productId) || 0, requested: quantity, maxCapacity: product.stretchCapacity, standardCapacity: product.standardCapacity });
     }
 
     const now = new Date().toISOString();
     const order: Order = {
-      id: nanoid(12),
-      orderNumber: body.orderNumber || `TF-${Date.now().toString().slice(-6)}`,
-      orderDate: body.orderDate || now.slice(0, 10),
-      productionDate: body.productionDate,
-      customerName: body.customerName.trim(), customerPhone: body.customerPhone || "", deliveryAddress: body.deliveryAddress || "",
-      items: body.items.map((item) => ({ productId: item.productId, quantity: Number(item.quantity) })), amount: Number(body.amount || 0),
+      id: nanoid(12), orderNumber: body.orderNumber || `TF-${Date.now().toString().slice(-6)}`, orderDate: body.orderDate || now.slice(0, 10), productionDate: body.productionDate,
+      customerName: body.customerName.trim(), customerPhone: body.customerPhone || "", deliveryAddress: body.deliveryAddress || "", items: body.items.map((item) => ({ productId: item.productId, quantity: Number(item.quantity) })), amount: Number(body.amount || 0),
       paymentStatus: body.paymentStatus || "Pending", status: body.status || "New", deliveryPerson: body.deliveryPerson || "", trackingNumber: body.trackingNumber || "", actualDeliveryDate: body.actualDeliveryDate || "", notes: body.notes || "", createdAt: now, updatedAt: now,
     };
     state.orders.push(order);
@@ -127,37 +163,16 @@ export function registerDashboardApi(app: Express) {
     const state = await readDashboard();
     const { schedule, products } = ensureScheduledProducts(state, date);
     if (!schedule) return res.json({ date, schedule: null, products: [], timeline: [] });
-
     const committed = new Map<string, number>();
     for (const order of state.orders) {
       if (order.productionDate !== date || capacityReleasingStatuses.has(order.status)) continue;
       for (const item of order.items) committed.set(item.productId, (committed.get(item.productId) || 0) + item.quantity);
     }
-
-    const orders = state.orders
-      .filter((order) => order.productionDate === date && !capacityReleasingStatuses.has(order.status))
-      .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    const orders = state.orders.filter((order) => order.productionDate === date && !capacityReleasingStatuses.has(order.status)).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     const running = new Map<string, number>();
-    const timeline = orders.map((order) => ({
-      orderId: order.id,
-      orderNumber: order.orderNumber,
-      createdAt: order.createdAt,
-      items: order.items.map((item) => {
-        const product = products.find((p) => p.id === item.productId);
-        const total = (running.get(item.productId) || 0) + item.quantity;
-        running.set(item.productId, total);
-        return { productId: item.productId, productName: product?.name || "Unknown product", quantity: item.quantity, cumulative: total };
-      }),
-    }));
-
+    const timeline = orders.map((order) => ({ orderId: order.id, orderNumber: order.orderNumber, createdAt: order.createdAt, items: order.items.map((item) => { const product = products.find((p) => p.id === item.productId); const total = (running.get(item.productId) || 0) + item.quantity; running.set(item.productId, total); return { productId: item.productId, productName: product?.name || "Unknown product", quantity: item.quantity, cumulative: total }; }) }));
     await writeDashboard(state);
-    res.json({
-      date,
-      schedule,
-      products: products.map((product) => ({ ...product, committed: committed.get(product.id) || 0, standardRemaining: Math.max(0, product.standardCapacity - (committed.get(product.id) || 0)), maxRemaining: Math.max(0, product.stretchCapacity - (committed.get(product.id) || 0)) })),
-      timeline,
-      availableDates: productionTimetable.map((day) => day.date),
-    });
+    res.json({ date, schedule, products: products.map((product) => ({ ...product, committed: committed.get(product.id) || 0, standardRemaining: Math.max(0, product.standardCapacity - (committed.get(product.id) || 0)), maxRemaining: Math.max(0, product.stretchCapacity - (committed.get(product.id) || 0)) })), timeline, availableDates: productionTimetable.map((day) => day.date) });
   });
 
   app.get("/api/dashboard/capacity", async (req, res) => {
@@ -165,7 +180,6 @@ export function registerDashboardApi(app: Express) {
     const state = await readDashboard();
     const { schedule, products } = ensureScheduledProducts(state, date);
     if (!schedule) return res.json([]);
-
     const committed = new Map<string, number>();
     for (const order of state.orders) {
       if (order.productionDate !== date || capacityReleasingStatuses.has(order.status)) continue;
