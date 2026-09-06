@@ -133,23 +133,27 @@ export function registerDashboardApi(app: Express) {
       for (const item of order.items) committed.set(item.productId, (committed.get(item.productId) || 0) + item.quantity);
     }
 
-    let capacityError: ReturnType<typeof sendError> | null = null;
+    let capacityError: { productId: string; productName: string; committed: number; requested: number; maxCapacity: number; standardCapacity: number } | null = null;
     requested.forEach((quantity, productId) => {
       const product = products.find((p) => p.id === productId)!;
       const total = (committed.get(productId) || 0) + quantity;
-      if (total > product.stretchCapacity) {
-        capacityError = res.status(409).json({
-          error: `${product.name} is full for ${body.productionDate}`,
+      if (total > product.stretchCapacity && !capacityError) {
+        capacityError = {
           productId,
           productName: product.name,
           committed: committed.get(productId) || 0,
           requested: quantity,
           maxCapacity: product.stretchCapacity,
           standardCapacity: product.standardCapacity,
-        });
+        };
       }
     });
-    if (capacityError) return capacityError;
+    if (capacityError) {
+      return res.status(409).json({
+        error: `${capacityError.productName} is full for ${body.productionDate}`,
+        ...capacityError,
+      });
+    }
 
     const now = new Date().toISOString();
     const order: Order = {
