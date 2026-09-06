@@ -17,6 +17,7 @@ export default function DashboardLogin() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Login failed");
       setLocation("/dashboard");
+      window.location.reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
