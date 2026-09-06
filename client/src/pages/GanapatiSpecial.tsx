@@ -6,7 +6,7 @@
 import { ArrowRight, CalendarDays, ListOrdered, MessageCircle, Sparkles } from "lucide-react";
 import { Link } from "wouter";
 import { MobileNav } from "@/components/MobileNav";
-import { PHONE, products, SITE_ASSETS } from "@/lib/products";
+import { GANAPATI_SCHEDULE, PHONE, products, SITE_ASSETS } from "@/lib/products";
 
 const ganapatiSlugs = [
   "ukadiche-modak",
@@ -17,25 +17,14 @@ const ganapatiSlugs = [
   "poshtik-modak",
   "tilkund-modak",
   "gulkand-modak",
+  "khava-modak",
 ];
 
 const ganapatiModaks = ganapatiSlugs
   .map((slug) => products.find((product) => product.slug === slug))
   .filter((product): product is (typeof products)[number] => Boolean(product));
 
-const elevenDayPlan = [
-  { day: "१", name: "Opening aarti combo", slugs: ["ukadiche-modak", "dink-modak", "dryfruit-modak"], mood: "🙏 OG plus two favourites" },
-  { day: "२", name: "Health buddy day", slugs: ["ukadiche-modak", "nachni-modak", "poshtik-modak"], mood: "🏋️ classic, earthy, full power" },
-  { day: "३", name: "Festive VIP day", slugs: ["ukadiche-modak", "dryfruit-modak", "gulkand-modak"], mood: "👑 पाहुणे आले? VIP trio present" },
-  { day: "४", name: "Pink pop day", slugs: ["ukadiche-modak", "beet-modak", "gulkand-modak"], mood: "💗 OG plus colour-code iconic" },
-  { day: "५", name: "All-rounder day", slugs: ["ukadiche-modak", "poshtik-modak", "nachni-modak"], mood: "🦸 classic plus feel-good duo" },
-  { day: "६", name: "Tiny but mighty day", slugs: ["ukadiche-modak", "tilkund-modak", "dink-modak"], mood: "🔥 छोटा दिसतो, trio भारी लागतो" },
-  { day: "७", name: "Sweetheart day", slugs: ["ukadiche-modak", "gulkand-modak", "dryfruit-modak"], mood: "🌹 घरगुती प्रेमाचा Modak trio" },
-  { day: "८", name: "Homecoming combo", slugs: ["ukadiche-modak", "nachni-modak", "tilkund-modak"], mood: "🏠 OG meets wholesome gang" },
-  { day: "९", name: "Power trio day", slugs: ["ukadiche-modak", "dink-modak", "dryfruit-modak"], mood: "💪 ताकद, richness आणि festive swag" },
-  { day: "१०", name: "Colour crush combo", slugs: ["ukadiche-modak", "beet-modak", "gulkand-modak"], mood: "✨ pretty outside, party inside" },
-  { day: "११", name: "Bappa farewell mixed box", slugs: ["ukadiche-modak", "nachni-modak", "poshtik-modak"], mood: "🎊 OG plus two Takam gang stars" },
-];
+const elevenDayPlan = GANAPATI_SCHEDULE;
 
 function getDayProducts(slugs: string[]) {
   return slugs
@@ -71,7 +60,7 @@ export default function GanapatiSpecial() {
                 <span className="text-mascot">८ मोदक.</span><br />
                 Full Bappa energy.
               </h1>
-              <p className="max-w-md text-base md:text-xl font-semibold text-cream/80">रोज fresh Modak trio. उकडीचे मोदक रोज available.</p>
+              <p className="max-w-md text-base md:text-xl font-semibold text-cream/80">रोज fresh Modak quartet. उकडीचे मोदक रोज available.</p>
               <div className="flex flex-wrap gap-2">
                 <span className="sticker bg-mascot text-ink px-2.5 py-1 font-display font-bold text-xs -rotate-2">Made to Order</span>
                 <span className="sticker bg-peach text-ink px-2.5 py-1 font-display font-bold text-xs rotate-2">Limited Quantity</span>
@@ -118,9 +107,9 @@ export default function GanapatiSpecial() {
           <div className="container">
             <div className="grid md:grid-cols-[.7fr_1.3fr] gap-10 md:gap-14 items-start">
               <div className="md:sticky md:top-28 space-y-5">
-                <div className="inline-block sticker bg-white px-4 py-1.5 font-display font-bold text-sm -rotate-2"><CalendarDays className="inline h-4 w-4 -mt-0.5" /> ११ दिवसांचं timetable</div>
+                <div className="inline-block sticker bg-white px-4 py-1.5 font-display font-bold text-sm -rotate-2"><CalendarDays className="inline h-4 w-4 -mt-0.5" /> 14 Sep - 24 Sep timetable</div>
                 <h2 className="font-display font-extrabold leading-[1.02]" style={{ fontSize: "clamp(2.25rem, 4.8vw, 4rem)" }}>आज कोणता<br /><span className="text-tomato">Modak?</span></h2>
-                <p className="text-lg font-semibold text-muted-foreground">उकडीचे मोदक रोज available आहेत. बाकीचे दोन flavours दिवसानुसार बदलतात; प्रत्येक batch Made to Order आहे आणि quantity Limited आहे.</p>
+                <p className="text-lg font-semibold text-muted-foreground">उकडीचे मोदक रोज available आहेत. बाकीचे flavours दिवसानुसार बदलतात; प्रत्येक batch Made to Order आहे आणि quantity Limited आहे.</p>
                 <div className="flex flex-wrap gap-2">
                   <span className="sticker bg-mascot text-ink px-3 py-1 font-display font-bold text-sm -rotate-2">Made to Order</span>
                   <span className="sticker bg-peach text-ink px-3 py-1 font-display font-bold text-sm rotate-2">Limited Quantity</span>
@@ -132,8 +121,8 @@ export default function GanapatiSpecial() {
                   const dayProducts = getDayProducts(day.slugs);
                   return (
                     <article key={day.day} className={`sticker bg-white p-4 md:p-5 flex gap-4 md:gap-5 items-center ${index % 2 ? "rotate-[.35deg]" : "-rotate-[.35deg]"}`}>
-                      <div className="shrink-0 h-14 w-14 md:h-16 md:w-16 rounded-full bg-mascot border-[3px] border-ink flex flex-col items-center justify-center shadow-[3px_3px_0_0_var(--ink)]"><span className="font-display font-extrabold text-2xl leading-none">{day.day}</span><span className="font-bold text-[9px]">DAY</span></div>
-                      <div className="min-w-0 flex-1"><div className="flex flex-wrap justify-between gap-x-4 gap-y-1"><h3 className="font-display font-extrabold text-xl md:text-2xl">{day.name}</h3><span className="font-bold text-xs md:text-sm text-muted-foreground">{day.mood}</span></div><div className="mt-3 flex flex-wrap gap-2">{dayProducts.map((product) => <Link key={product.slug} href={`/product/${product.slug}`} className="inline-flex items-center gap-1.5 bg-mint/50 border-2 border-ink rounded-full pl-1 pr-2.5 py-1 text-xs md:text-sm font-display font-bold hover:bg-mascot"><span className="h-7 w-7 shrink-0 overflow-hidden rounded-full border border-ink/20 bg-white flex items-center justify-center"><img src={product.images[0]} alt="" aria-hidden className={`h-full w-full ${product.images[0].includes("takam_modak_") ? "object-contain p-0.5" : "object-cover"}`} /></span>{product.marathi}</Link>)}</div></div>
+                      <div className="shrink-0 h-16 w-16 md:h-20 md:w-20 rounded-full bg-mascot border-[3px] border-ink flex flex-col items-center justify-center text-center shadow-[3px_3px_0_0_var(--ink)]"><span className="font-display font-extrabold text-base md:text-lg leading-none">{day.date}</span><span className="font-bold text-[9px] md:text-[10px] uppercase">Festival</span></div>
+                      <div className="min-w-0 flex-1"><div className="flex flex-wrap justify-between gap-x-4 gap-y-1"><div><h3 className="font-display font-extrabold text-xl md:text-2xl">{day.name}</h3><span className="font-bold text-xs md:text-sm text-tomato">Day {index + 1}</span></div><span className="font-bold text-xs md:text-sm text-muted-foreground">{day.mood}</span></div><div className="mt-3 flex flex-wrap gap-2">{dayProducts.map((product) => <Link key={product.slug} href={`/product/${product.slug}`} className="inline-flex items-center gap-1.5 bg-mint/50 border-2 border-ink rounded-full pl-1 pr-2.5 py-1 text-xs md:text-sm font-display font-bold hover:bg-mascot"><span className="h-7 w-7 shrink-0 overflow-hidden rounded-full border border-ink/20 bg-white flex items-center justify-center"><img src={product.images[0]} alt="" aria-hidden className={`h-full w-full ${product.images[0].includes("takam_modak_") ? "object-contain p-0.5" : "object-cover"}`} /></span>{product.marathi}</Link>)}</div></div>
                     </article>
                   );
                 })}

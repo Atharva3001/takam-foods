@@ -15,9 +15,6 @@ const PHONE = "9371055473";
 const ASSETS = {
   logoA: "/images/takam_logo_A_transparent.webp",
   logoC: "/images/takam_logo_C_transparent.webp",
-  suraliVadi: "/images/surali-vadi-1.jpeg",
-  gulabJamun: "/images/gulab-jamun-3.jpeg",
-  alivLadu: "/images/aalive-ladu-2.jpeg",
   heroBg: "/images/takam_hero_bg.webp",
   kitchen: "/images/takam_kitchen_illustration.webp",
 };
@@ -31,6 +28,7 @@ const ganapatiModaks = [
   { slug: "poshtik-modak", marathi: "पोष्टीक मोदक", english: "Poshtik Modak", image: "/images/takam_modak_poshtik_v2.webp", vibe: "🦸 All-rounder", rotate: "-rotate-2" },
   { slug: "tilkund-modak", marathi: "तीळकुंद मोदक", image: "/images/takam_modak_tilkund_v2.webp", english: "Tilkund Modak", vibe: "🔥 Tiny, mighty", rotate: "rotate-2" },
   { slug: "gulkand-modak", marathi: "गुलकंद मोदक", english: "Gulkand Modak", image: "/images/takam_modak_gulkand_v2.webp", vibe: "🌹 Sweetheart", rotate: "-rotate-1" },
+  { slug: "khava-modak", marathi: "खवा मोदक", english: "Khava Modak", image: "/manus-storage/takam_modak_khava_v1_d280b026.png", vibe: "🥛 Creamy classic", rotate: "rotate-1" },
 ];
 
 function Marquee({ items, className = "" }: { items: string[]; className?: string }) {
@@ -137,7 +135,7 @@ export default function Home() {
               </div>
               <img
                 src={ASSETS.logoA}
-                alt="टाकम mascot - Surali Vadi with sunglasses"
+                alt="टाकम mascot with sunglasses"
                 decoding="async"
                 fetchPriority="high"
                 className="w-72 md:w-[26rem] mascot-bob drop-shadow-xl"
@@ -158,7 +156,7 @@ export default function Home() {
             बाप्पा special 🙏
           </div>
           <div className="absolute top-14 right-[7%] sticker rotate-6 bg-peach px-3 py-1 font-display font-bold text-sm hidden lg:block">
-            7 flavours. Full feels. ✨
+            9 flavours. Full feels. ✨
           </div>
           <div className="container">
             <div className="max-w-3xl mx-auto text-center mb-10 md:mb-14">
@@ -169,7 +167,7 @@ export default function Home() {
                 मोदक बोलतोय... <span className="relative inline-block rotate-1"><span className="relative z-10">ऐकणार का?</span><span className="absolute bottom-1 left-0 h-3.5 w-full bg-mascot -z-0" /></span>
               </h2>
               <p className="mt-3 font-semibold text-lg text-muted-foreground">
-                सात flavours, सात personalities - Ganapati season साठी full Takam energy.
+                नऊ flavours, नऊ personalities - Ganapati season साठी full Takam energy.
               </p>
             </div>
 
@@ -197,7 +195,7 @@ export default function Home() {
 
             <div className="text-center mt-11 flex flex-wrap justify-center gap-4">
               <Link href="/ganapati-modak-special" className="sticker-btn bg-mascot px-6 py-2.5 font-display font-bold inline-flex items-center gap-2 -rotate-1">
-                🗓️ ११ दिवसांचं schedule बघा
+                🗓️ 14 Sep - 24 Sep schedule बघा
               </Link>
               <a href="#order" className="sticker-btn bg-white px-6 py-2.5 font-display font-bold inline-flex items-center gap-2 rotate-1">
                 🙏 Modak order करा
@@ -208,7 +206,7 @@ export default function Home() {
 
         {/* ---------- Marquee divider ---------- */}
         <Marquee
-          items={["उकडीचे मोदक", "डिंक मोदक", "नाचणी मोदक", "ड्रायफ्रुट मोदक", "बीट मोदक", "गुलकंद मोदक", "Ganapati Special"]}
+          items={["उकडीचे मोदक", "डिंक मोदक", "नाचणी मोदक", "ड्रायफ्रुट मोदक", "बीट मोदक", "गुलकंद मोदक", "खवा मोदक", "Ganapati Special"]}
           className="bg-mint rotate-1 scale-x-105 relative z-10"
         />
 
@@ -287,6 +285,9 @@ export default function Home() {
               </h2>
               <p className="font-semibold text-lg max-w-md mx-auto">
                 WhatsApp us to order. Fresh batches made on demand - जितकं fresh, तितकं भारी.
+              </p>
+              <p className="sticker inline-flex items-center bg-white px-4 py-2 font-display font-extrabold text-sm md:text-base -rotate-2">
+                🚚 Standard Delivery: Evening, 6 PM onwards
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <a

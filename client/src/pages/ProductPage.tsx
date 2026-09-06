@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { MessageCircle, ArrowLeft, PlayCircle, ChevronRight } from "lucide-react";
 import { Link, useParams } from "wouter";
-import { getProduct, products, PHONE, SITE_ASSETS } from "@/lib/products";
+import { GANAPATI_SCHEDULE, getProduct, products, PHONE, SITE_ASSETS } from "@/lib/products";
 import { MobileNav } from "@/components/MobileNav";
 import NotFound from "@/pages/NotFound";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -21,6 +21,18 @@ function Tape({ className = "" }: { className?: string }) {
   return <div className={`absolute w-20 h-5 bg-mint/80 border-2 border-ink/20 ${className}`} style={{ clipPath: "polygon(3% 0, 97% 6%, 100% 100%, 0 94%)" }} />;
 }
 
+const MODAK_PRICES: Record<string, Record<string, string>> = {
+  "ukadiche-modak": { "5 Pieces": "₹275", "7 Pieces": "₹385", "11 Pieces": "₹605", "21 Pieces": "₹1,155" },
+  "dink-modak": { "11 Pieces": "₹198", "21 Pieces": "₹378", "250 gm": "₹558", "500 gm": "₹1,071", "1 kg": "₹2,142" },
+  "poshtik-modak": { "11 Pieces": "₹99", "21 Pieces": "₹189", "250 gm": "₹279", "500 gm": "₹567", "1 kg": "₹1,134" },
+  "dryfruit-modak": { "11 Pieces": "₹154", "21 Pieces": "₹294", "250 gm": "₹434", "500 gm": "₹819", "1 kg": "₹1,638" },
+  "tilkund-modak": { "11 Pieces": "₹77", "21 Pieces": "₹147", "250 gm": "₹217", "500 gm": "₹441", "1 kg": "₹882" },
+  "nachni-modak": { "11 Pieces": "₹220", "21 Pieces": "₹420", "250 gm": "₹620", "500 gm": "₹1,197", "1 kg": "₹2,394" },
+  "gulkand-modak": { "11 Pieces": "₹77", "21 Pieces": "₹147", "250 gm": "₹217", "500 gm": "₹441", "1 kg": "₹882" },
+  "beet-modak": { "11 Pieces": "₹77", "21 Pieces": "₹147", "250 gm": "₹217", "500 gm": "₹378", "1 kg": "₹756" },
+  "khava-modak": { "11 Pieces": "₹242", "21 Pieces": "₹462", "250 gm": "₹651", "500 gm": "₹1,260", "1 kg": "₹2,520" },
+};
+
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
   const product = getProduct(slug ?? "");
@@ -39,27 +51,41 @@ export default function ProductPage() {
 
   const others = products.filter((p) => p.slug !== product.slug);
   const isModak = product.slug.includes("modak");
-  const quantityOptions = [
-    ...(product.slug === "ukadiche-modak" ? [{ label: "7 Pieces", price: "₹210" }] : []),
-    { label: "11 Pieces", price: "₹320" }, { label: "21 Pieces", price: "₹580" },
-    { label: "250 gm", price: "₹320" }, { label: "500 gm", price: "₹590" }, { label: "1 kg", price: "₹1,100" },
-    { label: "Custom", price: "Price on confirmation" },
-  ];
-  const deliveryOptions = ["Singhgad Road", "Kothrud", "Deccan", "Nanded City", "Baner", "Pashan", "Baavdhan", "Other area"];
+  const quantityOptions = product.slug === "ukadiche-modak"
+    ? [
+        { label: "5 Pieces", price: MODAK_PRICES[product.slug]["5 Pieces"] },
+        { label: "7 Pieces", price: MODAK_PRICES[product.slug]["7 Pieces"] },
+        { label: "11 Pieces", price: MODAK_PRICES[product.slug]["11 Pieces"] },
+        { label: "21 Pieces", price: MODAK_PRICES[product.slug]["21 Pieces"] },
+        { label: "Custom", price: "Price on confirmation" },
+      ]
+    : [
+        { label: "11 Pieces", price: MODAK_PRICES[product.slug]["11 Pieces"] },
+        { label: "21 Pieces", price: MODAK_PRICES[product.slug]["21 Pieces"] },
+        { label: "250 gm", price: MODAK_PRICES[product.slug]["250 gm"], note: "Approx. 32 pieces" },
+        { label: "500 gm", price: MODAK_PRICES[product.slug]["500 gm"], note: "Approx. 60 pieces" },
+        { label: "1 kg", price: MODAK_PRICES[product.slug]["1 kg"], note: "Approx. 120 pieces" },
+        { label: "Custom", price: "Price on confirmation" },
+      ];
+  const deliveryOptions = ["Singhgad Road", "Kothurd", "Deccan", "Nanded City", "Baner", "Pashan", "Baavdhan", "Other area"];
+  const availableDays = isModak ? GANAPATI_SCHEDULE.filter((day) => day.slugs.includes(product.slug)) : [];
+  const selectedFestivalDay = availableDays.find((day) => day.date === selectedDay);
   const selectedQuantity = quantityOptions.find((option) => option.label === quantity);
   const orderQuantity = quantity === "Custom" ? `Custom: ${customQuantity.trim()}` : quantity;
   const orderPrice = selectedQuantity?.price ?? "To confirm";
   const orderLocation = deliveryLocation === "Other area" ? `Other area: ${customLocation.trim()}` : deliveryLocation;
+  const customQuantityMissing = quantity === "Custom" && !customQuantity.trim();
+  const quantityMissing = !quantity || customQuantityMissing;
+  const festivalDayMissing = isModak && !selectedFestivalDay;
+  const selectedDayMissing = festivalDayMissing;
+  const deliveryLocationMissing = !deliveryLocation || (deliveryLocation === "Other area" && !customLocation.trim());
+  const deliveryAddressMissing = isModak && deliveryLocationMissing;
   const normalizedMobileNumber = mobileNumber.replace(/\D/g, "");
-  const quantityMissing = !quantity || (quantity === "Custom" && !customQuantity.trim());
   const nameMissing = isModak && !name.trim();
   const mobileNumberMissing = isModak && !/^[6-9]\d{9}$/.test(normalizedMobileNumber);
-  const selectedDayMissing = isModak && !selectedDay;
-  const deliveryAddressMissing = isModak && (!deliveryLocation || (deliveryLocation === "Other area" && !customLocation.trim()));
-  const orderIncomplete = quantityMissing;
-
+  const orderIncomplete = quantityMissing || festivalDayMissing;
   const waText = encodeURIComponent(
-    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋${isModak ? `\nSelected Day: ${formatEnquiryDay(selectedDay)}\nQuantity: ${orderQuantity}\nName: ${name.trim()}\nMobile No: ${normalizedMobileNumber}\nDelivery Address: ${orderLocation}` : ""}`
+    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋${isModak ? `\nName: ${name.trim()}\nMobile Number: ${normalizedMobileNumber}\nFestival day: ${selectedFestivalDay ? `${selectedFestivalDay.date} (Festival Day ${GANAPATI_SCHEDULE.indexOf(selectedFestivalDay) + 1})` : "Not selected"}\nQuantity: ${orderQuantity}\nIndicative price: ${orderPrice}\nDelivery location: ${orderLocation}` : ""}`
   );
 
   const captureEnquiry = async () => {
@@ -114,32 +140,269 @@ export default function ProductPage() {
             </div>
 
             <div className="space-y-6">
-              <div><h1 className="font-display font-extrabold leading-tight" style={{ fontSize: "clamp(2.4rem, 5vw, 3.8rem)" }}>{product.marathi}</h1><p className="font-display font-bold text-xl text-muted-foreground">{product.english}</p></div>
-              <p className="font-semibold text-lg leading-relaxed">{product.shortDesc}</p><p className="font-bold italic text-muted-foreground">{product.funny}</p>
-              {isModak && <div className="sticker bg-mascot/80 p-4 -rotate-1 border-2 border-ink"><div className="flex flex-wrap gap-2 mb-2"><span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Made to Order</span><span className="bg-peach border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Limited Quantity</span></div><p className="font-semibold text-sm leading-snug">Every Ganapati batch is made fresh to order. Quantities are limited, so confirm your enquiry early.</p></div>}
-              {isModak && <div id="quantity-selection" className="sticker -rotate-1 bg-peach/55 p-4 md:p-5 space-y-3"><div className="flex flex-wrap items-center justify-between gap-2"><p className="font-display font-extrabold text-lg">किती पाहिजेत? 👀</p><span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Select quantity</span></div><div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">{quantityOptions.map((option) => <button type="button" key={option.label} onClick={() => setQuantity(option.label)} className={`border-[2.5px] border-ink px-3 py-2 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] ${quantity === option.label ? "bg-mascot" : "bg-white hover:bg-mint/60"}`} aria-pressed={quantity === option.label}><span className="block">{option.label === "Custom" ? "Custom ✍️" : option.label}</span><span className="block text-xs font-bold text-muted-foreground">{option.price}</span></button>)}</div>{quantity === "Custom" && <label className="block space-y-1.5"><span className="font-display font-bold text-sm">तुमची quantity लिहा</span><input value={customQuantity} onChange={(event) => setCustomQuantity(event.target.value)} placeholder="उदा. 35 pieces / 1 kg" className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot" /></label>}<p className="font-bold text-xs text-muted-foreground">तुमची निवड: <span className="text-ink">{quantity === "Custom" && customQuantity.trim() ? customQuantity : quantity || "Select one"}</span>{quantity && <span className="text-ink"> · {orderPrice}</span>}</p></div>}
+              <div>
+                <h1 className="font-display font-extrabold leading-tight" style={{ fontSize: "clamp(2.4rem, 5vw, 3.8rem)" }}>
+                  {product.marathi}
+                </h1>
+                <p className="font-display font-bold text-xl text-muted-foreground">{product.english}</p>
+              </div>
+              <p className="font-semibold text-lg leading-relaxed">{product.shortDesc}</p>
+              <p className="font-bold italic text-muted-foreground">{product.funny}</p>
 
-              <div className="flex flex-col items-start gap-2 pt-1"><button type="button" aria-disabled={orderIncomplete} onClick={() => { if (orderIncomplete) { setShowQuantityHint(true); document.getElementById("quantity-selection")?.scrollIntoView({ behavior: "smooth", block: "center" }); window.setTimeout(() => setShowQuantityHint(false), 2600); return; } setIsOrderDialogOpen(true); }} className={`sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "cursor-not-allowed opacity-50" : ""}`}><MessageCircle className="h-5 w-5" /> Send Enquiry on WhatsApp</button>{orderIncomplete && <p role="status" className={`font-display font-bold text-sm text-tomato ${showQuantityHint ? "animate-bounce" : ""}`}>{showQuantityHint ? "First select a quantity above 👆" : "Select a quantity above to continue"}</p>}</div>
+              {isModak && (
+                <div className="sticker bg-mascot/80 p-4 -rotate-1 border-2 border-ink">
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Made to Order</span>
+                    <span className="bg-peach border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Limited Quantity</span>
+                  </div>
+                  <p className="font-semibold text-sm leading-snug">Every Ganapati batch is made fresh to order. Quantities are limited, so confirm your enquiry early.</p>
+                </div>
+              )}
 
-              <Dialog open={isOrderDialogOpen} onOpenChange={setIsOrderDialogOpen}><DialogContent className="border-[3px] border-ink bg-cream shadow-[8px_8px_0_0_var(--ink)] p-5 sm:p-7 max-h-[90vh] overflow-y-auto"><DialogHeader className="text-left"><DialogTitle className="font-display text-2xl font-extrabold">Enquiry details ✍️</DialogTitle><DialogDescription className="font-semibold text-ink/70">We’ll save this enquiry to the dashboard, then open WhatsApp with the same details.</DialogDescription></DialogHeader><form onSubmit={handleOrderSubmit} className="space-y-4">
-                <div className="sticker bg-mint/50 p-3"><p className="font-display font-bold">Modak name</p><p className="font-semibold">{product.english}</p></div>
-                <label className="block space-y-1.5"><span className="font-display font-bold text-sm">Selected Day</span><select value={selectedDay} onChange={(event) => setSelectedDay(event.target.value)} required className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"><option value="" disabled>Select day</option>{enquiryDays.map((day) => <option key={day} value={day}>{formatEnquiryDay(day)}</option>)}</select></label>
-                <label className="block space-y-1.5"><span className="font-display font-bold text-sm">Quantity</span><input value={orderQuantity} readOnly className="w-full border-[2.5px] border-ink bg-white/70 px-3 py-2.5 font-semibold" /></label>
-                <label className="block space-y-1.5"><span className="font-display font-bold text-sm">Name</span><input value={name} onChange={(event) => setName(event.target.value)} placeholder="Enter your name" autoComplete="name" required className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot" /></label>
-                <label className="block space-y-1.5"><span className="font-display font-bold text-sm">Mobile No</span><input value={mobileNumber} onChange={(event) => setMobileNumber(event.target.value.replace(/[^0-9+\s-]/g, ""))} placeholder="10-digit mobile number" inputMode="tel" autoComplete="tel" maxLength={14} required className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot" />{mobileNumber.length > 0 && mobileNumberMissing && <span className="block text-xs font-bold text-tomato">Please enter a valid 10-digit mobile number.</span>}</label>
-                <label className="block space-y-1.5"><span className="font-display font-bold text-sm">Delivery Address</span><select value={deliveryLocation} onChange={(event) => setDeliveryLocation(event.target.value)} required className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"><option value="" disabled>Select area</option>{deliveryOptions.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>
-                {deliveryLocation === "Other area" && <label className="block space-y-1.5"><span className="font-display font-bold text-sm">Full Delivery Address</span><textarea value={customLocation} onChange={(event) => setCustomLocation(event.target.value)} placeholder="House/flat, street, area, Pune" required rows={3} className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot" /></label>}
-                <DialogFooter className="pt-2 sm:flex-row sm:justify-end"><DialogClose asChild><button type="button" className="border-[2.5px] border-ink bg-white px-4 py-2.5 font-display font-bold shadow-[2px_2px_0_0_var(--ink)]">Not yet</button></DialogClose><button type="submit" disabled={selectedDayMissing || deliveryAddressMissing || nameMissing || mobileNumberMissing} className="sticker-btn bg-tomato text-primary-foreground px-5 py-2.5 flex items-center justify-center gap-2 disabled:opacity-50"><MessageCircle className="h-4 w-4" /> Save & Continue to WhatsApp</button></DialogFooter>
-              </form></DialogContent></Dialog>
+              {isModak && (
+                <div id="quantity-selection" className="sticker -rotate-1 bg-peach/55 p-4 md:p-5 space-y-3 scroll-mt-28">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-display font-extrabold text-lg">कधी पाहिजेत? 📅</p>
+                    <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Select festival day</span>
+                  </div>
+                  <p className="font-semibold text-xs text-muted-foreground">This Modak is available only on the dates shown below.</p>
+                  <label className="block space-y-1.5">
+                    <span className="sr-only">Choose available festival day</span>
+                    <select
+                      value={selectedDay}
+                      onChange={(event) => setSelectedDay(event.target.value)}
+                      className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                    >
+                      <option value="">Choose an available date</option>
+                      {availableDays.map((day) => (
+                        <option key={day.date} value={day.date}>
+                          {day.date} - Festival Day {GANAPATI_SCHEDULE.indexOf(day) + 1}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
+                    <p className="font-display font-extrabold text-lg">किती पाहिजेत? 👀</p>
+                    <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Select quantity</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                    {quantityOptions.map((option) => (
+                      <button
+                        type="button"
+                        key={option.label}
+                        onClick={() => setQuantity(option.label)}
+                        className={`border-[2.5px] border-ink px-2.5 py-2.5 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] transition-transform active:scale-95 ${quantity === option.label ? "bg-mascot -rotate-1" : "bg-white hover:bg-mint/60 rotate-[.4deg]"}`}
+                        aria-pressed={quantity === option.label}
+                      >
+                        <span className="block text-sm sm:text-base leading-tight">{option.label === "Custom" ? "Custom ✍️" : option.label}</span>
+                        {option.label === "21 Pieces" && <span className="mt-1 inline-block rounded-full border-2 border-ink bg-tomato px-2 py-0.5 text-[10px] font-display font-extrabold uppercase leading-none text-white shadow-[1px_1px_0_0_var(--ink)]">Best Deal</span>}
+                        {option.note && <span className="mt-1 block text-[10px] sm:text-[11px] font-bold leading-tight text-tomato">{option.note}</span>}
+                        <span className="mt-1.5 inline-block rounded-full border-2 border-ink bg-mint px-2 py-0.5 text-base sm:text-lg font-display font-extrabold leading-none text-ink shadow-[1px_1px_0_0_var(--ink)]">{option.price}</span>
+                      </button>
+                    ))}
+                  </div>
+                  {quantity === "Custom" && (
+                    <label className="block space-y-1.5">
+                      <span className="font-display font-bold text-sm">तुमची quantity लिहा</span>
+                      <input
+                        value={customQuantity}
+                        onChange={(event) => setCustomQuantity(event.target.value)}
+                        placeholder="उदा. 35 pieces / 1 kg"
+                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                      />
+                    </label>
+                  )}
+                  <p className="font-bold text-xs text-muted-foreground">Indicative prices for now · तुमची निवड: <span className="text-ink">{quantity === "Custom" && customQuantity.trim() ? customQuantity : quantity || "Select one"}</span>{quantity && <span className="text-ink"> · {orderPrice}</span>}</p>
+                </div>
+              )}
 
-              <div className="sticker rotate-1 bg-white p-5 mt-4"><p className="font-display font-extrabold text-lg mb-3">Quick Facts 📌</p><div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">{product.facts.map((f) => <div key={f.label} className="flex flex-col"><span className="font-display font-bold text-xs uppercase tracking-wide text-muted-foreground">{f.label}</span><span className="font-semibold text-sm">{f.value}</span></div>)}</div></div>
+
+
+              <div className="flex flex-col items-start gap-2 pt-1">
+                <p className="sticker inline-flex items-center bg-mascot px-4 py-2 font-display font-extrabold text-sm -rotate-2">
+                  🚚 Standard Delivery: Evening, 6 PM onwards
+                </p>
+                <button
+                  type="button"
+                  aria-disabled={orderIncomplete}
+                  onClick={() => {
+                    if (orderIncomplete) {
+                      setShowQuantityHint(true);
+                      document.getElementById("quantity-selection")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                      window.setTimeout(() => setShowQuantityHint(false), 2600);
+                      return;
+                    }
+                    setIsOrderDialogOpen(true);
+                  }}
+                  className={`sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "cursor-not-allowed opacity-50" : ""}`}
+                >
+                  <MessageCircle className="h-5 w-5" /> Send Enquiry on WhatsApp
+                </button>
+                {orderIncomplete && (
+                  <p role="status" aria-live="polite" className={`font-display font-bold text-sm text-tomato ${showQuantityHint ? "animate-bounce" : ""}`}>
+                    {showQuantityHint
+                      ? (festivalDayMissing ? "First select a festival day above 👆" : "First select a quantity above 👆")
+                      : (festivalDayMissing ? "Select an available festival day above to continue" : "Select a quantity above to continue")}
+
+                  </p>
+                )}
+              </div>
+
+              <Dialog open={isOrderDialogOpen} onOpenChange={setIsOrderDialogOpen}>
+                <DialogContent className="border-[3px] border-ink bg-cream shadow-[8px_8px_0_0_var(--ink)] p-5 sm:p-7">
+                  <DialogHeader className="text-left">
+                    <DialogTitle className="font-display text-2xl font-extrabold">Order details ✍️</DialogTitle>
+                    <DialogDescription className="font-semibold text-ink/70">Just these details, then WhatsApp करा. Your selection: {selectedFestivalDay ? `${selectedFestivalDay.date} · ` : ""}{orderQuantity} · {orderPrice} indicative.</DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleOrderSubmit} className="space-y-4">
+                    <label className="block space-y-1.5">
+                      <span className="font-display font-bold text-sm">Name</span>
+                      <input
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                        placeholder="Enter your name"
+                        autoComplete="name"
+                        required
+                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                      />
+                    </label>
+                    <label className="block space-y-1.5">
+                      <span className="font-display font-bold text-sm">Mobile Number</span>
+                      <input
+                        value={mobileNumber}
+                        onChange={(event) => setMobileNumber(event.target.value.replace(/[^0-9+\\s-]/g, ""))}
+                        placeholder="10-digit mobile number"
+                        inputMode="tel"
+                        autoComplete="tel"
+                        maxLength={14}
+                        required
+                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                      />
+                      {mobileNumber.length > 0 && mobileNumberMissing && <span className="block text-xs font-bold text-tomato">Please enter a valid 10-digit mobile number.</span>}
+                    </label>
+                    <label className="block space-y-1.5">
+                      <span className="font-display font-bold text-sm">Delivery Area</span>
+                      <select
+                        value={deliveryLocation}
+                        onChange={(event) => setDeliveryLocation(event.target.value)}
+                        required
+                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                      >
+                        <option value="" disabled>Select area</option>
+                        {deliveryOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+                      </select>
+                    </label>
+                    {deliveryLocation === "Other area" && (
+                      <label className="block space-y-1.5">
+                        <span className="font-display font-bold text-sm">Your Area</span>
+                        <input
+                          value={customLocation}
+                          onChange={(event) => setCustomLocation(event.target.value)}
+                          placeholder="e.g. Wakad, Pune"
+                          required
+                          className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
+                        />
+                      </label>
+                    )}
+                    <DialogFooter className="pt-2 sm:flex-row sm:justify-end">
+                      <DialogClose asChild>
+                        <button type="button" className="border-[2.5px] border-ink bg-white px-4 py-2.5 font-display font-bold shadow-[2px_2px_0_0_var(--ink)]">Not yet</button>
+                      </DialogClose>
+                      <button type="submit" className="sticker-btn bg-tomato text-primary-foreground px-5 py-2.5 flex items-center justify-center gap-2">
+                        <MessageCircle className="h-4 w-4" /> Continue to WhatsApp
+                      </button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+
+              {/* Quick facts */}
+              <div className="sticker rotate-1 bg-white p-5 mt-4">
+                <p className="font-display font-extrabold text-lg mb-3">Quick Facts 📌</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
+                  {product.facts.map((f) => (
+                    <div key={f.label} className="flex flex-col">
+                      <span className="font-display font-bold text-xs uppercase tracking-wide text-muted-foreground">{f.label}</span>
+                      <span className="font-semibold text-sm">{f.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="py-12 md:py-16 bg-peach/40 relative"><div className="container max-w-3xl"><div className="inline-block sticker -rotate-2 bg-white px-4 py-1.5 font-display font-bold text-sm mb-5">📖 ह्याची गोष्ट</div><h2 className="font-display font-extrabold mb-5" style={{ fontSize: "clamp(1.7rem, 3.5vw, 2.6rem)" }}>{product.marathi} म्हणजे काय?</h2><div className="space-y-4">{product.story.map((para) => <p key={para.slice(0, 24)} className="font-semibold text-lg leading-relaxed">{para}</p>)}</div></div></section>
-        <section className="py-12 md:py-20 relative"><div className="container"><div className="text-center mb-10"><div className="inline-block sticker rotate-2 bg-mint px-4 py-1.5 font-display font-bold text-sm mb-4">💚 का खावं?</div><h2 className="font-display font-extrabold text-3xl">Benefits - एकदम solid!</h2></div><div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">{product.benefits.map((b, i) => <div key={b.title} className={`sticker bg-white p-5 space-y-2 ${i % 2 === 0 ? "-rotate-1" : "rotate-1"}`}><div className="text-3xl">{b.emoji}</div><p className="font-display font-extrabold text-lg leading-tight">{b.title}</p><p className="font-semibold text-sm leading-relaxed text-muted-foreground">{b.desc}</p></div>)}</div></div></section>
-        <section className="pb-12 md:pb-20"><div className="container max-w-3xl"><div className="sticker -rotate-1 bg-mascot p-7 md:p-9"><h2 className="font-display font-extrabold text-2xl md:text-3xl mb-4">कसं खायचं? 😋</h2><ul className="space-y-2.5">{product.howToEnjoy.map((tip) => <li key={tip} className="font-semibold text-lg flex items-start gap-2.5"><span className="font-display font-extrabold">→</span>{tip}</li>)}</ul></div></div></section>
+        {/* ---------- Story ---------- */}
+        <section className="py-12 md:py-16 bg-peach/40 relative">
+          <div className="absolute top-6 left-[8%] sticker -rotate-6 bg-mascot px-3 py-1 font-display font-bold text-sm hidden lg:block">
+            आजी approved ✅
+          </div>
+          <div className="container max-w-3xl">
+            <div className="inline-block sticker -rotate-2 bg-white px-4 py-1.5 font-display font-bold text-sm mb-5">
+              📖 ह्याची गोष्ट
+            </div>
+            <h2 className="font-display font-extrabold mb-5" style={{ fontSize: "clamp(1.7rem, 3.5vw, 2.6rem)" }}>
+              {product.marathi} म्हणजे काय?
+            </h2>
+            <div className="space-y-4">
+              {product.story.map((para) => (
+                <p key={para.slice(0, 24)} className="font-semibold text-lg leading-relaxed">
+                  {para}
+                </p>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ---------- Benefits ---------- */}
+        <section className="py-12 md:py-20 relative">
+          <div className="absolute top-8 right-[7%] sticker rotate-6 bg-mint px-3 py-1 font-display font-bold text-sm hidden lg:block">
+            चव + फायदे = टाकम 💯
+          </div>
+          <div className="container">
+            <div className="text-center mb-10">
+              <div className="inline-block sticker rotate-2 bg-mint px-4 py-1.5 font-display font-bold text-sm mb-4">
+                💚 का खावं?
+              </div>
+              <h2 className="font-display font-extrabold -rotate-1" style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)" }}>
+                Benefits -{" "}
+                <span className="relative inline-block rotate-1">
+                  <span className="relative z-10">एकदम solid!</span>
+                  <span className="absolute bottom-1 left-0 w-full h-3 bg-mascot -z-0 rotate-1" />
+                </span>
+              </h2>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+              {product.benefits.map((b, i) => (
+                <div
+                  key={b.title}
+                  className={`sticker bg-white p-5 space-y-2 ${i % 2 === 0 ? "-rotate-1" : "rotate-1 lg:translate-y-3"}`}
+                >
+                  <div className="text-3xl">{b.emoji}</div>
+                  <p className="font-display font-extrabold text-lg leading-tight">{b.title}</p>
+                  <p className="font-semibold text-sm leading-relaxed text-muted-foreground">{b.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ---------- How to enjoy ---------- */}
+        <section className="pb-12 md:pb-20">
+          <div className="container max-w-3xl">
+            <div className="sticker -rotate-1 bg-mascot p-7 md:p-9">
+              <h2 className="font-display font-extrabold text-2xl md:text-3xl mb-4">कसं खायचं? 😋</h2>
+              <ul className="space-y-2.5">
+                {product.howToEnjoy.map((tip) => (
+                  <li key={tip} className="font-semibold text-lg flex items-start gap-2.5">
+                    <span className="font-display font-extrabold">→</span> {tip}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
         <section className="pb-14 md:pb-20"><div className="container max-w-3xl"><div className="sticker rotate-1 bg-white p-8 md:p-10 text-center space-y-5"><h2 className="font-display font-extrabold text-2xl md:text-3xl">{product.marathi} पाहिजे? मग enquiry करा! 🔥</h2><button type="button" disabled={orderIncomplete} onClick={() => setIsOrderDialogOpen(true)} className={`sticker-btn bg-mint px-7 py-3 text-lg flex items-center gap-2 mx-auto ${orderIncomplete ? "opacity-50" : ""}`}><MessageCircle className="h-5 w-5" /> Send Enquiry on WhatsApp</button></div></div></section>
         <section className="pb-16 md:pb-24"><div className="container"><h2 className="font-display font-extrabold text-2xl md:text-3xl text-center mb-8">अजून काही try करा 👇</h2><div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">{others.map((p) => <Link key={p.slug} href={`/product/${p.slug}`} className="sticker bg-white p-4 flex items-center gap-4"><img src={p.images[0]} alt={p.english} className="h-16 w-16 object-cover border-[2.5px] border-ink rounded-xl" /><div className="min-w-0"><p className="font-display font-extrabold text-lg leading-tight">{p.marathi}</p><p className="text-sm font-bold text-muted-foreground">{p.english}</p></div><ChevronRight className="h-5 w-5 ml-auto shrink-0" /></Link>)}</div><div className="text-center mt-10"><Link href="/ganapati-modak-special" className="font-display font-bold hover:underline inline-flex items-center gap-1.5"><ArrowLeft className="h-4 w-4" /> सगळे Ganapati Modak बघा</Link></div></div></section>
       </main>

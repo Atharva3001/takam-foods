@@ -1,0 +1,45 @@
+Starting video analysis...
+Submitting video analysis task...
+Task submitted (ID: video-analysis-ab382c09-86c7-4459-9c8f-92bb70fb804f)
+[8s] Status: Analyzing video content with AI...
+[33s] Still processing, please wait...
+[45s] Status: Analysis completed
+[45s] Analysis completed!
+Full analysis result saved to: /home/ubuntu/video_export-1_analysis_20260901_155910.md
+Note: This tool performs AI-based visual and audio analysis, not verbatim transcription. For detailed speech transcription, use `manus-speech-to-text` instead.
+Analysis result:
+
+Here is a shot-by-shot visual breakdown of the Reel, complete with timestamps, designed to help you time your Marathi voiceover script:
+
+**0:00 - 0:03 | Intro Graphic**
+*   **Visual:** Animated title card on a pink background. A cute, animated beetroot character shaped like a modak (wearing a bow and sneakers) winks and gives a peace sign. 
+*   **Text On-Screen:** "Takam presents Meet Beet Modak. Pink, but not basic."
+
+**0:04 - 0:21 | Ingredient Showcase**
+*   **Visual:** Overhead shot of a kitchen counter. Seven clear, star-shaped bowls are arranged in a circle. The camera slowly zooms in on individual ingredients.
+*   **Ingredients shown:** Grated beetroot, melted ghee, khoya/mawa (milk solids), desiccated coconut, mixed dry fruits (almonds, pistachios, cashews, walnuts), poppy seeds (khus khus), and powdered sugar.
+
+**0:22 - 0:24 | Character Transition**
+*   **Visual:** The animated beetroot modak character returns, doing a quick dance and posing against a solid green screen background.
+
+**0:25 - 0:29 | Blending the Beetroot**
+*   **Visual:** Close-up of a mixer grinder. A hand pours the bowl of grated beetroot into the steel jar. The lid is closed, the grinder runs briefly, and the lid is opened to reveal a finely ground, dark purple beetroot paste.
+
+**0:30 - 0:44 | Cooking Process**
+*   **Visual:** A pan on a lit gas stove. The beetroot paste is added to the pan, which already contains melted ghee and khoya. 
+*   **Action:** A hand stirs the mixture with a spatula. A spoonful of poppy seeds is added. The mixture is continuously stirred as it cooks down and thickens into a sticky, halwa-like consistency.
+
+**0:45 - 0:46 | Cooling/Kneading**
+*   **Visual:** The cooked, dark purple mixture is transferred to a flat steel plate. A woman’s hands press and spread the mixture flat to cool it down.
+
+**0:47 - 1:05 | Shaping the Modaks**
+*   **Visual:** Close-up of a yellow, multi-cavity plastic modak mold. 
+*   **Action:** A hand uses a spoon to drizzle melted ghee inside the open mold to grease it. The mold is closed. A woman's fingers tightly pack the cooked beetroot mixture into the bottom holes of the mold. 
+*   **Reveal:** The mold is carefully opened to reveal a row of five perfectly shaped, glossy beet modaks.
+
+**1:06 - 1:14 | Final Beauty Shots**
+*   **Visual:** Close-up, panning shots of the finished, dark purple modaks. First shown resting on a steel plate, then beautifully arranged on a white plate with a yellow and green leaf pattern.
+
+**1:15 - 1:18 | Outro Graphic**
+*   **Visual:** The animated beetroot character appears one last time on the pink background.
+*   **Text On-Screen:** "Takam Beet Modak. Order Now. Link in the bio or DM us directly."
