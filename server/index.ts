@@ -3,6 +3,7 @@ import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import { registerDashboardApi } from "./dashboard-api";
+import { registerDashboardAuth, requireDashboardAuth } from "./dashboard-auth";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,6 +12,11 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
   app.use(express.json({ limit: "1mb" }));
+  registerDashboardAuth(app);
+  app.use("/api/dashboard", (req, res, next) => {
+    if (req.method === "POST" && req.path === "/enquiries") return next();
+    return requireDashboardAuth(req, res, next);
+  });
   registerDashboardApi(app);
 
   if (process.env.NODE_ENV !== "production") {
