@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
-import { ArrowLeft, CheckCircle2, CircleAlert, PackagePlus, Plus, RefreshCw, Settings2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, CircleAlert, LogOut, PackagePlus, Plus, RefreshCw, Settings2 } from "lucide-react";
 import type { Order, Product } from "../../../server/dashboard-store";
 import khavaModakImage from "../assets/khavaModakImage";
 
@@ -60,6 +60,11 @@ export default function OrderDashboard() {
     await load(); setSaving(false);
   }
 
+  async function signOut() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.href = "/dashboard";
+  }
+
   return <main className="min-h-screen bg-background px-4 py-5 sm:px-6 lg:px-8">
     <div className="mx-auto max-w-7xl">
       <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -68,7 +73,7 @@ export default function OrderDashboard() {
           <div className="flex items-center gap-3"><h1 className="font-display text-4xl font-extrabold tracking-tight">Order HQ</h1><span className="rounded-full border-2 border-ink bg-mascot px-3 py-1 text-xs font-extrabold uppercase">Made to order</span></div>
           <p className="mt-1 text-sm font-semibold text-muted-foreground">Live production capacity, orders & delivery at a glance.</p>
         </div>
-        <div className="flex flex-wrap gap-2"><button className="sticker-btn bg-mint px-4 py-2" onClick={load}><RefreshCw size={16} /> Refresh</button><button className="sticker-btn bg-tomato px-4 py-2 text-white" onClick={() => setShowOrder(true)}><Plus size={17} /> Add order</button></div>
+        <div className="flex flex-wrap gap-2"><button className="sticker-btn bg-mint px-4 py-2" onClick={load}><RefreshCw size={16} /> Refresh</button><button className="sticker-btn bg-tomato px-4 py-2 text-white" onClick={() => setShowOrder(true)}><Plus size={17} /> Add order</button><button className="sticker-btn bg-white px-4 py-2" onClick={signOut}><LogOut size={16} /> Sign out</button></div>
       </header>
 
       <section className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
