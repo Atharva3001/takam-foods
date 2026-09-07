@@ -1,0 +1,51 @@
+name: Mark Ukadiche Day 1 and Day 2 Fully Booked
+on:
+  workflow_dispatch:
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch booking status
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('client/src/pages/ProductPage.tsx')
+          s = p.read_text()
+          s = s.replace('  const availableDays = isModak ? GANAPATI_SCHEDULE.filter((day) => day.slugs.includes(product.slug)) : [];', '  const availableDays = isModak ? GANAPATI_SCHEDULE.filter((day) => day.slugs.includes(product.slug)) : [];\n  const fullyBookedDays = product.slug === "ukadiche-modak" ? new Set(["14 Sep", "15 Sep"]) : new Set<string>();\n  const isSelectedDayFullyBooked = Boolean(selectedFestivalDay && fullyBookedDays.has(selectedFestivalDay.date));')
+          s = s.replace('  const selectedFestivalDay = availableDays.find((day) => {', '  const selectedFestivalDay = availableDays.find((day) => {')
+          s = s.replace('    return isoDate === selectedDay;\n  });', '    return isoDate === selectedDay;\n  });')
+          s = s.replace('  const festivalDayMissing = isModak && !selectedFestivalDay;', '  const festivalDayMissing = isModak && (!selectedFestivalDay || isSelectedDayFullyBooked);')
+          old = '{availableDays.map((day) => <option key={day.date} value={`2026-09-${day.date.split(" ")[0].padStart(2, "0")}`}>{day.date} - Festival Day {GANAPATI_SCHEDULE.indexOf(day) + 1}</option>)}'
+          new = '{availableDays.map((day) => { const booked = fullyBookedDays.has(day.date); return <option key={day.date} value={`2026-09-${day.date.split(" ")[0].padStart(2, "0")}`} disabled={booked}>{day.date} - Festival Day {GANAPATI_SCHEDULE.indexOf(day) + 1}{booked ? " — Fully Booked" : ""}</option>; })}'
+          if old not in s:
+              raise SystemExit('ProductPage selector snippet not found')
+          s = s.replace(old, new)
+          s = s.replace('<p className="font-semibold text-xs text-muted-foreground">This Modak is available only on the dates shown below.</p>', '<p className="font-semibold text-xs text-muted-foreground">This Modak is available only on the dates shown below. Day 1 &amp; Day 2 are currently fully booked.</p>')
+          p.write_text(s)
+
+          p = Path('client/src/pages/GanapatiSpecial.tsx')
+          s = p.read_text()
+          s = s.replace('उकडीचे मोदक रोज available आहेत.', 'उकडीचे मोदक रोज available आहेत*')
+          old = '<div className="mt-3 flex flex-wrap gap-2">{dayProducts.map((product) => <Link key={product.slug} href={`/product/${product.slug}`} className="inline-flex items-center gap-1.5 bg-mint/50 border-2 border-ink rounded-full pl-1 pr-2.5 py-1 text-xs md:text-sm font-display font-bold hover:bg-mascot"><span className="h-7 w-7 shrink-0 overflow-hidden rounded-full border border-ink/20 bg-white flex items-center justify-center"><img src={product.images[0]} alt="" aria-hidden className={`h-full w-full ${product.images[0].includes("takam_modak_") ? "object-contain p-0.5" : "object-cover"}`} /></span>{product.marathi}</Link>)}</div>'
+          new = '<div className="mt-3 flex flex-wrap gap-2">{dayProducts.map((product) => { const booked = product.slug === "ukadiche-modak" && (day.date === "14 Sep" || day.date === "15 Sep"); return <Link key={product.slug} href={`/product/${product.slug}`} className={`inline-flex items-center gap-1.5 border-2 border-ink rounded-full pl-1 pr-2.5 py-1 text-xs md:text-sm font-display font-bold hover:bg-mascot ${booked ? "bg-peach" : "bg-mint/50"}`}><span className="h-7 w-7 shrink-0 overflow-hidden rounded-full border border-ink/20 bg-white flex items-center justify-center"><img src={product.images[0]} alt="" aria-hidden className={`h-full w-full ${product.images[0].includes("takam_modak_") ? "object-contain p-0.5" : "object-cover"}`} /></span>{product.marathi}{booked ? " • Fully Booked" : ""}</Link>; })}</div>'
+          if old not in s:
+              raise SystemExit('Ganapati schedule snippet not found')
+          s = s.replace(old, new)
+          s = s.replace('              </div>\n            </div>\n          </div>\n        </section>\n\n        <section className="py-16 md:py-24 bg-peach/25', '              </div>\n              <p className="mt-3 text-xs font-bold text-muted-foreground">* Ukadiche Modak is fully booked for Day 1 (14 Sep) and Day 2 (15 Sep).</p>\n            </div>\n          </div>\n        </section>\n\n        <section className="py-16 md:py-24 bg-peach/25')
+          p.write_text(s)
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add client/src/pages/ProductPage.tsx client/src/pages/GanapatiSpecial.tsx
+          git commit -m "fix: show Ukadiche day 1 and 2 as fully booked" || exit 0
+          git push
+      - name: Remove one-time workflow
+        run: |
+          git rm .github/workflows/mark-ukadiche-day1-day2-booked.yml
+          git commit -m "chore: remove one-time booking status workflow"
+          git push
