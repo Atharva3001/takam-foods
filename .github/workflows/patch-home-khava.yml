@@ -1,0 +1,42 @@
+name: Patch homepage Khava image
+
+on:
+  push:
+    branches: [feature/order-capacity-dashboard]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: "!contains(github.event.head_commit.message, 'fix: homepage Khava image')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/order-capacity-dashboard
+          fetch-depth: 0
+      - name: Patch homepage
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          p = Path('client/src/pages/Home.tsx')
+          s = p.read_text()
+          if 'import khavaModakImage from "@/assets/khavaModakImage";' not in s:
+              s = s.replace('import { MobileNav } from "@/components/MobileNav";\n', 'import { MobileNav } from "@/components/MobileNav";\nimport khavaModakImage from "@/assets/khavaModakImage";\n', 1)
+          old = 'image: "/manus-storage/takam_modak_khava_v1_d280b026.png"'
+          if old in s:
+              s = s.replace(old, 'image: khavaModakImage', 1)
+          elif 'image: khavaModakImage' not in s:
+              raise SystemExit('Homepage Khava image entry not found')
+          p.write_text(s)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add client/src/pages/Home.tsx
+          git diff --cached --quiet || git commit -m "fix: homepage Khava image"
+          git push origin HEAD:feature/order-capacity-dashboard
+          git rm .github/workflows/patch-home-khava.yml
+          git commit -m "chore: remove homepage Khava patch workflow"
+          git push origin HEAD:feature/order-capacity-dashboard
