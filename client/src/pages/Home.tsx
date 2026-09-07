@@ -9,6 +9,7 @@
 import { MessageCircle, Sparkles, Heart, Leaf, ChefHat, Star } from "lucide-react";
 import { Link } from "wouter";
 import { MobileNav } from "@/components/MobileNav";
+import khavaModakImage from "@/assets/khavaModakImage";
 
 const PHONE = "9371055473";
 
@@ -28,7 +29,7 @@ const ganapatiModaks = [
   { slug: "poshtik-modak", marathi: "पोष्टीक मोदक", english: "Poshtik Modak", image: "/images/takam_modak_poshtik_v2.webp", vibe: "🦸 All-rounder", rotate: "-rotate-2" },
   { slug: "tilkund-modak", marathi: "तीळकुंद मोदक", image: "/images/takam_modak_tilkund_v2.webp", english: "Tilkund Modak", vibe: "🔥 Tiny, mighty", rotate: "rotate-2" },
   { slug: "gulkand-modak", marathi: "गुलकंद मोदक", english: "Gulkand Modak", image: "/images/takam_modak_gulkand_v2.webp", vibe: "🌹 Sweetheart", rotate: "-rotate-1" },
-  { slug: "khava-modak", marathi: "खवा मोदक", english: "Khava Modak", image: "/manus-storage/takam_modak_khava_v1_d280b026.png", vibe: "🥛 Creamy classic", rotate: "rotate-1" },
+  { slug: "khava-modak", marathi: "खवा मोदक", english: "Khava Modak", image: khavaModakImage, vibe: "🥛 Creamy classic", rotate: "rotate-1" },
 ];
 
 function Marquee({ items, className = "" }: { items: string[]; className?: string }) {

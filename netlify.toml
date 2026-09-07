@@ -6,6 +6,14 @@
   NODE_VERSION = "20"
   PNPM_VERSION = "10.4.1"
 
+# Keep the deployment configuration explicit for preview builds.
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://api.takamfoods.com/api/:splat"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

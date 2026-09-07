@@ -1,32 +1,46 @@
-/*
- * TAKAM - Sticker Bomb Bazaar theme
- * Product detail page (/product/:slug): polaroid gallery + video placeholder,
- * story, benefit sticker cards, how-to-enjoy, quick facts, order CTAs.
- * Red-orange only on ordering actions.
- */
-import { useState, type FormEvent } from "react";
-import { MessageCircle, ArrowLeft, PlayCircle, ChevronRight } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { MessageCircle, ArrowLeft, ChevronRight, Plus } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { GANAPATI_SCHEDULE, getProduct, products, PHONE, SITE_ASSETS } from "@/lib/products";
 import { MobileNav } from "@/components/MobileNav";
 import NotFound from "@/pages/NotFound";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
+const enquiryDays = Array.from({ length: 12 }, (_, index) => {
+  const day = 13 + index;
+  return `2026-09-${String(day).padStart(2, "0")}`;
+});
+
+function formatEnquiryDay(value: string) {
+  if (!value) return "";
+  const [year, month, day] = value.split("-");
+  return `${day}-${month}-${year}`;
+}
+
+type EnquiryCartItem = {
+  id: string;
+  slug: string;
+  marathi: string;
+  english: string;
+  selectedDay: string;
+  festivalDayLabel: string;
+  quantity: string;
+  price: string;
+};
+
+const ENQUIRY_CART_KEY = "takam-enquiry-cart";
+
+function readEnquiryCart(): EnquiryCartItem[] {
+  try {
+    const stored = localStorage.getItem(ENQUIRY_CART_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
 
 function Tape({ className = "" }: { className?: string }) {
-  return (
-    <div
-      className={`absolute w-20 h-5 bg-mint/80 border-2 border-ink/20 ${className}`}
-      style={{ clipPath: "polygon(3% 0, 97% 6%, 100% 100%, 0 94%)" }}
-    />
-  );
+  return <div className={`absolute w-20 h-5 bg-mint/80 border-2 border-ink/20 ${className}`} style={{ clipPath: "polygon(3% 0, 97% 6%, 100% 100%, 0 94%)" }} />;
 }
 
 const MODAK_PRICES: Record<string, Record<string, string>> = {
@@ -44,16 +58,30 @@ const MODAK_PRICES: Record<string, Record<string, string>> = {
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
   const product = getProduct(slug ?? "");
-  const [activeImage, setActiveImage] = useState(0);
   const [name, setName] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
-  const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
+  const [selectedDay, setSelectedDay] = useState("");
   const [quantity, setQuantity] = useState("");
   const [customQuantity, setCustomQuantity] = useState("");
   const [deliveryLocation, setDeliveryLocation] = useState("");
   const [customLocation, setCustomLocation] = useState("");
+  const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cart, setCart] = useState<EnquiryCartItem[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showQuantityHint, setShowQuantityHint] = useState(false);
-  const [selectedDay, setSelectedDay] = useState("");
+
+  useEffect(() => {
+    setCart(readEnquiryCart());
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(ENQUIRY_CART_KEY, JSON.stringify(cart));
+    } catch {
+      // Ignore storage failures; the current-page cart still works.
+    }
+  }, [cart]);
 
   if (!product) return <NotFound />;
 
@@ -77,7 +105,12 @@ export default function ProductPage() {
       ];
   const deliveryOptions = ["Singhgad Road", "Kothurd", "Deccan", "Nanded City", "Baner", "Pashan", "Baavdhan", "Other area"];
   const availableDays = isModak ? GANAPATI_SCHEDULE.filter((day) => day.slugs.includes(product.slug)) : [];
-  const selectedFestivalDay = availableDays.find((day) => day.date === selectedDay);
+  const selectedFestivalDay = availableDays.find((day) => {
+    const [dayNumber, monthName] = day.date.split(" ");
+    const monthNumber = monthName === "Sep" ? "09" : "01";
+    const isoDate = `2026-${monthNumber}-${dayNumber.padStart(2, "0")}`;
+    return isoDate === selectedDay;
+  });
   const selectedQuantity = quantityOptions.find((option) => option.label === quantity);
   const orderQuantity = quantity === "Custom" ? `Custom: ${customQuantity.trim()}` : quantity;
   const orderPrice = selectedQuantity?.price ?? "To confirm";
@@ -85,123 +118,104 @@ export default function ProductPage() {
   const customQuantityMissing = quantity === "Custom" && !customQuantity.trim();
   const quantityMissing = !quantity || customQuantityMissing;
   const festivalDayMissing = isModak && !selectedFestivalDay;
+  const selectedDayMissing = festivalDayMissing;
   const deliveryLocationMissing = !deliveryLocation || (deliveryLocation === "Other area" && !customLocation.trim());
+  const deliveryAddressMissing = isModak && deliveryLocationMissing;
   const normalizedMobileNumber = mobileNumber.replace(/\D/g, "");
   const nameMissing = isModak && !name.trim();
   const mobileNumberMissing = isModak && !/^[6-9]\d{9}$/.test(normalizedMobileNumber);
   const orderIncomplete = quantityMissing || festivalDayMissing;
-  const waText = encodeURIComponent(
-    `नमस्कार टाकम! मला ${product.marathi} (${product.english}) order करायचं आहे 😋${isModak ? `\nName: ${name.trim()}\nMobile Number: ${normalizedMobileNumber}\nFestival day: ${selectedFestivalDay ? `${selectedFestivalDay.date} (Festival Day ${GANAPATI_SCHEDULE.indexOf(selectedFestivalDay) + 1})` : "Not selected"}\nQuantity: ${orderQuantity}\nIndicative price: ${orderPrice}\nDelivery location: ${orderLocation}` : ""}`
-  );
-  const handleOrderSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (nameMissing || mobileNumberMissing || deliveryLocationMissing) return;
-    window.open(`https://wa.me/91${PHONE}?text=${waText}`, "_blank", "noopener,noreferrer");
-    setIsOrderDialogOpen(false);
+
+  const addCurrentItemToEnquiry = () => {
+    if (orderIncomplete) {
+      setShowQuantityHint(true);
+      document.getElementById("quantity-selection")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      window.setTimeout(() => setShowQuantityHint(false), 2600);
+      return;
+    }
+
+    const item: EnquiryCartItem = {
+      id: `${product.slug}-${selectedDay}-${Date.now()}`,
+      slug: product.slug,
+      marathi: product.marathi,
+      english: product.english,
+      selectedDay,
+      festivalDayLabel: selectedFestivalDay?.date || formatEnquiryDay(selectedDay),
+      quantity: orderQuantity,
+      price: orderPrice,
+    };
+    setCart((current) => [...current, item]);
+    setIsCartOpen(true);
   };
-  const isMascotSrc = (src: string) => src.includes("takam_modak_") || src.includes("ukadiche_modak_hero_mascot");
-  const isMascotAsset = isMascotSrc(product.images[activeImage] ?? "");
+
+  const captureEnquiries = async () => {
+    if (!cart.length || nameMissing || mobileNumberMissing || deliveryAddressMissing) return false;
+    const responses = await Promise.all(cart.map((item) => fetch("/api/dashboard/enquiries", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productName: item.english,
+        productSlug: item.slug,
+        selectedDay: item.selectedDay,
+        quantity: item.quantity,
+        name: name.trim(),
+        mobileNumber: normalizedMobileNumber,
+        deliveryAddress: orderLocation,
+      }),
+    })));
+    return responses.every((response) => response.ok);
+  };
+
+  const handleOrderSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (nameMissing || mobileNumberMissing || deliveryAddressMissing || cart.length === 0) return;
+    setIsSubmitting(true);
+    try {
+      const captured = await captureEnquiries();
+      if (!captured) return;
+
+      const totalIndicative = cart.reduce((sum, item) => {
+        const raw = item.price.replace(/[^0-9.]/g, "");
+        const value = Number(raw);
+        return Number.isFinite(value) ? sum + value : sum;
+      }, 0);
+      const lines = cart.map((item, index) => `${index + 1}. ${item.english}\n   Festival day: ${item.festivalDayLabel}\n   Quantity: ${item.quantity}\n   Indicative price: ${item.price}`).join("\n\n");
+      const waText = encodeURIComponent(
+        `नमस्कार टाकम! मला खालील Modak enquiry करायची आहे 😋\n\n${lines}\n\nName: ${name.trim()}\nMobile Number: ${normalizedMobileNumber}\nDelivery location: ${orderLocation}\nTotal indicative price: ₹${totalIndicative.toLocaleString("en-IN")}`
+      );
+
+      window.open(`https://wa.me/91${PHONE}?text=${waText}`, "_blank", "noopener,noreferrer");
+      setCart([]);
+      setIsOrderDialogOpen(false);
+      setIsCartOpen(false);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const primaryImage = product.images[0] ?? "";
+  const isMascotAsset = primaryImage.includes("takam_modak_") || primaryImage.includes("ukadiche_modak_hero_mascot");
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
-      {/* ---------- Header ---------- */}
       <header className="sticky top-0 z-50 bg-cream/95 backdrop-blur-sm border-b-[3px] border-ink">
         <div className="container flex items-center justify-between py-2">
-          <Link href="/" className="flex items-center gap-2.5">
-            <img
-              src={SITE_ASSETS.logoC}
-              alt="टाकम badge"
-              className="h-14 w-14 md:h-16 md:w-16 -rotate-6 drop-shadow-[3px_3px_0_rgba(30,27,22,0.35)]"
-            />
-            <span className="font-display font-extrabold text-3xl md:text-4xl tracking-tight">टाकम</span>
-          </Link>
-          <nav className="hidden md:flex items-center gap-6 font-display font-bold">
-            <Link href="/" className="hover:underline decoration-[3px] decoration-mascot underline-offset-4">Home</Link>
-            <Link href="/ganapati-modak-special" className="hover:underline decoration-[3px] decoration-mint underline-offset-4">गणपती Special 🙏</Link>
-          </nav>
+          <Link href="/" className="flex items-center gap-2.5"><img src={SITE_ASSETS.logoC} alt="टाकम badge" className="h-14 w-14 md:h-16 md:w-16 -rotate-6 drop-shadow-[3px_3px_0_rgba(30,27,22,0.35)]" /><span className="font-display font-extrabold text-3xl md:text-4xl tracking-tight">टाकम</span></Link>
+          <nav className="hidden md:flex items-center gap-6 font-display font-bold"><Link href="/" className="hover:underline">Home</Link><Link href="/ganapati-modak-special" className="hover:underline">गणपती Special 🙏</Link></nav>
           <MobileNav />
         </div>
       </header>
 
       <main className="flex-1">
-        {/* ---------- Breadcrumb ---------- */}
-        <div className="container pt-6">
-          <p className="font-display font-bold text-sm text-muted-foreground flex items-center gap-1 flex-wrap">
-            <Link href="/" className="hover:underline">Home</Link>
-            <ChevronRight className="h-3.5 w-3.5" />
-            <Link href="/ganapati-modak-special" className="hover:underline">गणपती Special</Link>
-            <ChevronRight className="h-3.5 w-3.5" />
-            <span className="text-ink">{product.marathi}</span>
-          </p>
-        </div>
+        <div className="container pt-6"><p className="font-display font-bold text-sm text-muted-foreground flex items-center gap-1 flex-wrap"><Link href="/" className="hover:underline">Home</Link><ChevronRight className="h-3.5 w-3.5" /><Link href="/ganapati-modak-special" className="hover:underline">गणपती Special</Link><ChevronRight className="h-3.5 w-3.5" /><span className="text-ink">{product.marathi}</span></p></div>
 
-        {/* ---------- Hero: gallery + intro ---------- */}
         <section className="py-8 md:py-14 relative">
-          <div className="absolute top-6 right-[6%] sticker rotate-6 bg-peach px-3 py-1 font-display font-bold text-sm hidden lg:block">
-            एकदम fresh! ✨
-          </div>
+          <div className="absolute top-6 right-[6%] sticker rotate-6 bg-peach px-3 py-1 font-display font-bold text-sm hidden lg:block">एकदम fresh! ✨</div>
           <div className="container grid md:grid-cols-2 gap-10 lg:gap-14 items-start">
-            {/* Gallery */}
             <div className="space-y-5">
-              <div className="relative -rotate-1">
-                <div className="border-[3px] border-ink bg-white p-2.5 pb-4 shadow-[6px_6px_0_0_var(--ink)]">
-                  <img
-                    src={product.images[activeImage]}
-                    alt={`${product.marathi} photo ${activeImage + 1}`}
-                    decoding="async"
-                    fetchPriority="high"
-                    className={`w-full h-80 md:h-[26rem] border-2 border-ink/15 ${isMascotAsset ? "object-contain bg-mint/20 p-5" : "object-cover saturate-[1.15]"}`}
-                  />
-                  <p className="text-center font-display font-bold text-xs mt-2 text-ink/60">
-                    {isMascotAsset ? "✨ Modak चा official Takam avatar" : "📸 straight from आमची kitchen"}
-                  </p>
-                </div>
-                <Tape className="-top-2.5 left-10 -rotate-6" />
-                <Tape className="-top-2.5 right-10 rotate-6" />
-                <span
-                  className={`absolute -bottom-3 -right-2 ${product.tagBg} border-[2.5px] border-ink rounded-full px-3 py-0.5 font-display font-bold text-sm rotate-3 shadow-[2px_2px_0_0_var(--ink)]`}
-                >
-                  {product.tag}
-                </span>
-              </div>
-
-              {/* Thumbnails + video slot */}
-              <div className="flex gap-3 flex-wrap pt-2">
-                {product.images.map((img, i) => (
-                  <button
-                    key={img}
-                    onClick={() => setActiveImage(i)}
-                    className={`border-[2.5px] border-ink rounded-xl overflow-hidden h-18 w-18 md:h-20 md:w-20 shadow-[3px_3px_0_0_var(--ink)] transition-transform ${
-                      i === activeImage ? "ring-4 ring-mascot -rotate-2" : "opacity-70 hover:opacity-100 rotate-1"
-                    }`}
-                    aria-label={`View photo ${i + 1}`}
-                  >
-                    <img src={img} alt="" loading="lazy" decoding="async" className={`h-full w-full ${isMascotSrc(img) ? "object-contain bg-mint/20 p-1" : "object-cover"}`} />
-                  </button>
-                ))}
-                {product.videos.length === 0 && (
-                  <div className="border-[2.5px] border-dashed border-ink/40 rounded-xl h-18 w-18 md:h-20 md:w-20 flex flex-col items-center justify-center text-center px-1 bg-white/60">
-                    <PlayCircle className="h-5 w-5 text-ink/40" />
-                    <span className="font-display font-bold text-[9px] leading-tight text-ink/40 mt-0.5">
-                      Video लवकरच 🎬
-                    </span>
-                  </div>
-                )}
-                {product.videos.map((v) => (
-                  <a
-                    key={v}
-                    href={v}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="border-[2.5px] border-ink rounded-xl h-18 w-18 md:h-20 md:w-20 flex items-center justify-center bg-mascot shadow-[3px_3px_0_0_var(--ink)]"
-                  >
-                    <PlayCircle className="h-7 w-7" />
-                  </a>
-                ))}
-              </div>
+              <div className="relative -rotate-1"><div className="border-[3px] border-ink bg-white p-2.5 pb-4 shadow-[6px_6px_0_0_var(--ink)]"><img src={primaryImage} alt={`${product.marathi} official graphic`} decoding="async" fetchPriority="high" className="w-full h-80 md:h-[26rem] border-2 border-ink/15 object-contain bg-mint/20 p-5" /><p className="text-center font-display font-bold text-xs mt-2 text-ink/60">{isMascotAsset ? "✨ Modak चा official Takam avatar" : "📸 straight from आमची kitchen"}</p></div><Tape className="-top-2.5 left-10 -rotate-6" /><Tape className="-top-2.5 right-10 rotate-6" /></div>
             </div>
 
-            {/* Intro + CTA */}
             <div className="space-y-6">
               <div>
                 <h1 className="font-display font-extrabold leading-tight" style={{ fontSize: "clamp(2.4rem, 5vw, 3.8rem)" }}>
@@ -231,17 +245,9 @@ export default function ProductPage() {
                   <p className="font-semibold text-xs text-muted-foreground">This Modak is available only on the dates shown below.</p>
                   <label className="block space-y-1.5">
                     <span className="sr-only">Choose available festival day</span>
-                    <select
-                      value={selectedDay}
-                      onChange={(event) => setSelectedDay(event.target.value)}
-                      className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
-                    >
+                    <select value={selectedDay} onChange={(event) => setSelectedDay(event.target.value)} className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot">
                       <option value="">Choose an available date</option>
-                      {availableDays.map((day) => (
-                        <option key={day.date} value={day.date}>
-                          {day.date} - Festival Day {GANAPATI_SCHEDULE.indexOf(day) + 1}
-                        </option>
-                      ))}
+                      {availableDays.map((day) => <option key={day.date} value={`2026-09-${day.date.split(" ")[0].padStart(2, "0")}`}>{day.date} - Festival Day {GANAPATI_SCHEDULE.indexOf(day) + 1}</option>)}
                     </select>
                   </label>
                   <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
@@ -249,312 +255,65 @@ export default function ProductPage() {
                     <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Select quantity</span>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                    {quantityOptions.map((option) => (
-                      <button
-                        type="button"
-                        key={option.label}
-                        onClick={() => setQuantity(option.label)}
-                        className={`border-[2.5px] border-ink px-2.5 py-2.5 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] transition-transform active:scale-95 ${quantity === option.label ? "bg-mascot -rotate-1" : "bg-white hover:bg-mint/60 rotate-[.4deg]"}`}
-                        aria-pressed={quantity === option.label}
-                      >
-                        <span className="block text-sm sm:text-base leading-tight">{option.label === "Custom" ? "Custom ✍️" : option.label}</span>
-                        {option.label === "21 Pieces" && <span className="mt-1 inline-block rounded-full border-2 border-ink bg-tomato px-2 py-0.5 text-[10px] font-display font-extrabold uppercase leading-none text-white shadow-[1px_1px_0_0_var(--ink)]">Best Deal</span>}
-                        {option.note && <span className="mt-1 block text-[10px] sm:text-[11px] font-bold leading-tight text-tomato">{option.note}</span>}
-                        <span className="mt-1.5 inline-block rounded-full border-2 border-ink bg-mint px-2 py-0.5 text-base sm:text-lg font-display font-extrabold leading-none text-ink shadow-[1px_1px_0_0_var(--ink)]">{option.price}</span>
-                      </button>
-                    ))}
+                    {quantityOptions.map((option) => <button type="button" key={option.label} onClick={() => setQuantity(option.label)} className={`border-[2.5px] border-ink px-2.5 py-2.5 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] transition-transform active:scale-95 ${quantity === option.label ? "bg-mascot -rotate-1" : "bg-white hover:bg-mint/60 rotate-[.4deg]"}`} aria-pressed={quantity === option.label}><span className="block text-sm sm:text-base leading-tight">{option.label === "Custom" ? "Custom ✍️" : option.label}</span>{option.label === "21 Pieces" && <span className="mt-1 inline-block rounded-full border-2 border-ink bg-tomato px-2 py-0.5 text-[10px] font-display font-extrabold uppercase leading-none text-white shadow-[1px_1px_0_0_var(--ink)]">Best Deal</span>}{option.note && <span className="mt-1 block text-[10px] sm:text-[11px] font-bold leading-tight text-tomato">{option.note}</span>}<span className="mt-1.5 inline-block rounded-full border-2 border-ink bg-mint px-2 py-0.5 text-base sm:text-lg font-display font-extrabold leading-none text-ink shadow-[1px_1px_0_0_var(--ink)]">{option.price}</span></button>)}
                   </div>
-                  {quantity === "Custom" && (
-                    <label className="block space-y-1.5">
-                      <span className="font-display font-bold text-sm">तुमची quantity लिहा</span>
-                      <input
-                        value={customQuantity}
-                        onChange={(event) => setCustomQuantity(event.target.value)}
-                        placeholder="उदा. 35 pieces / 1 kg"
-                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
-                      />
-                    </label>
-                  )}
+                  {quantity === "Custom" && <label className="block space-y-1.5"><span className="font-display font-bold text-sm">तुमची quantity लिहा</span><input value={customQuantity} onChange={(event) => setCustomQuantity(event.target.value)} placeholder="उदा. 35 pieces / 1 kg" className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot" /></label>}
                   <p className="font-bold text-xs text-muted-foreground">Indicative prices for now · तुमची निवड: <span className="text-ink">{quantity === "Custom" && customQuantity.trim() ? customQuantity : quantity || "Select one"}</span>{quantity && <span className="text-ink"> · {orderPrice}</span>}</p>
                 </div>
               )}
 
-
-
               <div className="flex flex-col items-start gap-2 pt-1">
-                <p className="sticker inline-flex items-center bg-mascot px-4 py-2 font-display font-extrabold text-sm -rotate-2">
-                  🚚 Standard Delivery: Evening, 6 PM onwards
-                </p>
-                <button
-                  type="button"
-                  aria-disabled={orderIncomplete}
-                  onClick={() => {
-                    if (orderIncomplete) {
-                      setShowQuantityHint(true);
-                      document.getElementById("quantity-selection")?.scrollIntoView({ behavior: "smooth", block: "center" });
-                      window.setTimeout(() => setShowQuantityHint(false), 2600);
-                      return;
-                    }
-                    setIsOrderDialogOpen(true);
-                  }}
-                  className={`sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "cursor-not-allowed opacity-50" : ""}`}
-                >
-                  <MessageCircle className="h-5 w-5" /> Send Enquiry on WhatsApp
-                </button>
-                {orderIncomplete && (
-                  <p role="status" aria-live="polite" className={`font-display font-bold text-sm text-tomato ${showQuantityHint ? "animate-bounce" : ""}`}>
-                    {showQuantityHint
-                      ? (festivalDayMissing ? "First select a festival day above 👆" : "First select a quantity above 👆")
-                      : (festivalDayMissing ? "Select an available festival day above to continue" : "Select a quantity above to continue")}
-
-                  </p>
-                )}
+                <p className="sticker inline-flex items-center bg-mascot px-4 py-2 font-display font-extrabold text-sm -rotate-2">🚚 Standard Delivery: Evening, 6 PM onwards</p>
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" aria-disabled={orderIncomplete} onClick={addCurrentItemToEnquiry} className={`sticker-btn bg-white px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "cursor-not-allowed opacity-50" : ""}`}><Plus className="h-5 w-5" /> Add to enquiry</button>
+                  {cart.length > 0 && <button type="button" onClick={() => setIsCartOpen(true)} className="sticker-btn bg-mint px-5 py-3 text-base">🛒 Review enquiry ({cart.length})</button>}
+                </div>
+                {orderIncomplete && <p role="status" aria-live="polite" className={`font-display font-bold text-sm text-tomato ${showQuantityHint ? "animate-bounce" : ""}`}>{showQuantityHint ? (festivalDayMissing ? "First select a festival day above 👆" : "First select a quantity above 👆") : (festivalDayMissing ? "Select an available festival day above to continue" : "Select a quantity above to continue")}</p>}
               </div>
+
+              <Dialog open={isCartOpen} onOpenChange={setIsCartOpen}>
+                <DialogContent className="border-[3px] border-ink bg-cream shadow-[8px_8px_0_0_var(--ink)] p-5 sm:p-7 max-h-[85vh] overflow-y-auto">
+                  <DialogHeader className="text-left">
+                    <DialogTitle className="font-display text-2xl font-extrabold">Your Modak enquiry 🛒</DialogTitle>
+                    <DialogDescription className="font-semibold text-ink/70">Select as many Modaks as you like. We’ll send everything together on WhatsApp.</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-3">
+                    {cart.map((item, index) => <div key={item.id} className="sticker bg-white p-4 flex gap-3 items-start"><div className="min-w-0 flex-1"><p className="font-display font-extrabold text-lg">{index + 1}. {item.marathi}</p><p className="text-xs font-bold text-muted-foreground">{item.english}</p><p className="mt-1 text-sm font-semibold">📅 {item.festivalDayLabel} · {item.quantity} · {item.price}</p></div><button type="button" onClick={() => setCart((current) => current.filter((entry) => entry.id !== item.id))} className="border-2 border-ink bg-peach px-2 py-1 text-xs font-display font-extrabold">Remove</button></div>)}
+                    {cart.length === 0 && <p className="py-5 text-center font-bold text-muted-foreground">Your enquiry is empty.</p>}
+                  </div>
+                  <DialogFooter className="pt-2 sm:flex-row sm:justify-between">
+                    <Link href="/ganapati-modak-special" onClick={() => setIsCartOpen(false)} className="border-[2.5px] border-ink bg-white px-4 py-2.5 font-display font-bold shadow-[2px_2px_0_0_var(--ink)] text-center">Add another Modak</Link>
+                    <button type="button" disabled={cart.length === 0} onClick={() => { setIsCartOpen(false); setIsOrderDialogOpen(true); }} className={`sticker-btn bg-tomato text-primary-foreground px-5 py-2.5 flex items-center justify-center gap-2 ${cart.length === 0 ? "opacity-50" : ""}`}><MessageCircle className="h-4 w-4" /> Review & send all</button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
 
               <Dialog open={isOrderDialogOpen} onOpenChange={setIsOrderDialogOpen}>
                 <DialogContent className="border-[3px] border-ink bg-cream shadow-[8px_8px_0_0_var(--ink)] p-5 sm:p-7">
-                  <DialogHeader className="text-left">
-                    <DialogTitle className="font-display text-2xl font-extrabold">Order details ✍️</DialogTitle>
-                    <DialogDescription className="font-semibold text-ink/70">Just these details, then WhatsApp करा. Your selection: {selectedFestivalDay ? `${selectedFestivalDay.date} · ` : ""}{orderQuantity} · {orderPrice} indicative.</DialogDescription>
-                  </DialogHeader>
+                  <DialogHeader className="text-left"><DialogTitle className="font-display text-2xl font-extrabold">Order details ✍️</DialogTitle><DialogDescription className="font-semibold text-ink/70">You have {cart.length} Modak selection{cart.length === 1 ? "" : "s"}. Add your contact details once and we’ll send the complete enquiry together.</DialogDescription></DialogHeader>
                   <form onSubmit={handleOrderSubmit} className="space-y-4">
-                    <label className="block space-y-1.5">
-                      <span className="font-display font-bold text-sm">Name</span>
-                      <input
-                        value={name}
-                        onChange={(event) => setName(event.target.value)}
-                        placeholder="Enter your name"
-                        autoComplete="name"
-                        required
-                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
-                      />
-                    </label>
-                    <label className="block space-y-1.5">
-                      <span className="font-display font-bold text-sm">Mobile Number</span>
-                      <input
-                        value={mobileNumber}
-                        onChange={(event) => setMobileNumber(event.target.value.replace(/[^0-9+\\s-]/g, ""))}
-                        placeholder="10-digit mobile number"
-                        inputMode="tel"
-                        autoComplete="tel"
-                        maxLength={14}
-                        required
-                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
-                      />
-                      {mobileNumber.length > 0 && mobileNumberMissing && <span className="block text-xs font-bold text-tomato">Please enter a valid 10-digit mobile number.</span>}
-                    </label>
-                    <label className="block space-y-1.5">
-                      <span className="font-display font-bold text-sm">Delivery Area</span>
-                      <select
-                        value={deliveryLocation}
-                        onChange={(event) => setDeliveryLocation(event.target.value)}
-                        required
-                        className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
-                      >
-                        <option value="" disabled>Select area</option>
-                        {deliveryOptions.map((option) => <option key={option} value={option}>{option}</option>)}
-                      </select>
-                    </label>
-                    {deliveryLocation === "Other area" && (
-                      <label className="block space-y-1.5">
-                        <span className="font-display font-bold text-sm">Your Area</span>
-                        <input
-                          value={customLocation}
-                          onChange={(event) => setCustomLocation(event.target.value)}
-                          placeholder="e.g. Wakad, Pune"
-                          required
-                          className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"
-                        />
-                      </label>
-                    )}
-                    <DialogFooter className="pt-2 sm:flex-row sm:justify-end">
-                      <DialogClose asChild>
-                        <button type="button" className="border-[2.5px] border-ink bg-white px-4 py-2.5 font-display font-bold shadow-[2px_2px_0_0_var(--ink)]">Not yet</button>
-                      </DialogClose>
-                      <button type="submit" className="sticker-btn bg-tomato text-primary-foreground px-5 py-2.5 flex items-center justify-center gap-2">
-                        <MessageCircle className="h-4 w-4" /> Continue to WhatsApp
-                      </button>
-                    </DialogFooter>
+                    <label className="block space-y-1.5"><span className="font-display font-bold text-sm">Name</span><input value={name} onChange={(event) => setName(event.target.value)} placeholder="Enter your name" autoComplete="name" required className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot" /></label>
+                    <label className="block space-y-1.5"><span className="font-display font-bold text-sm">Mobile Number</span><input value={mobileNumber} onChange={(event) => setMobileNumber(event.target.value.replace(/[^0-9+\s-]/g, ""))} placeholder="10-digit mobile number" inputMode="tel" autoComplete="tel" maxLength={14} required className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot" />{mobileNumber.length > 0 && mobileNumberMissing && <span className="block text-xs font-bold text-tomato">Please enter a valid 10-digit mobile number.</span>}</label>
+                    <label className="block space-y-1.5"><span className="font-display font-bold text-sm">Delivery Area</span><select value={deliveryLocation} onChange={(event) => setDeliveryLocation(event.target.value)} required className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot"><option value="" disabled>Select area</option>{deliveryOptions.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>
+                    {deliveryLocation === "Other area" && <label className="block space-y-1.5"><span className="font-display font-bold text-sm">Your Area</span><input value={customLocation} onChange={(event) => setCustomLocation(event.target.value)} placeholder="e.g. Wakad, Pune" required className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-semibold shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot" /></label>}
+                    <DialogFooter className="pt-2 sm:flex-row sm:justify-end"><DialogClose asChild><button type="button" className="border-[2.5px] border-ink bg-white px-4 py-2.5 font-display font-bold shadow-[2px_2px_0_0_var(--ink)]">Not yet</button></DialogClose><button type="submit" disabled={isSubmitting} className="sticker-btn bg-tomato text-primary-foreground px-5 py-2.5 flex items-center justify-center gap-2 disabled:opacity-60"><MessageCircle className="h-4 w-4" /> {isSubmitting ? "Preparing enquiry…" : "Continue to WhatsApp"}</button></DialogFooter>
                   </form>
                 </DialogContent>
               </Dialog>
 
-              {/* Quick facts */}
-              <div className="sticker rotate-1 bg-white p-5 mt-4">
-                <p className="font-display font-extrabold text-lg mb-3">Quick Facts 📌</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
-                  {product.facts.map((f) => (
-                    <div key={f.label} className="flex flex-col">
-                      <span className="font-display font-bold text-xs uppercase tracking-wide text-muted-foreground">{f.label}</span>
-                      <span className="font-semibold text-sm">{f.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <div className="sticker rotate-1 bg-white p-5 mt-4"><p className="font-display font-extrabold text-lg mb-3">Quick Facts 📌</p><div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">{product.facts.map((f) => <div key={f.label} className="flex flex-col"><span className="font-display font-bold text-xs uppercase tracking-wide text-muted-foreground">{f.label}</span><span className="font-semibold text-sm">{f.value}</span></div>)}</div></div>
             </div>
           </div>
         </section>
 
-        {/* ---------- Story ---------- */}
-        <section className="py-12 md:py-16 bg-peach/40 relative">
-          <div className="absolute top-6 left-[8%] sticker -rotate-6 bg-mascot px-3 py-1 font-display font-bold text-sm hidden lg:block">
-            आजी approved ✅
-          </div>
-          <div className="container max-w-3xl">
-            <div className="inline-block sticker -rotate-2 bg-white px-4 py-1.5 font-display font-bold text-sm mb-5">
-              📖 ह्याची गोष्ट
-            </div>
-            <h2 className="font-display font-extrabold mb-5" style={{ fontSize: "clamp(1.7rem, 3.5vw, 2.6rem)" }}>
-              {product.marathi} म्हणजे काय?
-            </h2>
-            <div className="space-y-4">
-              {product.story.map((para) => (
-                <p key={para.slice(0, 24)} className="font-semibold text-lg leading-relaxed">
-                  {para}
-                </p>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ---------- Benefits ---------- */}
-        <section className="py-12 md:py-20 relative">
-          <div className="absolute top-8 right-[7%] sticker rotate-6 bg-mint px-3 py-1 font-display font-bold text-sm hidden lg:block">
-            चव + फायदे = टाकम 💯
-          </div>
-          <div className="container">
-            <div className="text-center mb-10">
-              <div className="inline-block sticker rotate-2 bg-mint px-4 py-1.5 font-display font-bold text-sm mb-4">
-                💚 का खावं?
-              </div>
-              <h2 className="font-display font-extrabold -rotate-1" style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)" }}>
-                Benefits -{" "}
-                <span className="relative inline-block rotate-1">
-                  <span className="relative z-10">एकदम solid!</span>
-                  <span className="absolute bottom-1 left-0 w-full h-3 bg-mascot -z-0 rotate-1" />
-                </span>
-              </h2>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-              {product.benefits.map((b, i) => (
-                <div
-                  key={b.title}
-                  className={`sticker bg-white p-5 space-y-2 ${i % 2 === 0 ? "-rotate-1" : "rotate-1 lg:translate-y-3"}`}
-                >
-                  <div className="text-3xl">{b.emoji}</div>
-                  <p className="font-display font-extrabold text-lg leading-tight">{b.title}</p>
-                  <p className="font-semibold text-sm leading-relaxed text-muted-foreground">{b.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ---------- How to enjoy ---------- */}
-        <section className="pb-12 md:pb-20">
-          <div className="container max-w-3xl">
-            <div className="sticker -rotate-1 bg-mascot p-7 md:p-9">
-              <h2 className="font-display font-extrabold text-2xl md:text-3xl mb-4">कसं खायचं? 😋</h2>
-              <ul className="space-y-2.5">
-                {product.howToEnjoy.map((tip) => (
-                  <li key={tip} className="font-semibold text-lg flex items-start gap-2.5">
-                    <span className="font-display font-extrabold">→</span> {tip}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* ---------- Order CTA ---------- */}
-        <section className="pb-14 md:pb-20">
-          <div className="container max-w-3xl">
-            <div className="sticker rotate-1 bg-white p-8 md:p-10 text-center space-y-5 relative">
-              <img
-                src={SITE_ASSETS.logoC}
-                alt="टाकम stamp"
-                className="absolute -top-8 -right-5 md:-right-8 h-18 w-18 md:h-22 md:w-22 rotate-12 drop-shadow-[3px_3px_0_rgba(30,27,22,0.3)]"
-                style={{ height: "5rem", width: "5rem" }}
-              />
-              <h2 className="font-display font-extrabold text-2xl md:text-3xl">
-                {product.marathi} पाहिजे? मग order करा की! 🔥
-              </h2>
-              <div className="flex flex-wrap justify-center gap-4">
-                <a
-                  href={`https://wa.me/91${PHONE}?text=${waText}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-disabled={orderIncomplete}
-                  onClick={(event) => {
-                    if (orderIncomplete) event.preventDefault();
-                  }}
-                  className={`sticker-btn bg-mint px-7 py-3 text-lg flex items-center gap-2 rotate-1 ${orderIncomplete ? "pointer-events-none opacity-50" : ""}`}
-                >
-                  <MessageCircle className="h-5 w-5" /> Send Enquiry on WhatsApp
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ---------- Other products ---------- */}
-        <section className="pb-16 md:pb-24">
-          <div className="container">
-            <h2 className="font-display font-extrabold text-2xl md:text-3xl text-center mb-8 -rotate-1">
-              अजून काही try करा 👇
-            </h2>
-            <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-              {others.map((p, i) => (
-                <Link
-                  key={p.slug}
-                  href={`/product/${p.slug}`}
-                  className={`sticker ${i % 2 === 0 ? "-rotate-1" : "rotate-1"} bg-white p-4 flex items-center gap-4 hover:no-underline`}
-                >
-                  <img
-                    src={p.images[0]}
-                    alt={p.english}
-                    className="h-16 w-16 object-cover border-[2.5px] border-ink rounded-xl -rotate-2 shadow-[3px_3px_0_0_var(--ink)]"
-                  />
-                  <div className="min-w-0">
-                    <p className="font-display font-extrabold text-lg leading-tight">{p.marathi}</p>
-                    <p className="text-sm font-bold text-muted-foreground">{p.english}</p>
-                  </div>
-                  <ChevronRight className="h-5 w-5 ml-auto shrink-0" />
-                </Link>
-              ))}
-            </div>
-            <div className="text-center mt-10">
-              <Link href="/ganapati-modak-special" className="font-display font-bold hover:underline decoration-[3px] decoration-mascot underline-offset-4 inline-flex items-center gap-1.5">
-                <ArrowLeft className="h-4 w-4" /> सगळे Ganapati Modak बघा
-              </Link>
-            </div>
-          </div>
-        </section>
+        <section className="py-12 md:py-16 bg-peach/40 relative"><div className="absolute top-6 left-[8%] sticker -rotate-6 bg-mascot px-3 py-1 font-display font-bold text-sm hidden lg:block">आजी approved ✅</div><div className="container max-w-3xl"><div className="inline-block sticker -rotate-2 bg-white px-4 py-1.5 font-display font-bold text-sm mb-5">📖 ह्याची गोष्ट</div><h2 className="font-display font-extrabold mb-5" style={{ fontSize: "clamp(1.7rem, 3.5vw, 2.6rem)" }}>{product.marathi} म्हणजे काय?</h2><div className="space-y-4">{product.story.map((para) => <p key={para.slice(0, 24)} className="font-semibold text-lg leading-relaxed">{para}</p>)}</div></div></section>
+        <section className="py-12 md:py-20 relative"><div className="absolute top-8 right-[7%] sticker rotate-6 bg-mint px-3 py-1 font-display font-bold text-sm hidden lg:block">चव + फायदे = टाकम 💯</div><div className="container"><div className="text-center mb-10"><div className="inline-block sticker rotate-2 bg-mint px-4 py-1.5 font-display font-bold text-sm mb-4">💚 का खावं?</div><h2 className="font-display font-extrabold -rotate-1" style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)" }}>Benefits - <span className="relative inline-block rotate-1"><span className="relative z-10">एकदम solid!</span><span className="absolute bottom-1 left-0 w-full h-3 bg-mascot -z-0 rotate-1" /></span></h2></div><div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">{product.benefits.map((b, i) => <div key={b.title} className={`sticker bg-white p-5 space-y-2 ${i % 2 === 0 ? "-rotate-1" : "rotate-1 lg:translate-y-3"}`}><div className="text-3xl">{b.emoji}</div><p className="font-display font-extrabold text-lg leading-tight">{b.title}</p><p className="font-semibold text-sm leading-relaxed text-muted-foreground">{b.desc}</p></div>)}</div></div></section>
+        <section className="pb-12 md:pb-20"><div className="container max-w-3xl"><div className="sticker -rotate-1 bg-mascot p-7 md:p-9"><h2 className="font-display font-extrabold text-2xl md:text-3xl mb-4">कसं खायचं? 😋</h2><ul className="space-y-2.5">{product.howToEnjoy.map((tip) => <li key={tip} className="font-semibold text-lg flex items-start gap-2.5"><span className="font-display font-extrabold">→</span> {tip}</li>)}</ul></div></div></section>
+        <section className="pb-14 md:pb-20"><div className="container max-w-3xl"><div className="sticker rotate-1 bg-white p-8 md:p-10 text-center space-y-5"><h2 className="font-display font-extrabold text-2xl md:text-3xl">{product.marathi} पाहिजे? मग enquiry मध्ये add करा! 🔥</h2><div className="flex flex-wrap justify-center gap-2"><button type="button" disabled={orderIncomplete} onClick={addCurrentItemToEnquiry} className={`sticker-btn bg-mint px-7 py-3 text-lg flex items-center gap-2 ${orderIncomplete ? "opacity-50" : ""}`}><Plus className="h-5 w-5" /> Add to enquiry</button>{cart.length > 0 && <button type="button" onClick={() => setIsCartOpen(true)} className="sticker-btn bg-peach px-5 py-3 text-base">🛒 Review all ({cart.length})</button>}</div></div></div></section>
+        <section className="pb-16 md:pb-24"><div className="container"><h2 className="font-display font-extrabold text-2xl md:text-3xl text-center mb-8">अजून काही try करा 👇</h2><div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">{others.map((p) => <Link key={p.slug} href={`/product/${p.slug}`} className="sticker bg-white p-4 flex items-center gap-4"><img src={p.images[0]} alt={p.english} className="h-16 w-16 object-cover border-[2.5px] border-ink rounded-xl" /><div className="min-w-0"><p className="font-display font-extrabold text-lg leading-tight">{p.marathi}</p><p className="text-sm font-bold text-muted-foreground">{p.english}</p></div><ChevronRight className="h-5 w-5 ml-auto shrink-0" /></Link>)}</div><div className="text-center mt-10"><Link href="/ganapati-modak-special" className="font-display font-bold hover:underline inline-flex items-center gap-1.5"><ArrowLeft className="h-4 w-4" /> सगळे Ganapati Modak बघा</Link></div></div></section>
       </main>
 
-      {/* ---------- Footer ---------- */}
-      <footer className="border-t-[3px] border-ink bg-ink text-cream relative overflow-hidden">
-        <div className="container py-10 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-          <div className="flex items-center gap-4">
-            <img src={SITE_ASSETS.logoC} alt="टाकम badge" className="h-16 w-16 md:h-20 md:w-20 -rotate-6" />
-            <div>
-              <p className="font-display font-extrabold text-2xl md:text-3xl">टाकम</p>
-              <p className="text-sm opacity-80 font-semibold">घरगुती । चविष्ट । मस्त</p>
-            </div>
-          </div>
-          <p className="text-sm opacity-80 font-semibold text-center">
-            Made with ❤️ in Maharashtra
-          </p>
-
-        </div>
-        <p
-          className="absolute -bottom-7 right-4 font-display font-extrabold text-cream/10 select-none pointer-events-none leading-none"
-          style={{ fontSize: "7rem" }}
-          aria-hidden
-        >
-          टाकम
-        </p>
-      </footer>
+      <footer className="border-t-[3px] border-ink bg-ink text-cream"><div className="container py-10 flex flex-col md:flex-row items-center justify-between gap-6"><div className="flex items-center gap-4"><img src={SITE_ASSETS.logoC} alt="टाकम badge" className="h-16 w-16 md:h-20 md:w-20 -rotate-6" /><div><p className="font-display font-extrabold text-2xl md:text-3xl">टाकम</p><p className="text-sm opacity-80 font-semibold">घरगुती । चविष्ट । मस्त</p></div></div><p className="text-sm opacity-80 font-semibold text-center">Made with ❤️ in Maharashtra</p></div></footer>
     </div>
   );
 }
