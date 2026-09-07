@@ -105,6 +105,7 @@ export default function ProductPage() {
       ];
   const deliveryOptions = ["Singhgad Road", "Kothurd", "Deccan", "Nanded City", "Baner", "Pashan", "Baavdhan", "Other area"];
   const availableDays = isModak ? GANAPATI_SCHEDULE.filter((day) => day.slugs.includes(product.slug)) : [];
+  const fullyBookedDays = product.slug === "ukadiche-modak" ? new Set(["14 Sep", "15 Sep"]) : new Set<string>();
   const selectedFestivalDay = availableDays.find((day) => {
     const [dayNumber, monthName] = day.date.split(" ");
     const monthNumber = monthName === "Sep" ? "09" : "01";
@@ -117,7 +118,8 @@ export default function ProductPage() {
   const orderLocation = deliveryLocation === "Other area" ? `Other area: ${customLocation.trim()}` : deliveryLocation;
   const customQuantityMissing = quantity === "Custom" && !customQuantity.trim();
   const quantityMissing = !quantity || customQuantityMissing;
-  const festivalDayMissing = isModak && !selectedFestivalDay;
+  const isSelectedDayFullyBooked = Boolean(selectedFestivalDay && fullyBookedDays.has(selectedFestivalDay.date));
+  const festivalDayMissing = isModak && (!selectedFestivalDay || isSelectedDayFullyBooked);
   const selectedDayMissing = festivalDayMissing;
   const deliveryLocationMissing = !deliveryLocation || (deliveryLocation === "Other area" && !customLocation.trim());
   const deliveryAddressMissing = isModak && deliveryLocationMissing;
@@ -242,12 +244,12 @@ export default function ProductPage() {
                     <p className="font-display font-extrabold text-lg">कधी पाहिजेत? 📅</p>
                     <span className="bg-white border-2 border-ink rounded-full px-2.5 py-0.5 font-display font-bold text-xs">Select festival day</span>
                   </div>
-                  <p className="font-semibold text-xs text-muted-foreground">This Modak is available only on the dates shown below.</p>
+                  <p className="font-semibold text-xs text-muted-foreground">This Modak is available only on the dates shown below. Day 1 &amp; Day 2 are currently fully booked.</p>
                   <label className="block space-y-1.5">
                     <span className="sr-only">Choose available festival day</span>
                     <select value={selectedDay} onChange={(event) => setSelectedDay(event.target.value)} className="w-full border-[2.5px] border-ink bg-white px-3 py-2.5 font-display font-bold text-sm shadow-[2px_2px_0_0_var(--ink)] outline-none focus:ring-4 focus:ring-mascot">
                       <option value="">Choose an available date</option>
-                      {availableDays.map((day) => <option key={day.date} value={`2026-09-${day.date.split(" ")[0].padStart(2, "0")}`}>{day.date} - Festival Day {GANAPATI_SCHEDULE.indexOf(day) + 1}</option>)}
+                      {availableDays.map((day) => { const booked = fullyBookedDays.has(day.date); return <option key={day.date} value={`2026-09-${day.date.split(" ")[0].padStart(2, "0")}`} disabled={booked}>{day.date} - Festival Day {GANAPATI_SCHEDULE.indexOf(day) + 1}{booked ? " — Fully Booked" : ""}</option>; })}
                     </select>
                   </label>
                   <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
