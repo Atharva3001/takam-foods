@@ -1,0 +1,54 @@
+name: Fix Khava image and product galleries
+
+on:
+  push:
+    branches: [feature/order-capacity-dashboard]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: "!contains(github.event.head_commit.message, 'fix: Khava image and remove product galleries')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/order-capacity-dashboard
+          fetch-depth: 0
+      - name: Apply fixes
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          # Product pages: show one primary image and remove the thumbnail gallery.
+          p = Path('client/src/pages/ProductPage.tsx')
+          s = p.read_text()
+          s = s.replace('import { MessageCircle, ArrowLeft, PlayCircle, ChevronRight, Plus } from "lucide-react";', 'import { MessageCircle, ArrowLeft, ChevronRight, Plus } from "lucide-react";')
+          s = s.replace('import { MessageCircle, ArrowLeft, PlayCircle, ChevronRight } from "lucide-react";', 'import { MessageCircle, ArrowLeft, ChevronRight } from "lucide-react";')
+          s = s.replace('  const [activeImage, setActiveImage] = useState(0);\n', '')
+          s = s.replace('  const isMascotSrc = (src: string) => src.includes("takam_modak_") || src.includes("ukadiche_modak_hero_mascot");\n  const isMascotAsset = isMascotSrc(product.images[activeImage] ?? "");', '  const primaryImage = product.images[0] ?? "";\n  const isMascotAsset = primaryImage.includes("takam_modak_") || primaryImage.includes("ukadiche_modak_hero_mascot");')
+          s = s.replace('src={product.images[activeImage]} alt={`${product.marathi} photo ${activeImage + 1}`} decoding="async" fetchPriority="high" className={`w-full h-80 md:h-[26rem] border-2 border-ink/15 ${isMascotAsset ? "object-contain bg-mint/20 p-5" : "object-cover saturate-[1.15]"}`}', 'src={primaryImage} alt={`${product.marathi} official graphic`} decoding="async" fetchPriority="high" className="w-full h-80 md:h-[26rem] border-2 border-ink/15 object-contain bg-mint/20 p-5"')
+          s = re.sub(r'\n\s*<div className="flex gap-3 flex-wrap pt-2">.*?</div>\n\s*</div>\n\s*\n\s*<div className="space-y-6">', '\n            </div>\n\n            <div className="space-y-6">', s, count=1, flags=re.S)
+          if 'activeImage' in s or 'isMascotSrc' in s or 'flex gap-3 flex-wrap pt-2' in s or 'PlayCircle' in s:
+              raise SystemExit('ProductPage gallery cleanup did not complete')
+          p.write_text(s)
+
+          # Use the existing embedded WebP asset everywhere instead of a missing public file.
+          p = Path('client/src/lib/products.ts')
+          s = p.read_text()
+          if 'import khavaModakImage from "../assets/khavaModakImage";' not in s:
+              s = 'import khavaModakImage from "../assets/khavaModakImage";\n\n' + s
+          s = s.replace('images: ["/images/takam_modak_khava.webp"],', 'images: [khavaModakImage],')
+          s = s.replace('images: ["/manus-storage/takam_modak_khava_opaque_cream_af814046.png"],', 'images: [khavaModakImage],')
+          p.write_text(s)
+          PY
+
+          rm -f client/public/images/takam_modak_khava.webp
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add client/src/pages/ProductPage.tsx client/src/lib/products.ts client/public/images/takam_modak_khava.webp .github/workflows/fix-khava-gallery.yml
+          git commit -m "fix: Khava image and remove product galleries"
+          git push origin HEAD:feature/order-capacity-dashboard
