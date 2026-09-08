@@ -1,0 +1,59 @@
+name: Re-enable Ukadiche Day 1 and Day 2
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Re-enable booking dates
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('client/src/pages/ProductPage.tsx')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('  const fullyBookedDays = product.slug === "ukadiche-modak" ? new Set(["14 Sep", "15 Sep"]) : new Set<string>();\n', '')
+          s = s.replace('  const isSelectedDayFullyBooked = Boolean(selectedFestivalDay && fullyBookedDays.has(selectedFestivalDay.date));\n', '')
+          s = s.replace('  const festivalDayMissing = isModak && (!selectedFestivalDay || isSelectedDayFullyBooked);', '  const festivalDayMissing = isModak && !selectedFestivalDay;')
+          s = s.replace('This Modak is available only on the dates shown below. Day 1 &amp; Day 2 are currently fully booked.', 'This Modak is available only on the dates shown below.')
+          s = s.replace('{availableDays.map((day) => { const booked = fullyBookedDays.has(day.date); return <option key={day.date} value={`2026-09-${day.date.split(" ")[0].padStart(2, "0")}`} disabled={booked}>{day.date} - Festival Day {GANAPATI_SCHEDULE.indexOf(day) + 1}{booked ? " — Fully Booked" : ""}</option>; })}', '{availableDays.map((day) => <option key={day.date} value={`2026-09-${day.date.split(" ")[0].padStart(2, "0")}`}>{day.date} - Festival Day {GANAPATI_SCHEDULE.indexOf(day) + 1}</option>)}')
+          p.write_text(s, encoding='utf-8')
+
+          p = Path('client/src/pages/GanapatiSpecial.tsx')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('उकडीचे मोदक रोज available आहेत*', 'उकडीचे मोदक रोज available आहेत.')
+          s = s.replace(' const booked = product.slug === "ukadiche-modak" && (day.date === "14 Sep" || day.date === "15 Sep"); return <Link key={product.slug} href={`/product/${product.slug}`} className={`inline-flex items-center gap-1.5 border-2 border-ink rounded-full pl-1 pr-2.5 py-1 text-xs md:text-sm font-display font-bold hover:bg-mascot ${booked ? "bg-peach" : "bg-mint/50"}`}><span className="h-7 w-7 shrink-0 overflow-hidden rounded-full border border-ink/20 bg-white flex items-center justify-center"><img src={product.images[0]} alt="" aria-hidden className={`h-full w-full ${product.images[0].includes("takam_modak_") ? "object-contain p-0.5" : "object-cover"}`} /></span>{product.marathi}{booked ? " • Fully Booked" : ""}', ' return <Link key={product.slug} href={`/product/${product.slug}`} className="inline-flex items-center gap-1.5 bg-mint/50 border-2 border-ink rounded-full pl-1 pr-2.5 py-1 text-xs md:text-sm font-display font-bold hover:bg-mascot"><span className="h-7 w-7 shrink-0 overflow-hidden rounded-full border-2 border-ink/20 bg-white flex items-center justify-center"><img src={product.images[0]} alt="" aria-hidden className={`h-full w-full ${product.images[0].includes("takam_modak_") ? "object-contain p-0.5" : "object-cover"}`} /></span>{product.marathi}')
+          s = s.replace('              <p className="mt-3 text-xs font-bold text-muted-foreground">* Ukadiche Modak is fully booked for Day 1 (14 Sep) and Day 2 (15 Sep).</p>\n', '')
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Verify build
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.4.1 --activate
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Commit changes and remove workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add client/src/pages/ProductPage.tsx client/src/pages/GanapatiSpecial.tsx
+          git commit -m "fix: re-enable Ukadiche booking for Day 1 and Day 2"
+          git push origin main
+          git rm .github/workflows/mark-ukadiche-day1-day2-booked.yml
+          git commit -m "chore: remove temporary Ukadiche booking workflow"
+          git push origin main
+
+# Trigger the one-time patch after the requested booking change.
