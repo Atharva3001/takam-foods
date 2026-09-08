@@ -128,7 +128,6 @@ function parseEnquiryQuantity(quantity: string, product: Product) {
 export function registerDashboardApi(app: Express) {
   app.get("/api/dashboard", async (_req, res) => {
   const state = await readDashboard();
-  if (repairMissingOrderAmounts(state)) await writeDashboard(state);
   res.json(state);
 });
   app.put("/api/dashboard", async (req, res) => { const body = req.body as { products?: Product[]; orders?: Order[] }; if (!Array.isArray(body.products) || !Array.isArray(body.orders)) return sendError(res, "Invalid dashboard payload"); await writeDashboard({ products: body.products, orders: body.orders }); res.json({ ok: true }); });
@@ -187,11 +186,11 @@ export function registerDashboardApi(app: Express) {
     const committed = new Map<string, number>(); for (const order of state.orders) { if (order.productionDate !== date || capacityReleasingStatuses.has(order.status)) continue; for (const item of order.items) committed.set(item.productId, (committed.get(item.productId) || 0) + item.quantity); }
     const orders = state.orders.filter((order) => order.productionDate === date && !capacityReleasingStatuses.has(order.status)).sort((a, b) => a.createdAt.localeCompare(b.createdAt)); const running = new Map<string, number>();
     const timeline = orders.map((order) => ({ orderId: order.id, orderNumber: order.orderNumber, createdAt: order.createdAt, items: order.items.map((item) => { const product = products.find((p) => p.id === item.productId); const total = (running.get(item.productId) || 0) + item.quantity; running.set(item.productId, total); return { productId: item.productId, productName: product?.name || "Unknown product", quantity: item.quantity, cumulative: total }; }) }));
-    await writeDashboard(state); res.json({ date, schedule, products: products.map((product) => ({ ...product, committed: committed.get(product.id) || 0, standardRemaining: Math.max(0, product.standardCapacity - (committed.get(product.id) || 0)), maxRemaining: Math.max(0, product.stretchCapacity - (committed.get(product.id) || 0)) })), timeline, availableDates: productionTimetable.map((day) => day.date) });
+    res.json({ date, schedule, products: products.map((product) => ({ ...product, committed: committed.get(product.id) || 0, standardRemaining: Math.max(0, product.standardCapacity - (committed.get(product.id) || 0)), maxRemaining: Math.max(0, product.stretchCapacity - (committed.get(product.id) || 0)) })), timeline, availableDates: productionTimetable.map((day) => day.date) });
   });
   app.get("/api/dashboard/capacity", async (req, res) => {
     const date = String(req.query.date || new Date().toISOString().slice(0, 10)); const state = await readDashboard(); const { schedule, products } = ensureScheduledProducts(state, date); if (!schedule) return res.json([]); const committed = new Map<string, number>();
     for (const order of state.orders) { if (order.productionDate !== date || capacityReleasingStatuses.has(order.status)) continue; for (const item of order.items) committed.set(item.productId, (committed.get(item.productId) || 0) + item.quantity); }
-    await writeDashboard(state); res.json(products.map((product) => ({ ...product, committed: committed.get(product.id) || 0, remaining: Math.max(0, product.standardCapacity - (committed.get(product.id) || 0)), stretchRemaining: Math.max(0, product.stretchCapacity - (committed.get(product.id) || 0)) })));
+    res.json(products.map((product) => ({ ...product, committed: committed.get(product.id) || 0, remaining: Math.max(0, product.standardCapacity - (committed.get(product.id) || 0)), stretchRemaining: Math.max(0, product.stretchCapacity - (committed.get(product.id) || 0)) })));
   });
 }
