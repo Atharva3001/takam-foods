@@ -44,6 +44,7 @@ const dataDir = process.env.DATA_DIR
   ? path.resolve(process.env.DATA_DIR)
   : path.resolve(__dirname, "..", "data");
 const dataFile = path.join(dataDir, "dashboard.json");
+const backupFile = path.join(dataDir, "dashboard.json.bak");
 
 const emptyState: DashboardState = { products: [], orders: [] };
 
@@ -59,6 +60,15 @@ export async function readDashboard(): Promise<DashboardState> {
 
 export async function writeDashboard(state: DashboardState) {
   await fs.mkdir(dataDir, { recursive: true });
+
+  // Keep the last known-good dashboard state before replacing the live file.
+  // The backup is best-effort so a backup failure never blocks a valid write.
+  try {
+    await fs.copyFile(dataFile, backupFile);
+  } catch {
+    // No existing dashboard file yet, or backup could not be created.
+  }
+
   const temp = `${dataFile}.tmp`;
   await fs.writeFile(temp, JSON.stringify(state, null, 2));
   await fs.rename(temp, dataFile);
