@@ -69,7 +69,7 @@ export default function GanapatiSpecial() {
             <div className="relative min-h-[245px] sm:min-h-[290px] md:min-h-[390px] order-2 -mt-1 md:mt-0">
               <div className="absolute -top-20 right-[-18%] md:-top-28 md:right-[-12%] h-[23rem] w-[23rem] md:h-[34rem] md:w-[34rem] rounded-full bg-mascot/90 border-[5px] border-ink rotate-12 overflow-hidden" />
               <div className="absolute top-0 left-[6%] sticker bg-peach text-ink px-2.5 py-1 text-xs md:text-base font-display font-bold -rotate-6 z-20">fresh batch ✨</div>
-              <div className="absolute top-7 right-[4%] sticker bg-mint text-ink px-2.5 py-1 text-xs md:text-base font-display font-bold rotate-6 z-20">modak gang!</div>
+              <div className="absolute top-7 right-[4%] sticker bg-mint text-ink px-2.5 py-1 text-xs md:text-base font-display font-bold rotate-6 z-20">Modak Team!</div>
               <div className="absolute inset-0 z-10">
                 {ganapatiModaks.slice(0, 6).map((product, index) => {
                   const placements = ["left-0 top-12 -rotate-12", "left-[28%] top-2 rotate-6", "right-0 top-16 rotate-12", "left-[10%] bottom-0 rotate-6", "left-[42%] bottom-1 -rotate-6", "right-[5%] bottom-0 rotate-3"];
@@ -85,7 +85,7 @@ export default function GanapatiSpecial() {
           <div className="container">
             <div className="max-w-3xl mx-auto text-center mb-12">
               <div className="inline-block sticker bg-peach px-4 py-1.5 font-display font-bold text-sm mb-4 rotate-2">✨ The full Modak roster</div>
-              <h2 className="font-display font-extrabold leading-tight" style={{ fontSize: "clamp(2.2rem, 4.8vw, 3.7rem)" }}>बाप्पाच्या plate वर,<br /><span className="relative inline-block -rotate-1"><span className="relative z-10">सगळी gang हवी!</span><span className="absolute bottom-1 left-0 h-4 w-full bg-mascot -z-0" /></span></h2>
+              <h2 className="font-display font-extrabold leading-tight" style={{ fontSize: "clamp(2.2rem, 4.8vw, 3.7rem)" }}>बाप्पाच्या plate वर,<br /><span className="relative inline-block -rotate-1"><span className="relative z-10">सगळी team हवी!</span><span className="absolute bottom-1 left-0 h-4 w-full bg-mascot -z-0" /></span></h2>
               <p className="mt-4 text-lg font-semibold text-muted-foreground">उकडीच्या OG पासून गुलकंदाच्या sweetheart पर्यंत - प्रत्येक Modakचा स्वतःचा scene आहे.</p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-7">

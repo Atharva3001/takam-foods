@@ -108,7 +108,7 @@ export const products: Product[] = [
     images: [khavaModakImage],
     videos: [],
     story: [
-      "खवा मोदक brings the rich, creamy comfort of homemade khava into the Ganapati Modak gang. It is festive, indulgent, and made for the person who says - एक अजून घेऊ का?",
+      "खवा मोदक brings the rich, creamy comfort of homemade khava into the Ganapati Modak Team. It is festive, indulgent, and made for the person who says - एक अजून घेऊ का?",
       "At Takam, every Khava Modak is made to order in small batches so the texture stays soft, rich, and celebration-ready.",
     ],
     benefits: [
@@ -197,7 +197,7 @@ export const products: Product[] = [
     english: "Dryfruit Modak",
     tag: "👑 Premium pick",
     tagBg: "bg-peach",
-    shortDesc: "Festive dry-fruit richness with big VIP energy. The polished one in the Modak gang.",
+    shortDesc: "Festive dry-fruit richness with big VIP energy. The polished one in the Modak Team.",
     funny: '"Premium आहे बाबा, पण attitude नाही." 👑',
     images: ["/images/takam_modak_dryfruit_v2.webp"],
     videos: [],
