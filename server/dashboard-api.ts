@@ -30,6 +30,77 @@ function ensureScheduledProducts(state: Awaited<ReturnType<typeof readDashboard>
   return { schedule, products };
 }
 
+const MODAK_PRICES: Record<string, { pieces: Record<string, number>; weights: Record<string, number> }> = {
+  ukadicha: { pieces: { "5": 275, "7": 385, "11": 605, "21": 1155 }, weights: {} },
+  khava: { pieces: { "11": 242, "21": 462 }, weights: { "0.25": 651, "0.5": 1260, "1": 2520 } },
+  dink: { pieces: { "11": 198, "21": 378 }, weights: { "0.25": 558, "0.5": 1071, "1": 2142 } },
+  gulkand: { pieces: { "11": 77, "21": 147 }, weights: { "0.25": 217, "0.5": 441, "1": 882 } },
+  poshtik: { pieces: { "11": 99, "21": 189 }, weights: { "0.25": 279, "0.5": 567, "1": 1134 } },
+  beet: { pieces: { "11": 77, "21": 147 }, weights: { "0.25": 217, "0.5": 378, "1": 756 } },
+  dryfruit: { pieces: { "11": 154, "21": 294 }, weights: { "0.25": 434, "0.5": 819, "1": 1638 } },
+  nachni: { pieces: { "11": 220, "21": 420 }, weights: { "0.25": 620, "0.5": 1197, "1": 2394 } },
+  tilkund: { pieces: { "11": 77, "21": 147 }, weights: { "0.25": 217, "0.5": 441, "1": 882 } },
+};
+
+function normalisePriceProductName(name: string) {
+  return normaliseProductName(name)
+    .replace(/khava/g, "khava")
+    .replace(/dry fruit/g, "dryfruit")
+    .replace(/dryfruit/g, "dryfruit")
+    .replace(/tilkund/g, "tilkund")
+    .replace(/beet/g, "beet")
+    .replace(/gulkand/g, "gulkand");
+}
+
+function priceForEnquiryQuantity(productName: string, quantity: string): number | null {
+  const key = normalisePriceProductName(productName);
+  const table = MODAK_PRICES[key];
+  if (!table) return null;
+  const valueMatch = quantity.match(/[0-9]+(?:\.[0-9]+)?/);
+  if (!valueMatch) return null;
+  const value = Number(valueMatch[0]);
+  const normalized = quantity.toLowerCase();
+  if (normalized.includes("piece") || normalized.includes("pcs")) return table.pieces[String(value)] ?? null;
+  if (normalized.includes("gm")) return table.weights[String(value / 1000)] ?? null;
+  if (normalized.includes("kg") || normalized.includes("kilo")) return table.weights[String(value)] ?? null;
+  return null;
+}
+
+function priceForOrderQuantity(productName: string, quantity: number, unit: string): number | null {
+  const key = normalisePriceProductName(productName);
+  const table = MODAK_PRICES[key];
+  if (!table || !Number.isFinite(quantity)) return null;
+  if (unit === "pieces") return table.pieces[String(quantity)] ?? null;
+  const rounded = Math.round(quantity * 1000) / 1000;
+  if (rounded === 0.088) return table.pieces["11"] ?? null;
+  if (rounded === 0.168) return table.pieces["21"] ?? null;
+  return table.weights[String(rounded)] ?? null;
+}
+
+function repairMissingOrderAmounts(state: Awaited<ReturnType<typeof readDashboard>>) {
+  let changed = false;
+  for (const order of state.orders) {
+    if (Number(order.amount) > 0) continue;
+    let total = 0;
+    let hasKnownPrice = false;
+    for (const item of order.items) {
+      const product = state.products.find((candidate) => candidate.id === item.productId);
+      if (!product) continue;
+      const price = priceForOrderQuantity(product.name, Number(item.quantity), product.unit);
+      if (price !== null) {
+        total += price;
+        hasKnownPrice = true;
+      }
+    }
+    if (hasKnownPrice) {
+      order.amount = total;
+      order.updatedAt = new Date().toISOString();
+      changed = true;
+    }
+  }
+  return changed;
+}
+
 function parseEnquiryQuantity(quantity: string, product: Product) {
   const value = Number((quantity.match(/[0-9]+(?:\.[0-9]+)?/) || [""])[0]);
 
@@ -57,7 +128,11 @@ function parseEnquiryQuantity(quantity: string, product: Product) {
 }
 
 export function registerDashboardApi(app: Express) {
-  app.get("/api/dashboard", async (_req, res) => { res.json(await readDashboard()); });
+  app.get("/api/dashboard", async (_req, res) => {
+  const state = await readDashboard();
+  if (repairMissingOrderAmounts(state)) await writeDashboard(state);
+  res.json(state);
+});
   app.put("/api/dashboard", async (req, res) => { const body = req.body as { products?: Product[]; orders?: Order[] }; if (!Array.isArray(body.products) || !Array.isArray(body.orders)) return sendError(res, "Invalid dashboard payload"); await writeDashboard({ products: body.products, orders: body.orders }); res.json({ ok: true }); });
   app.get("/api/dashboard/enquiries", async (_req, res) => { const state = await readEnquiries(); state.enquiries.sort((a, b) => b.createdAt.localeCompare(a.createdAt)); res.json(state.enquiries); });
   app.post("/api/dashboard/enquiries", async (req, res) => {
@@ -84,7 +159,7 @@ export function registerDashboardApi(app: Express) {
       const capacityViolation = findCapacityViolation(requested, committed, products);
       if (capacityViolation) return res.status(409).json({ error: `${capacityViolation.productName} cannot be confirmed because it would exceed the ${capacityViolation.maxCapacity} ${product.unit} daily limit`, ...capacityViolation });
       const now = new Date().toISOString();
-      const order: Order = { id: nanoid(12), orderNumber: `TF-${Date.now().toString().slice(-6)}`, orderDate: now.slice(0, 10), productionDate: enquiry.selectedDay, customerName: enquiry.name, customerPhone: enquiry.mobileNumber, deliveryAddress: enquiry.deliveryAddress, items: [{ productId: product.id, quantity }], amount: 0, paymentStatus: "Pending", status: "Confirmed", deliveryPerson: "", trackingNumber: "", actualDeliveryDate: "", notes: `Converted from ${enquiry.enquiryNumber}`, createdAt: now, updatedAt: now };
+      const order: Order = { id: nanoid(12), orderNumber: `TF-${Date.now().toString().slice(-6)}`, orderDate: now.slice(0, 10), productionDate: enquiry.selectedDay, customerName: enquiry.name, customerPhone: enquiry.mobileNumber, deliveryAddress: enquiry.deliveryAddress, items: [{ productId: product.id, quantity }], amount: priceForEnquiryQuantity(enquiry.productName, enquiry.quantity) ?? 0, paymentStatus: "Pending", status: "Confirmed", deliveryPerson: "", trackingNumber: "", actualDeliveryDate: "", notes: `Converted from ${enquiry.enquiryNumber}`, createdAt: now, updatedAt: now };
       dashboardState.orders.push(order); await writeDashboard(dashboardState); enquiry.convertedOrderId = order.id; enquiry.convertedOrderNumber = order.orderNumber;
     }
     Object.assign(enquiry, req.body, { updatedAt: new Date().toISOString() }); await writeEnquiries(enquiryState); res.json(enquiry);
