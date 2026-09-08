@@ -44,12 +44,10 @@ const MODAK_PRICES: Record<string, { pieces: Record<string, number>; weights: Re
 
 function normalisePriceProductName(name: string) {
   return normaliseProductName(name)
-    .replace(/khava/g, "khava")
-    .replace(/dry fruit/g, "dryfruit")
-    .replace(/dryfruit/g, "dryfruit")
-    .replace(/tilkund/g, "tilkund")
-    .replace(/beet/g, "beet")
-    .replace(/gulkand/g, "gulkand");
+    .replace(/\bmodak\b/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/dry fruit/g, "dryfruit");
 }
 
 function priceForEnquiryQuantity(productName: string, quantity: string): number | null {
