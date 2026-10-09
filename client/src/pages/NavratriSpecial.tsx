@@ -8,16 +8,16 @@ import { MobileNav } from "@/components/MobileNav";
 import { PHONE, SITE_ASSETS } from "@/lib/products";
 
 const items = [
-  { name: "उपवास गुलाबजाम", english: "Upvas Gulabjam", quantity: "125 ग्रॅम · 6-7 नग", price: 295, emoji: "🍮", tone: "bg-peach", note: "Soft, sweet & irresistible" },
-  { name: "उपवास आप्पे", english: "Upvas Aappe", quantity: "150 ग्रॅम · 6-7 नग", price: 285, emoji: "🥘", tone: "bg-mint", note: "Crispy outside, soft inside" },
-  { name: "उपवास इडली", english: "Upvas Idali", quantity: "45 ग्रॅम · 2 नग", price: 98, emoji: "🍘", tone: "bg-white", note: "Light, soft & wholesome" },
-  { name: "उपवास ढोकळा", english: "Upvas Dhokala", quantity: "150 ग्रॅम · 6-7 नग", price: 285, emoji: "🟨", tone: "bg-mascot", note: "Fluffy, flavourful & filling" },
-  { name: "लाल भोपळ्याचे गोड घारगे", english: "Sweet Lal Bhopala Gharge", quantity: "50 ग्रॅम · 2 नग", price: 105, emoji: "🎃", tone: "bg-peach", note: "Traditional taste, sweet twist" },
-  { name: "लाल भोपळ्याचे तिखट घारगे", english: "Spicy Lal Bhopala Gharge", quantity: "50 ग्रॅम · 2 नग", price: 105, emoji: "🌶️", tone: "bg-mint", note: "Traditional taste, spicy kick" },
-  { name: "ड्रायफ्रूट रोल", english: "Dry Fruit Roll", quantity: "250 ग्रॅम · 6-8 नग", price: 450, emoji: "🍫", tone: "bg-peach", note: "A rich, nutty festive bite" },
-  { name: "डिंक लाडू", english: "Dink Ladoo", quantity: "250 ग्रॅम · 8-10 नग", price: 345, emoji: "🟤", tone: "bg-mascot", note: "A traditional homemade favourite" },
-  { name: "अळीव लाडू", english: "Aaliv Ladoo", quantity: "250 ग्रॅम · 8-10 नग", price: 235, emoji: "🤎", tone: "bg-mint", note: "A classic homemade ladoo" },
-  { name: "ड्रायफ्रूट लाडू", english: "Dry Fruit Ladoo", quantity: "250 ग्रॅम · 8-10 नग", price: 425, emoji: "🥜", tone: "bg-peach", note: "Loaded with nutty goodness" },
+  { slug: "upvas-gulabjam", name: "उपवास गुलाबजाम", english: "Upvas Gulabjam", quantity: "125 ग्रॅम · 6-7 नग", price: 295, emoji: "🍮", tone: "bg-peach", note: "Soft, sweet & irresistible" },
+  { slug: "upvas-aappe", name: "उपवास आप्पे", english: "Upvas Aappe", quantity: "150 ग्रॅम · 6-7 नग", price: 285, emoji: "🥘", tone: "bg-mint", note: "Crispy outside, soft inside" },
+  { slug: "upvas-idali", name: "उपवास इडली", english: "Upvas Idali", quantity: "45 ग्रॅम · 2 नग", price: 98, emoji: "🍘", tone: "bg-white", note: "Light, soft & wholesome" },
+  { slug: "upvas-dhokala", name: "उपवास ढोकळा", english: "Upvas Dhokala", quantity: "150 ग्रॅम · 6-7 नग", price: 285, emoji: "🟨", tone: "bg-mascot", note: "Fluffy, flavourful & filling" },
+  { slug: "sweet-lal-bhopala-gharge", name: "लाल भोपळ्याचे गोड घारगे", english: "Sweet Lal Bhopala Gharge", quantity: "50 ग्रॅम · 2 नग", price: 105, emoji: "🎃", tone: "bg-peach", note: "Traditional taste, sweet twist" },
+  { slug: "spicy-lal-bhopala-gharge", name: "लाल भोपळ्याचे तिखट घारगे", english: "Spicy Lal Bhopala Gharge", quantity: "50 ग्रॅम · 2 नग", price: 105, emoji: "🌶️", tone: "bg-mint", note: "Traditional taste, spicy kick" },
+  { slug: "dry-fruit-roll", name: "ड्रायफ्रूट रोल", english: "Dry Fruit Roll", quantity: "250 ग्रॅम · 6-8 नग", price: 450, emoji: "🍫", tone: "bg-peach", note: "A rich, nutty festive bite" },
+  { slug: "dink-ladoo", name: "डिंक लाडू", english: "Dink Ladoo", quantity: "250 ग्रॅम · 8-10 नग", price: 345, emoji: "🟤", tone: "bg-mascot", note: "A traditional homemade favourite" },
+  { slug: "aaliv-ladoo", name: "अळीव लाडू", english: "Aaliv Ladoo", quantity: "250 ग्रॅम · 8-10 नग", price: 235, emoji: "🤎", tone: "bg-mint", note: "A classic homemade ladoo" },
+  { slug: "dry-fruit-ladoo", name: "ड्रायफ्रूट लाडू", english: "Dry Fruit Ladoo", quantity: "250 ग्रॅम · 8-10 नग", price: 425, emoji: "🥜", tone: "bg-peach", note: "Loaded with nutty goodness" },
 ];
 
 const whatsappUrl = (message: string) =>
@@ -84,9 +84,9 @@ export default function NavratriSpecial() {
                     <span className="absolute right-2 top-2 rounded-full border-2 border-ink bg-white px-2 py-1 text-xs font-extrabold">Navratri Special</span>
                   </div>
                   <div className="pt-4">
-                    <h3 className="font-display text-2xl font-extrabold leading-tight">{item.name}</h3>
+                    <Link href={`/navratri/${item.slug}`} className="hover:underline"><h3 className="font-display text-2xl font-extrabold leading-tight">{item.name}</h3></Link>
                     <p className="mt-1 text-sm font-bold text-muted-foreground">{item.english}</p>
-                    <p className="mt-2 text-sm font-semibold">{item.note}</p>
+                    <p className="mt-2 text-sm font-semibold">{item.note}</p><Link href={`/navratri/${item.slug}`} className="mt-2 inline-block font-display text-sm font-extrabold underline decoration-2 underline-offset-4">View product details ↗</Link>
                     <div className="mt-4 flex items-end justify-between gap-3 border-t-2 border-dashed border-ink/20 pt-3">
                       <div><p className="font-display text-2xl font-extrabold text-tomato">₹{item.price}</p><p className="text-sm font-bold text-muted-foreground">{item.quantity}</p></div>
                       <a href={whatsappUrl(`नमस्कार टाकम! मला ${item.name} (₹${item.price}, ${item.quantity}) ऑर्डर करायचे आहे. कृपया details सांगा.`)} target="_blank" rel="noreferrer" className="sticker-btn bg-mascot px-3 py-2 font-display text-sm font-bold text-ink">Enquire ↗</a>
@@ -104,7 +104,7 @@ export default function NavratriSpecial() {
               <div className="flex min-h-52 items-center justify-center border-2 border-ink/10 bg-peach text-8xl">🍮 🟨 🍘</div>
               <div>
                 <span className="sticker inline-block -rotate-2 bg-mascot px-3 py-1 font-display text-sm font-bold">Combo deal ✨</span>
-                <h2 className="mt-4 font-display text-4xl font-extrabold md:text-5xl">उपवास कॉम्बो</h2>
+                <Link href="/navratri/upvas-combo" className="mt-4 inline-block hover:underline"><h2 className="font-display text-4xl font-extrabold md:text-5xl">उपवास कॉम्बो</h2></Link><p className="mt-1"><Link href="/navratri/upvas-combo" className="font-display font-bold underline">कॉम्बोची सविस्तर माहिती ↗</Link></p>
                 <p className="mt-2 text-lg font-semibold">एका कॉम्बोमध्ये:</p>
                 <ul className="mt-3 space-y-2 font-bold">
                   <li>✓ २ गुलाबजाम</li><li>✓ ४ ढोकळे</li><li>✓ २ इडल्या</li><li>✓ नारळाची चटणी</li>
