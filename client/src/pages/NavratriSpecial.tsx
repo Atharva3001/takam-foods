@@ -8,16 +8,19 @@ import { MobileNav } from "@/components/MobileNav";
 import { PHONE, SITE_ASSETS } from "@/lib/products";
 
 const items = [
-  { slug: "upvas-gulabjam", name: "उपवास गुलाबजाम", english: "Upvas Gulabjam", quantity: "125 ग्रॅम · 6-7 नग", price: 295, emoji: "🍮", tone: "bg-peach", note: "Soft, sweet & irresistible" },
-  { slug: "upvas-aappe", name: "उपवास आप्पे", english: "Upvas Aappe", quantity: "150 ग्रॅम · 6-7 नग", price: 285, emoji: "🥘", tone: "bg-mint", note: "Crispy outside, soft inside" },
-  { slug: "upvas-idali", name: "उपवास इडली", english: "Upvas Idali", quantity: "45 ग्रॅम · 2 नग", price: 98, emoji: "🍘", tone: "bg-white", note: "Light, soft & wholesome" },
-  { slug: "upvas-dhokala", name: "उपवास ढोकळा", english: "Upvas Dhokala", quantity: "150 ग्रॅम · 6-7 नग", price: 285, emoji: "🟨", tone: "bg-mascot", note: "Fluffy, flavourful & filling" },
-  { slug: "sweet-lal-bhopala-gharge", name: "लाल भोपळ्याचे गोड घारगे", english: "Sweet Lal Bhopala Gharge", quantity: "50 ग्रॅम · 2 नग", price: 105, emoji: "🎃", tone: "bg-peach", note: "Traditional taste, sweet twist" },
-  { slug: "spicy-lal-bhopala-gharge", name: "लाल भोपळ्याचे तिखट घारगे", english: "Spicy Lal Bhopala Gharge", quantity: "50 ग्रॅम · 2 नग", price: 105, emoji: "🌶️", tone: "bg-mint", note: "Traditional taste, spicy kick" },
-  { slug: "dry-fruit-roll", name: "ड्रायफ्रूट रोल", english: "Dry Fruit Roll", quantity: "250 ग्रॅम · 6-8 नग", price: 450, emoji: "🍫", tone: "bg-peach", note: "A rich, nutty festive bite" },
-  { slug: "dink-ladoo", name: "डिंक लाडू", english: "Dink Ladoo", quantity: "250 ग्रॅम · 8-10 नग", price: 345, emoji: "🟤", tone: "bg-mascot", note: "A traditional homemade favourite" },
-  { slug: "aaliv-ladoo", name: "अळीव लाडू", english: "Aaliv Ladoo", quantity: "250 ग्रॅम · 8-10 नग", price: 235, emoji: "🤎", tone: "bg-mint", note: "A classic homemade ladoo" },
-  { slug: "dry-fruit-ladoo", name: "ड्रायफ्रूट लाडू", english: "Dry Fruit Ladoo", quantity: "250 ग्रॅम · 8-10 नग", price: 425, emoji: "🥜", tone: "bg-peach", note: "Loaded with nutty goodness" },
+  { slug: "upvas-gulabjam", name: "उपवास गुलाबजाम", english: "Upvas Gulabjam", quantity: "125 ग्रॅम · 6 नग", price: 104, emoji: "🍮", tone: "bg-peach", note: "Soft, sweet & irresistible" },
+  { slug: "upvas-aappe", name: "उपवास आप्पे", english: "Upvas Aappe", quantity: "150 ग्रॅम · 7 नग", price: 65, emoji: "🥘", tone: "bg-mint", note: "Crispy outside, soft inside" },
+  { slug: "upvas-idali", name: "उपवास इडली", english: "Upvas Idali", quantity: "44 ग्रॅम · 2 नग", price: 31, emoji: "🍘", tone: "bg-white", note: "Light, soft & wholesome" },
+  { slug: "upvas-dhokala", name: "उपवास ढोकळा", english: "Upvas Dhokala", quantity: "200 ग्रॅम · 10 नग", price: 59, emoji: "🟨", tone: "bg-mascot", note: "Fluffy, flavourful & filling" },
+  { slug: "sweet-lal-bhopala-gharge", name: "लाल भोपळ्याचे गोड घारगे", english: "Sweet Lal Bhopala Gharge", quantity: "2 नग", price: 58, emoji: "🎃", tone: "bg-peach", note: "Traditional taste, sweet twist" },
+  { slug: "spicy-lal-bhopala-gharge", name: "लाल भोपळ्याचे तिखट घारगे", english: "Spicy Lal Bhopala Gharge", quantity: "2 नग", price: 59, emoji: "🌶️", tone: "bg-mint", note: "Traditional taste, spicy kick" },
+  { slug: "upvas-dahi-wada", name: "उपवास दही वडे", english: "Upvas Dahi Wada", quantity: "45 ग्रॅम · 2 नग", price: 46, emoji: "🥣", tone: "bg-white", note: "Soft, tangy and refreshing" },
+  { slug: "upvas-kachori", name: "उपवास कचोरी", english: "Upvas Kachori", quantity: "70 ग्रॅम · 2 नग", price: 56, emoji: "🥟", tone: "bg-peach", note: "A crisp, savoury fasting snack" },
+  { slug: "upvas-medu-vada", name: "उपवास मेदू वडा", english: "Upvas Medu Vada", quantity: "45 ग्रॅम · 2 नग", price: 46, emoji: "🍩", tone: "bg-mint", note: "Golden, savoury and satisfying" },
+  { slug: "dry-fruit-roll", name: "ड्रायफ्रूट रोल", english: "Dry Fruit Roll", quantity: "250 ग्रॅम · 8 नग", price: 461, emoji: "🍫", tone: "bg-peach", note: "A rich, nutty festive bite" },
+  { slug: "dink-ladoo", name: "डिंक लाडू", english: "Dink Ladoo", quantity: "250 ग्रॅम · 8 नग", price: 357, emoji: "🟤", tone: "bg-mascot", note: "A traditional homemade favourite" },
+  { slug: "aaliv-ladoo", name: "अळीव लाडू", english: "Aaliv Ladoo", quantity: "250 ग्रॅम · 8 नग", price: 242, emoji: "🤎", tone: "bg-mint", note: "A classic homemade ladoo" },
+  { slug: "dry-fruit-ladoo", name: "ड्रायफ्रूट लाडू", english: "Dry Fruit Ladoo", quantity: "250 ग्रॅम · 8 नग", price: 433, emoji: "🥜", tone: "bg-peach", note: "Loaded with nutty goodness" },
 ];
 
 const whatsappUrl = (message: string) =>
@@ -107,11 +110,11 @@ export default function NavratriSpecial() {
                 <Link href="/navratri/upvas-combo" className="mt-4 inline-block hover:underline"><h2 className="font-display text-4xl font-extrabold md:text-5xl">उपवास कॉम्बो</h2></Link><p className="mt-1"><Link href="/navratri/upvas-combo" className="font-display font-bold underline">कॉम्बोची सविस्तर माहिती ↗</Link></p>
                 <p className="mt-2 text-lg font-semibold">एका कॉम्बोमध्ये:</p>
                 <ul className="mt-3 space-y-2 font-bold">
-                  <li>✓ २ गुलाबजाम</li><li>✓ ४ ढोकळे</li><li>✓ २ इडल्या</li><li>✓ नारळाची चटणी</li>
+                  <li>✓ २ उपवास गुलाबजाम</li><li>✓ २ उपवास इडली</li><li>✓ ४ उपवास ढोकळे</li>
                 </ul>
                 <div className="mt-5 flex flex-wrap items-center gap-4">
-                  <span className="font-display text-4xl font-extrabold text-tomato">₹350</span>
-                  <a href={whatsappUrl("नमस्कार टाकम! मला ₹350 चा उपवास कॉम्बो ऑर्डर करायचा आहे. कृपया availability confirm करा.")} target="_blank" rel="noreferrer" className="sticker-btn inline-flex items-center gap-2 bg-tomato px-5 py-3 font-display font-bold text-white"><MessageCircle className="h-5 w-5" /> कॉम्बो enquire करा</a>
+                  <span className="font-display text-4xl font-extrabold text-tomato">₹145</span>
+                  <a href={whatsappUrl("नमस्कार टाकम! मला ₹145 चा उपवास कॉम्बो ऑर्डर करायचा आहे. कृपया availability confirm करा.")} target="_blank" rel="noreferrer" className="sticker-btn inline-flex items-center gap-2 bg-tomato px-5 py-3 font-display font-bold text-white"><MessageCircle className="h-5 w-5" /> कॉम्बो enquire करा</a>
                 </div>
               </div>
             </div>
