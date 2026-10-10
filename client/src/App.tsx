@@ -8,6 +8,8 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import ProductPage from "./pages/ProductPage";
 import GanapatiSpecial from "./pages/GanapatiSpecial";
+import NavratriSpecial from "./pages/NavratriSpecial";
+import NavratriProduct from "./pages/NavratriProduct";
 import OrderDashboard from "./pages/OrderDashboard";
 import ProductionTimetable from "./pages/ProductionTimetable";
 import EnquiryDashboard from "./pages/EnquiryDashboard";
@@ -24,6 +26,8 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/ganapati-modak-special"} component={GanapatiSpecial} />
+      <Route path={"/navratri-special"} component={NavratriSpecial} />
+      <Route path={"/navratri/:slug"} component={NavratriProduct} />
       <Route path={"/product/:slug"} component={ProductPage} />
       <Route path={"/dashboard"}>{() => <DashboardAuth><OrderDashboard /></DashboardAuth>}</Route>
       <Route path={"/dashboard/production"}>{() => <DashboardAuth><ProductionTimetable /></DashboardAuth>}</Route>
