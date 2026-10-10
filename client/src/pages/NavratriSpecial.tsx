@@ -9,14 +9,14 @@ import { PHONE, SITE_ASSETS } from "@/lib/products";
 
 const items = [
   { slug: "upvas-gulabjam", name: "उपवास गुलाबजाम", english: "Upvas Gulabjam", quantity: "125 ग्रॅम · 6 नग", price: 104, emoji: "🍮", tone: "bg-peach", note: "Soft, sweet & irresistible" },
-  { slug: "upvas-aappe", name: "उपवास आप्पे", english: "Upvas Aappe", quantity: "150 ग्रॅम · 7 नग", price: 65, emoji: "🥘", tone: "bg-mint", note: "Crispy outside, soft inside" },
-  { slug: "upvas-idali", name: "उपवास इडली", english: "Upvas Idali", quantity: "44 ग्रॅम · 2 नग", price: 31, emoji: "🍘", tone: "bg-white", note: "Light, soft & wholesome" },
-  { slug: "upvas-dhokala", name: "उपवास ढोकळा", english: "Upvas Dhokala", quantity: "200 ग्रॅम · 10 नग", price: 59, emoji: "🟨", tone: "bg-mascot", note: "Fluffy, flavourful & filling" },
+  { slug: "upvas-aappe", name: "उपवास आप्पे", english: "Upvas Aappe", quantity: "150 ग्रॅम · 7 नग", price: 65, emoji: "🥘", image: "/images/navratri/upvas-aappe.webp", tone: "bg-mint", note: "Crispy outside, soft inside" },
+  { slug: "upvas-idali", name: "उपवास इडली", english: "Upvas Idali", quantity: "44 ग्रॅम · 2 नग", price: 31, emoji: "🍘", image: "/images/navratri/upvas-idali.webp", tone: "bg-white", note: "Light, soft & wholesome" },
+  { slug: "upvas-dhokala", name: "उपवास ढोकळा", english: "Upvas Dhokala", quantity: "200 ग्रॅम · 10 नग", price: 59, emoji: "🟨", image: "/images/navratri/upvas-dhokala.webp", tone: "bg-mascot", note: "Fluffy, flavourful & filling" },
   { slug: "sweet-lal-bhopala-gharge", name: "लाल भोपळ्याचे गोड घारगे", english: "Sweet Lal Bhopala Gharge", quantity: "2 नग", price: 58, emoji: "🎃", tone: "bg-peach", note: "Traditional taste, sweet twist" },
   { slug: "spicy-lal-bhopala-gharge", name: "लाल भोपळ्याचे तिखट घारगे", english: "Spicy Lal Bhopala Gharge", quantity: "2 नग", price: 59, emoji: "🌶️", tone: "bg-mint", note: "Traditional taste, spicy kick" },
-  { slug: "upvas-dahi-wada", name: "उपवास दही वडे", english: "Upvas Dahi Wada", quantity: "45 ग्रॅम · 2 नग", price: 46, emoji: "🥣", tone: "bg-white", note: "Soft, tangy and refreshing" },
+  { slug: "upvas-dahi-wada", name: "उपवास दही वडे", english: "Upvas Dahi Wada", quantity: "45 ग्रॅम · 2 नग", price: 46, emoji: "🥣", image: "/images/navratri/upvas-dahi-wada.webp", tone: "bg-white", note: "Soft, tangy and refreshing" },
   { slug: "upvas-kachori", name: "उपवास कचोरी", english: "Upvas Kachori", quantity: "70 ग्रॅम · 2 नग", price: 56, emoji: "🥟", tone: "bg-peach", note: "A crisp, savoury fasting snack" },
-  { slug: "upvas-medu-vada", name: "उपवास मेदू वडा", english: "Upvas Medu Vada", quantity: "45 ग्रॅम · 2 नग", price: 46, emoji: "🍩", tone: "bg-mint", note: "Golden, savoury and satisfying" },
+  { slug: "upvas-medu-vada", name: "उपवास मेदू वडा", english: "Upvas Medu Vada", quantity: "45 ग्रॅम · 2 नग", price: 46, emoji: "🍩", image: "/images/navratri/upvas-medu-vada.webp", tone: "bg-mint", note: "Golden, savoury and satisfying" },
   { slug: "dry-fruit-roll", name: "ड्रायफ्रूट रोल", english: "Dry Fruit Roll", quantity: "250 ग्रॅम · 8 नग", price: 461, emoji: "🍫", tone: "bg-peach", note: "A rich, nutty festive bite" },
   { slug: "dink-ladoo", name: "डिंक लाडू", english: "Dink Ladoo", quantity: "250 ग्रॅम · 8 नग", price: 357, emoji: "🟤", tone: "bg-mascot", note: "A traditional homemade favourite" },
   { slug: "aaliv-ladoo", name: "अळीव लाडू", english: "Aaliv Ladoo", quantity: "250 ग्रॅम · 8 नग", price: 242, emoji: "🤎", tone: "bg-mint", note: "A classic homemade ladoo" },
@@ -83,7 +83,7 @@ export default function NavratriSpecial() {
               {items.map((item, index) => (
                 <article key={item.english} className={`sticker bg-white p-4 md:p-5 ${index % 3 === 0 ? "-rotate-1" : index % 3 === 1 ? "rotate-1" : "-rotate-[.5deg]"}`}>
                   <div className={`relative flex h-40 items-center justify-center overflow-hidden border-2 border-ink/10 ${item.tone}`}>
-                    <span className="text-8xl drop-shadow-md" aria-hidden="true">{item.emoji}</span>
+                    {item.image ? <img src={item.image} alt={item.english} loading="lazy" className="h-full w-full object-cover" /> : <span className="text-8xl drop-shadow-md" aria-hidden="true">{item.emoji}</span>}
                     <span className="absolute right-2 top-2 rounded-full border-2 border-ink bg-white px-2 py-1 text-xs font-extrabold">Navratri Special</span>
                   </div>
                   <div className="pt-4">
