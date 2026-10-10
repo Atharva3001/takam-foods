@@ -15,7 +15,7 @@ const items = [
   { slug: "sweet-lal-bhopala-gharge", name: "लाल भोपळ्याचे गोड घारगे", english: "Sweet Lal Bhopala Gharge", quantity: "2 नग", price: 58, emoji: "🎃", tone: "bg-peach", note: "Traditional taste, sweet twist" },
   { slug: "spicy-lal-bhopala-gharge", name: "लाल भोपळ्याचे तिखट घारगे", english: "Spicy Lal Bhopala Gharge", quantity: "2 नग", price: 59, emoji: "🌶️", tone: "bg-mint", note: "Traditional taste, spicy kick" },
   { slug: "upvas-dahi-wada", name: "उपवास दही वडे", english: "Upvas Dahi Wada", quantity: "45 ग्रॅम · 2 नग", price: 46, emoji: "🥣", image: "/images/navratri/upvas-dahi-wada.webp", tone: "bg-white", note: "Soft, tangy and refreshing" },
-  { slug: "upvas-kachori", name: "उपवास कचोरी", english: "Upvas Kachori", quantity: "70 ग्रॅम · 2 नग", price: 56, emoji: "🥟", tone: "bg-peach", note: "A crisp, savoury fasting snack" },
+  { slug: "upvas-kachori", name: "उपवास कचोरी", english: "Upvas Kachori", quantity: "70 ग्रॅम · 2 नग", price: 56, emoji: "🥟", image: "/images/navratri/upvas-kachori.webp", tone: "bg-peach", note: "A crisp, savoury fasting snack" },
   { slug: "upvas-medu-vada", name: "उपवास मेदू वडा", english: "Upvas Medu Vada", quantity: "45 ग्रॅम · 2 नग", price: 46, emoji: "🍩", image: "/images/navratri/upvas-medu-vada.webp", tone: "bg-mint", note: "Golden, savoury and satisfying" },
   { slug: "dry-fruit-roll", name: "ड्रायफ्रूट रोल", english: "Dry Fruit Roll", quantity: "250 ग्रॅम · 8 नग", price: 461, emoji: "🍫", tone: "bg-peach", note: "A rich, nutty festive bite" },
   { slug: "dink-ladoo", name: "डिंक लाडू", english: "Dink Ladoo", quantity: "250 ग्रॅम · 8 नग", price: 357, emoji: "🟤", tone: "bg-mascot", note: "A traditional homemade favourite" },
