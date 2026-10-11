@@ -83,7 +83,7 @@ export default function NavratriSpecial() {
               {items.map((item, index) => (
                 <article key={item.english} className={`sticker bg-white p-4 md:p-5 ${index % 3 === 0 ? "-rotate-1" : index % 3 === 1 ? "rotate-1" : "-rotate-[.5deg]"}`}>
                   <div className={`relative flex h-40 items-center justify-center overflow-hidden border-2 border-ink/10 ${item.tone}`}>
-                    {item.image ? <img src={item.image} alt={item.english} loading="lazy" className="h-full w-full object-cover" /> : <span className="text-8xl drop-shadow-md" aria-hidden="true">{item.emoji}</span>}
+                    {item.image ? <img src={item.image} alt={item.english} loading="lazy" className="h-full w-full object-contain" /> : <span className="text-8xl drop-shadow-md" aria-hidden="true">{item.emoji}</span>}
                     <span className="absolute right-2 top-2 rounded-full border-2 border-ink bg-white px-2 py-1 text-xs font-extrabold">Navratri Special</span>
                   </div>
                   <div className="pt-4">
