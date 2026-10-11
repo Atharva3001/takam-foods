@@ -100,16 +100,21 @@ export default function NavratriSpecial() {
 
         <section id="combo" className="bg-mint/35 py-14 md:py-20">
           <div className="container">
-            <div className="sticker mx-auto grid max-w-5xl items-center gap-6 bg-white p-5 md:grid-cols-[.8fr_1.2fr] md:p-8">
-              <div className="flex min-h-52 items-center justify-center border-2 border-ink/10 bg-peach text-8xl">🍮 🟨 🍘</div>
-              <div>
-                <span className="sticker inline-block -rotate-2 bg-mascot px-3 py-1 font-display text-sm font-bold">Combo deal ✨</span>
-                <Link href="/navratri/upvas-combo" className="mt-4 inline-block hover:underline"><h2 className="font-display text-4xl font-extrabold md:text-5xl">उपवास कॉम्बो</h2></Link><p className="mt-1"><Link href="/navratri/upvas-combo" className="font-display font-bold underline">कॉम्बोची सविस्तर माहिती ↗</Link></p>
-                <p className="mt-2 text-lg font-semibold">एका कॉम्बोमध्ये:</p>
-                <ul className="mt-3 space-y-2 font-bold">
-                  <li>✓ २ उपवास गुलाबजाम</li><li>✓ २ उपवास इडली</li><li>✓ ४ उपवास ढोकळे</li>
-                </ul>
-                <div className="mt-5 flex flex-wrap items-center gap-4">
+            <div className="sticker mx-auto max-w-4xl bg-white p-6 md:p-10">
+              <div className="mx-auto max-w-2xl">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="sticker inline-block -rotate-2 bg-mascot px-3 py-1 font-display text-sm font-bold">Combo deal ✨</span>
+                  <span className="text-sm font-bold uppercase tracking-wide text-muted-foreground">उपवास स्पेशल</span>
+                </div>
+                <Link href="/navratri/upvas-combo" className="mt-3 inline-block hover:underline"><h2 className="font-display text-3xl font-extrabold leading-tight md:text-5xl">उपवास कॉम्बो</h2></Link>
+                <p className="mt-2"><Link href="/navratri/upvas-combo" className="font-display font-semibold underline underline-offset-4">कॉम्बोची सविस्तर माहिती ↗</Link></p>
+                <div className="mt-6 rounded-xl border-2 border-ink/10 bg-cream/60 p-4 md:p-5">
+                  <p className="text-base font-extrabold md:text-lg">एका कॉम्बोमध्ये</p>
+                  <ul className="mt-3 grid gap-3 font-semibold sm:grid-cols-2">
+                    <li className="flex items-start gap-2"><span className="font-extrabold text-tomato">✓</span><span>२ उपवास गुलाबजाम</span></li><li className="flex items-start gap-2"><span className="font-extrabold text-tomato">✓</span><span>२ उपवास इडली</span></li><li className="flex items-start gap-2"><span className="font-extrabold text-tomato">✓</span><span>४ उपवास ढोकळे</span></li>
+                  </ul>
+                </div>
+                <div className="mt-6 flex flex-wrap items-center gap-4">
                   <span className="font-display text-4xl font-extrabold text-tomato">₹145</span>
                   <a href={whatsappUrl("नमस्कार टाकम! मला ₹145 चा उपवास कॉम्बो ऑर्डर करायचा आहे. कृपया availability confirm करा.")} target="_blank" rel="noreferrer" className="sticker-btn inline-flex items-center gap-2 bg-tomato px-5 py-3 font-display font-bold text-white"><MessageCircle className="h-5 w-5" /> कॉम्बो enquire करा</a>
                 </div>
