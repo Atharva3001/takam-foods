@@ -77,7 +77,7 @@ export default function Home() {
           </a>
           <nav className="hidden md:flex items-center gap-6 font-display font-bold">
             <a href="#story" className="hover:underline decoration-[3px] decoration-mint underline-offset-4">आमची गोष्ट</a>
-            <Link href="/ganapati-modak-special" className="hover:underline decoration-[3px] decoration-peach underline-offset-4">गणपती Special 🙏</Link>
+            <Link href="/navratri-special" className="hover:underline decoration-[3px] decoration-peach underline-offset-4">Navratri Special 🌼</Link>
           </nav>
           <MobileNav />
         </div>
