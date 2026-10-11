@@ -41,30 +41,43 @@ export default function NavratriSpecial() {
       </header>
 
       <main>
-        <section className="relative overflow-hidden bg-ink py-12 text-cream md:py-20">
-          <div className="absolute -left-12 bottom-0 h-48 w-48 rounded-full border-[4px] border-ink bg-mascot md:h-64 md:w-64" />
-          <div className="absolute -right-12 -top-10 h-52 w-52 rotate-12 rounded-full border-[4px] border-ink bg-tomato md:h-72 md:w-72" />
-          <div className="container relative z-10 grid items-center gap-8 md:grid-cols-[1.1fr_.9fr]">
+        <section className="relative isolate overflow-hidden bg-[#211b18] py-12 text-cream md:py-20">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-tomato via-mascot to-mint" />
+          <div className="pointer-events-none absolute -left-16 bottom-[-4rem] h-56 w-56 rounded-full border-[5px] border-ink bg-mascot md:h-72 md:w-72" />
+          <div className="pointer-events-none absolute -right-14 -top-14 h-56 w-56 rounded-full border-[5px] border-ink bg-tomato md:h-80 md:w-80" />
+          <div className="pointer-events-none absolute left-[43%] top-12 hidden h-20 w-20 rotate-12 rounded-full border-2 border-peach/50 md:block" />
+          <div className="container relative z-10 grid items-center gap-10 md:grid-cols-[1.05fr_.95fr]">
             <div className="space-y-5">
-              <span className="sticker inline-block -rotate-2 bg-mascot px-3 py-1 font-display text-sm font-bold text-ink">🌼 Navratri Specials</span>
-              <h1 className="font-display text-6xl font-extrabold leading-[.92] md:text-8xl">उपवासाची<br /><span className="text-mascot">चविष्ट</span><br />मेजवानी!</h1>
-              <p className="max-w-xl text-lg font-semibold text-cream/85 md:text-xl">उपवासासाठी खास, घरगुती प्रेमाने तयार केलेले TAKAM चे Navratri specials. तुमचे आवडते पदार्थ निवडा आणि WhatsApp वर enquiry पाठवा.</p>
-              <div className="flex flex-wrap gap-3">
-                <a href="#menu" className="sticker-btn inline-flex items-center gap-2 bg-mascot px-5 py-3 font-display text-lg font-bold text-ink">मेन्यू पाहा <ArrowRight className="h-5 w-5" /></a>
-                <a href={whatsappUrl("नमस्कार टाकम! मला Navratri Specials बद्दल माहिती हवी आहे.")} target="_blank" rel="noreferrer" className="sticker-btn inline-flex items-center gap-2 bg-tomato px-5 py-3 font-display text-lg font-bold text-white"><MessageCircle className="h-5 w-5" /> WhatsApp करा</a>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="sticker inline-block -rotate-2 bg-mascot px-4 py-1.5 font-display text-sm font-extrabold text-ink">🌼 नवरात्री विशेष</span>
+                <span className="text-sm font-bold tracking-wide text-peach">उपवास मेन्यू · घरगुती चव</span>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <span className="sticker bg-peach px-3 py-1 font-display text-sm font-bold text-ink">Freshly Made</span>
-                <span className="sticker bg-mint px-3 py-1 font-display text-sm font-bold text-ink">Pure Ingredients</span>
-                <span className="sticker bg-white px-3 py-1 font-display text-sm font-bold text-ink">Made with Love</span>
+              <h1 className="font-display text-5xl font-extrabold leading-[.98] md:text-7xl lg:text-8xl">नवरात्रीची<br /><span className="text-mascot">उपवासाची</span><br />चविष्ट मेजवानी!</h1>
+              <p className="max-w-xl text-base font-semibold leading-relaxed text-cream/85 md:text-xl">उपवासासाठी खास, घरगुती प्रेमाने तयार केलेले टाकमचे आवडीचे पदार्थ. मेन्यू पाहा, तुमचा आवडता पदार्थ निवडा आणि WhatsApp वर ऑर्डरची चौकशी करा.</p>
+              <div className="flex flex-wrap gap-3 pt-1">
+                <a href="#menu" className="sticker-btn inline-flex items-center gap-2 bg-mascot px-5 py-3 font-display text-lg font-extrabold text-ink">मेन्यू पाहा <ArrowRight className="h-5 w-5" /></a>
+                <a href={whatsappUrl("नमस्कार टाकम! मला नवरात्रीच्या उपवास स्पेशल पदार्थांबद्दल माहिती हवी आहे.")} target="_blank" rel="noreferrer" className="sticker-btn inline-flex items-center gap-2 bg-tomato px-5 py-3 font-display text-lg font-bold text-white"><MessageCircle className="h-5 w-5" /> WhatsApp करा</a>
+              </div>
+              <div className="flex flex-wrap gap-2 pt-1">
+                <span className="sticker bg-peach px-3 py-1 font-display text-sm font-bold text-ink">घरगुती चव</span>
+                <span className="sticker bg-mint px-3 py-1 font-display text-sm font-bold text-ink">ताजे बनवलेले</span>
+                <span className="sticker bg-white px-3 py-1 font-display text-sm font-bold text-ink">प्रेमाने तयार</span>
               </div>
             </div>
-            <div className="relative mx-auto flex min-h-72 w-full max-w-lg items-center justify-center md:min-h-[26rem]">
-              <div className="absolute h-64 w-64 rotate-6 rounded-full border-[5px] border-ink bg-peach md:h-80 md:w-80" />
-              <div className="relative grid grid-cols-2 gap-3">
-                {["🍮", "🥘", "🍘", "🎃"].map((emoji, i) => <div key={emoji} className={`sticker flex h-28 w-28 items-center justify-center text-6xl md:h-36 md:w-36 ${["bg-white -rotate-6", "bg-mascot rotate-6", "bg-mint rotate-3", "bg-peach -rotate-3"][i]}`}>{emoji}</div>)}
+            <div className="relative mx-auto flex min-h-[22rem] w-full max-w-lg items-center justify-center md:min-h-[30rem]">
+              <div className="absolute h-64 w-64 rounded-full border-[5px] border-ink bg-peach md:h-80 md:w-80" />
+              <div className="absolute h-72 w-72 rounded-full border-2 border-dashed border-mascot md:h-[22rem] md:w-[22rem]" />
+              <div className="relative grid grid-cols-2 gap-3 md:gap-4">
+                {[
+                  { name: "उपवास गुलाबजाम", image: "/images/navratri/upvas-gulabjam.JPG", tone: "bg-white -rotate-6" },
+                  { name: "उपवास कचोरी", image: "/images/navratri/upvas-kachori.jpeg", tone: "bg-mascot rotate-3" },
+                  { name: "उपवास दही वडे", image: "/images/navratri/upvaas-dahiwada.jpeg", tone: "bg-mint rotate-3" },
+                  { name: "घारगे", image: "/images/navratri/god-ghadage.JPG", tone: "bg-peach -rotate-3" },
+                ].map((product) => <div key={product.name} className={`sticker relative flex h-28 w-28 items-center justify-center overflow-hidden border-2 border-ink p-2 md:h-36 md:w-36 ${product.tone}`}><img src={product.image} alt={product.name} className="h-full w-full rounded-lg object-cover" loading="lazy" /></div>)}
               </div>
-              <span className="sticker absolute bottom-4 right-0 rotate-6 bg-white px-3 py-2 font-display font-extrabold text-ink">उपवासातही टाकमसोबत! ❤️</span>
+              <span className="sticker absolute bottom-1 right-0 rotate-3 bg-white px-4 py-2 font-display text-sm font-extrabold text-ink md:bottom-3">उपवासातही टाकमसोबत! ❤️</span>
+              <span className="absolute left-2 top-8 text-3xl text-mascot" aria-hidden="true">✦</span>
+              <span className="absolute right-3 top-10 text-3xl text-peach" aria-hidden="true">✧</span>
             </div>
           </div>
         </section>
