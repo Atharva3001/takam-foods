@@ -18,8 +18,7 @@ const items = [
   { slug: "upvas-dahi-wada", name: "उपवास दही वडे", english: "Upvas Dahi Wada", quantity: "45 ग्रॅम · 2 नग", price: 46, emoji: "🥣", image: "/images/navratri/upvaas-dahiwada.jpeg", tone: "bg-white", note: "Soft, tangy and refreshing", story: "दह्याची थंडगार चव आणि मऊ वडे - उपवासाच्या मेन्यूतील एक चविष्ट पर्याय.", facts: ["प्रमाण: 45 ग्रॅम", "2 नग", "किंमत: ₹46"] },
   { slug: "upvas-kachori", name: "उपवास कचोरी", english: "Upvas Kachori", quantity: "70 ग्रॅम · 2 नग", price: 56, emoji: "🥟", image: "/images/navratri/upvas-kachori.jpeg", tone: "bg-peach", note: "A crisp, savoury fasting snack", story: "खमंग आणि कुरकुरीत उपवास कचोरी - छोट्या snack साठी छान पर्याय.", facts: ["प्रमाण: 70 ग्रॅम", "2 नग", "किंमत: ₹56"] },
   { slug: "upvas-medu-vada", name: "उपवास मेदू वडा", english: "Upvas Medu Vada", quantity: "45 ग्रॅम · 2 नग", price: 46, emoji: "🍩", image: "/images/navratri/upvaas-meduwada.jpeg", tone: "bg-mint", note: "Golden, savoury and satisfying", story: "सोनेरी, चविष्ट उपवास मेदू वडा - गरमागरम snack म्हणून enjoy करा.", facts: ["प्रमाण: 45 ग्रॅम", "2 नग", "किंमत: ₹46"] },
-  { slug: "dink-ladoo", name: "डिंक लाडू", english: "Dink Ladoo", quantity: "250 ग्रॅम · 8 नग", price: 357, emoji: "🟤", tone: "bg-mascot", note: "A traditional homemade favourite", story: "डिंक लाडू हा पारंपरिक घरगुती लाडू - सणासुदीच्या फराळात आणि कुटुंबासोबत शेअर करण्यासाठी छान पर्याय.", facts: ["प्रमाण: 250 ग्रॅम", "8 नग", "किंमत: ₹357"] },
-  { slug: "upvas-combo", name: "उपवास कॉम्बो", english: "Upvas Combo", quantity: "1 कॉम्बो", price: 145, emoji: "🍮 🟨 🍘", tone: "bg-peach", note: "Three fasting favourites, one combo", story: "एका कॉम्बोमध्ये उपवासाचे तीन आवडीचे पदार्थ - गुलाबजाम, इडली आणि ढोकळा.", facts: ["2 उपवास गुलाबजाम", "2 उपवास इडली", "4 उपवास ढोकळे", "किंमत: ₹145"], combo: true },
+  { slug: "upvas-combo", name: "उपवास कॉम्बो", english: "Upvas Combo", quantity: "1 कॉम्बो", price: 145, emoji: "🍮 🟨 🍘", tone: "bg-peach", note: "तीन उपवासाचे आवडते पदार्थ, एका कॉम्बोमध्ये", story: "गुलाबजाम, इडली आणि ढोकळ्यांचा खास उपवास कॉम्बो.", facts: ["२ उपवास गुलाबजाम", "२ उपवास इडली", "४ उपवास ढोकळे"], combo: true },
 ];
 
 const wa = (message: string) => `https://wa.me/91${PHONE}?text=${encodeURIComponent(message)}`;
@@ -56,16 +55,15 @@ export default function NavratriProduct() {
               <span className="sticker inline-block -rotate-2 bg-mascot px-3 py-1 font-display text-sm font-bold">🌼 Navratri Special</span>
               <h1 className="font-display text-4xl font-extrabold leading-tight md:text-6xl">{item.name}</h1>
               <p className="font-display text-xl font-bold text-muted-foreground">{item.english}</p>
-              <p className="text-lg font-semibold leading-relaxed">{item.note}. {item.story}</p>
+              <p className="text-lg font-semibold leading-relaxed">{item.combo ? item.story : `${item.note}. ${item.story}`}</p>
               <div className="sticker rotate-1 bg-mint/60 p-5">
                 <p className="font-display text-4xl font-extrabold text-tomato">₹{item.price}</p>
                 <p className="mt-1 text-lg font-bold">{item.quantity}</p>
                 <p className="mt-3 text-sm font-semibold">Made to order · Availability is confirmed by TAKAM after enquiry.</p>
               </div>
               <div className="sticker bg-white p-5">
-                <h2 className="font-display text-xl font-extrabold">या item बद्दल</h2>
+                <h2 className="font-display text-xl font-extrabold">{item.combo ? "या कॉम्बोमध्ये" : "या पदार्थाबद्दल"}</h2>
                 <ul className="mt-3 space-y-2 font-semibold">{item.facts.map((fact) => <li key={fact}>✓ {fact}</li>)}</ul>
-                {item.combo && <p className="mt-3 font-semibold text-muted-foreground">२ उपवास गुलाबजाम + २ उपवास इडली + ४ उपवास ढोकळे</p>}
               </div>
               <a href={wa(message)} target="_blank" rel="noreferrer" className="sticker-btn inline-flex w-full items-center justify-center gap-2 bg-tomato px-5 py-4 font-display text-lg font-bold text-white"><MessageCircle className="h-5 w-5" /> WhatsApp वर enquiry करा</a>
               <p className="text-center text-sm font-bold text-muted-foreground">WhatsApp: {PHONE}</p>
