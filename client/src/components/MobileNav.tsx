@@ -38,11 +38,11 @@ export function MobileNav() {
               आमची गोष्ट
             </a>
             <Link
-              href="/ganapati-modak-special"
+              href="/navratri-special"
               onClick={closeMenu}
               className="font-display font-bold text-lg hover:underline decoration-[3px] decoration-peach underline-offset-4"
             >
-              गणपती Special 🙏
+              Navratri Special 🌼
             </Link>
           </nav>
         </div>
