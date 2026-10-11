@@ -51,7 +51,7 @@ export default function NavratriProduct() {
           <div className="container grid items-start gap-8 md:grid-cols-2 md:gap-12">
             <div className="sticker -rotate-1 bg-white p-3 md:p-5">
               <div className={`flex min-h-[20rem] items-center justify-center border-2 border-ink/10 md:min-h-[30rem] ${item.tone}`}>
-                {item.image ? <img src={item.image} alt={item.english} className="h-full w-full object-cover" /> : <span className="text-[10rem] md:text-[13rem]" role="img" aria-label={item.english}>{item.emoji}</span>}
+                {item.image ? <img src={item.image} alt={item.english} className="h-full w-full object-contain" /> : <span className="text-[10rem] md:text-[13rem]" role="img" aria-label={item.english}>{item.emoji}</span>}
               </div>
               {item.image && <p className="mt-3 text-center text-xs font-bold text-muted-foreground">Real TAKAM product photo</p>}
             </div>
@@ -79,7 +79,7 @@ export default function NavratriProduct() {
           <div className="container">
             <div className="mb-7 text-center"><Sparkles className="mx-auto h-7 w-7" /><h2 className="mt-2 font-display text-3xl font-extrabold md:text-4xl">आणखी Navratri favourites</h2></div>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-              {items.filter((other) => other.slug !== item.slug).slice(0, 8).map((other) => <Link key={other.slug} href={`/navratri/${other.slug}`} className="sticker bg-white p-3 hover:no-underline"><div className={`flex h-24 items-center justify-center overflow-hidden text-5xl ${other.tone}`}>{other.image ? <img src={other.image} alt={other.english} loading="lazy" className="h-full w-full object-cover" /> : other.emoji}</div><p className="mt-2 font-display font-extrabold leading-tight">{other.name}</p><p className="mt-1 font-display font-extrabold text-tomato">₹{other.price}</p></Link>)}
+              {items.filter((other) => other.slug !== item.slug).slice(0, 8).map((other) => <Link key={other.slug} href={`/navratri/${other.slug}`} className="sticker bg-white p-3 hover:no-underline"><div className={`flex h-24 items-center justify-center overflow-hidden text-5xl ${other.tone}`}>{other.image ? <img src={other.image} alt={other.english} loading="lazy" className="h-full w-full object-contain" /> : other.emoji}</div><p className="mt-2 font-display font-extrabold leading-tight">{other.name}</p><p className="mt-1 font-display font-extrabold text-tomato">₹{other.price}</p></Link>)}
             </div>
             <div className="mt-8 text-center"><Link href="/navratri-special" className="inline-flex items-center gap-2 font-display font-bold hover:underline"><ArrowLeft className="h-4 w-4" /> सगळे Navratri पदार्थ पाहा</Link></div>
           </div>
