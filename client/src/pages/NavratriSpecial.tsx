@@ -17,7 +17,6 @@ const items = [
   { slug: "upvas-dahi-wada", name: "उपवास दही वडे", english: "Upvas Dahi Wada", quantity: "45 ग्रॅम · 2 नग", price: 46, emoji: "🥣", image: "/images/navratri/upvaas-dahiwada.jpeg", tone: "bg-white", note: "Soft, tangy and refreshing" },
   { slug: "upvas-kachori", name: "उपवास कचोरी", english: "Upvas Kachori", quantity: "70 ग्रॅम · 2 नग", price: 56, emoji: "🥟", image: "/images/navratri/upvas-kachori.jpeg", tone: "bg-peach", note: "A crisp, savoury fasting snack" },
   { slug: "upvas-medu-vada", name: "उपवास मेदू वडा", english: "Upvas Medu Vada", quantity: "45 ग्रॅम · 2 नग", price: 46, emoji: "🍩", image: "/images/navratri/upvaas-meduwada.jpeg", tone: "bg-mint", note: "Golden, savoury and satisfying" },
-  { slug: "dink-ladoo", name: "डिंक लाडू", english: "Dink Ladoo", quantity: "250 ग्रॅम · 8 नग", price: 357, emoji: "🟤", tone: "bg-mascot", note: "A traditional homemade favourite" },
 ];
 
 const whatsappUrl = (message: string) =>
